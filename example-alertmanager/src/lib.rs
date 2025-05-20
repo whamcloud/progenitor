@@ -3093,8 +3093,6 @@ pub mod types {
         }
     }
 }
-#[derive(Clone, Debug)]
-/**Client for Alertmanager API
 
 API of the Prometheus Alertmanager (https://github.com/prometheus/alertmanager)
 
