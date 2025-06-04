@@ -57,8 +57,7 @@ serde_yaml = "0.9"
 syn = { version = "2.0.104", features = ["parsing"] }
 thiserror = "2.0.12"
 tokio = { version = "1.45.1", features = ["rt", "net"] }
-# change when publishing
-typify = { git = "https://github.com/MA-DDN/typify", branch = "fix-clippy-regex-issues" }
+typify = { git = "https://github.com/whamcloud/typify", branch = "whamcloud" }
 url = "2.5.4"
 unicode-ident = "1.0.18"
 uuid = { version = "1.18.0", features = ["serde", "v4"] }
