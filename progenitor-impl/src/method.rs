@@ -574,6 +574,15 @@ impl Generator {
         method: &OperationMethod,
         has_inner: bool,
     ) -> Result<TokenStream> {
+        self.positional_method_with_visibility(method, has_inner, true)
+    }
+
+    pub(crate) fn positional_method_with_visibility(
+        &mut self,
+        method: &OperationMethod,
+        has_inner: bool,
+        include_pub: bool,
+    ) -> Result<TokenStream> {
         let operation_id = format_ident!("{}", method.operation_id);
 
         // Render each parameter as it will appear in the method signature.
@@ -632,11 +641,13 @@ impl Generator {
             body,
         } = self.method_sig_body(method, quote! { Self }, quote! { self }, has_inner)?;
 
+        let visibility = if include_pub { quote! { pub } } else { quote! {} };
+
         let method_impl = quote! {
             #[doc = #doc_comment]
             #[allow(unused_variables)]
             #[allow(irrefutable_let_patterns)]
-            pub async fn #operation_id #bounds (
+            #visibility async fn #operation_id #bounds (
                 &'a self,
                 #(#params),*
             ) -> Result<
@@ -714,7 +725,7 @@ impl Generator {
                 #[doc = #doc_comment]
                 #[allow(unused_variables)]
                 #[allow(irrefutable_let_patterns)]
-                pub fn #stream_id #bounds (
+                #visibility fn #stream_id #bounds (
                     &'a self,
                     #(#stream_params),*
                 ) -> impl futures::Stream<Item = Result<
@@ -1188,7 +1199,7 @@ impl Generator {
 
             #[allow(unused_mut)]
             #[allow(unused_variables)]
-            let mut #request_ident = #client_value.client
+            let mut #request_ident = #client_value.client()
                 . #method_func (#url_ident)
                 #accept_header
                 #(#body_func)*

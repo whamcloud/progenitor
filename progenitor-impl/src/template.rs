@@ -46,7 +46,7 @@ impl PathTemplate {
         });
 
         quote! {
-            format!(#fmt, #client.baseurl, #(#components,)*)
+            format!(#fmt, #client.baseurl(), #(#components,)*)
         }
     }
 
@@ -296,7 +296,7 @@ mod tests {
         let out = t.compile(rename, quote::quote! { self });
         let want = quote::quote! {
             format!("{}/measure/{}",
-                self.baseurl,
+                self.baseurl(),
                 encode_path(&number.to_string()),
             )
         };
@@ -316,7 +316,7 @@ mod tests {
         let out = t.compile(rename, quote::quote! { self });
         let want = quote::quote! {
             format!("{}/abc/def:{}:jkl/{}/a:{}",
-                self.baseurl,
+                self.baseurl(),
                 encode_path(&one.to_string()),
                 encode_path(&two.to_string()),
                 encode_path(&three.to_string()),
