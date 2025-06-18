@@ -7,6 +7,10 @@ description = "An OpenAPI client generator - core implementation"
 repository = "https://github.com/oxidecomputer/progenitor.git"
 readme = "../README.md"
 
+[features]
+default = []
+middleware = []
+
 [dependencies]
 derive_more = { workspace = true }
 heck = { workspace = true }
