@@ -333,11 +333,17 @@ impl Generator {
             })
             .collect::<Result<Vec<_>>>()?;
 
+        let (inner_type, inner_fn_value) = match self.settings.inner_type.as_ref() {
+            Some(inner_type) => (inner_type.clone(), quote! { &self.inner }),
+            None => (quote! { () }, quote! { &() }),
+        };
+
         let operation_code = match (&self.settings.interface, &self.settings.tag) {
             (InterfaceStyle::Positional, TagStyle::Merged) => self
                 .generate_tokens_positional_merged(
                     &raw_methods,
                     self.settings.inner_type.is_some(),
+                    &inner_type,
                 ),
             (InterfaceStyle::Positional, TagStyle::Separate) => {
                 unimplemented!("positional arguments with separate tags are currently unsupported")
@@ -388,10 +394,7 @@ impl Generator {
             }
         };
 
-        let (inner_type, inner_fn_value) = match self.settings.inner_type.as_ref() {
-            Some(inner_type) => (inner_type.clone(), quote! { &self.inner }),
-            None => (quote! { () }, quote! { &() }),
-        };
+
 
         let inner_property = self.settings.inner_type.as_ref().map(|inner| {
             quote! {
@@ -612,6 +615,7 @@ impl Generator {
         &mut self,
         input_methods: &[method::OperationMethod],
         has_inner: bool,
+        _inner_type: &TokenStream,
     ) -> Result<TokenStream> {
         let methods = input_methods
             .iter()
@@ -629,10 +633,20 @@ impl Generator {
                 #(#methods)*
             }
 
+            #[cfg(feature = "middleware")]
+            #[allow(clippy::all)]
+            #[allow(elided_named_lifetimes)]
+            impl MiddlewareClient {
+                #(#methods)*
+            }
+
             /// Items consumers will typically use such as the Client.
             pub mod prelude {
                 #[allow(unused_imports)]
                 pub use super::Client;
+                #[cfg(feature = "middleware")]
+                #[allow(unused_imports)]
+                pub use super::MiddlewareClient;
             }
         };
         Ok(out)
