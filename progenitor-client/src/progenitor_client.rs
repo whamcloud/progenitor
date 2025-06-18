@@ -11,6 +11,8 @@ use futures_core::Stream;
 use reqwest::RequestBuilder;
 use serde::{de::DeserializeOwned, ser::SerializeStruct, Serialize};
 
+
+
 #[cfg(not(target_arch = "wasm32"))]
 type InnerByteStream = std::pin::Pin<Box<dyn Stream<Item = reqwest::Result<Bytes>> + Send + Sync>>;
 
@@ -86,6 +88,8 @@ where
         (*self).inner()
     }
 }
+
+
 
 /// Information about an operation, consumed by hook implementations.
 pub struct OperationInfo {

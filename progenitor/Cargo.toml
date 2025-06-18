@@ -12,6 +12,7 @@ categories = ["api-bindings", "compilers"]
 [features]
 default = ["macro"]
 macro = ["dep:progenitor-client", "dep:progenitor-macro"]
+middleware = ["progenitor-client?/middleware", "progenitor-impl/middleware"]
 
 [dependencies]
 progenitor-client = { workspace = true, optional = true }

@@ -449,6 +449,10 @@ impl Generator {
                 RequestBuilderExt,
             };
 
+            #[cfg(feature = "middleware")]
+            #[allow(unused_imports)]
+            pub use reqwest_middleware;
+
             /// Types used as operation parameters and responses.
             #[allow(clippy::all)]
             pub mod types {
@@ -460,6 +464,19 @@ impl Generator {
             pub struct Client {
                 pub(crate) baseurl: String,
                 pub(crate) client: reqwest::Client,
+                #inner_property
+            }
+
+            /// Client with middleware support for enhanced request/response processing.
+            ///
+            /// This client type is only available when the "middleware" feature is enabled.
+            #[cfg(feature = "middleware")]
+            #[derive(Clone, Debug)]
+            #[doc = #client_docstring]
+            pub struct MiddlewareClient {
+                pub(crate) baseurl: String,
+                pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+                pub(crate) inner_client: reqwest::Client,
                 #inner_property
             }
 
@@ -504,6 +521,28 @@ impl Generator {
                         #inner_value
                     }
                 }
+
+                /// Construct a new client with an existing `reqwest_middleware::ClientWithMiddleware`,
+                /// allowing the use of middleware for requests.
+                ///
+                /// `baseurl` is the base URL provided to the internal client, and should include
+                /// a scheme and hostname, as well as port and a path stem if applicable.
+                ///
+                /// This method is only available when the "middleware" feature is enabled.
+                #[cfg(feature = "middleware")]
+                pub fn new_with_client_middleware(
+                    baseurl: &str,
+                    client: reqwest_middleware::ClientWithMiddleware,
+                    inner_client: reqwest::Client,
+                    #inner_parameter
+                ) -> MiddlewareClient {
+                    MiddlewareClient {
+                        baseurl: baseurl.to_string(),
+                        client,
+                        inner_client,
+                        #inner_value
+                    }
+                }
             }
 
             impl ClientInfo<#inner_type> for Client {
@@ -525,6 +564,43 @@ impl Generator {
             }
 
             impl ClientHooks<#inner_type> for &Client {}
+
+            #[cfg(feature = "middleware")]
+            impl ClientInfo<#inner_type> for MiddlewareClient {
+                fn api_version() -> &'static str {
+                    #version_str
+                }
+
+                fn baseurl(&self) -> &str {
+                    self.baseurl.as_str()
+                }
+
+                fn client(&self) -> &reqwest::Client {
+                    &self.inner_client
+                }
+
+                fn inner(&self) -> &#inner_type {
+                    #inner_fn_value
+                }
+            }
+
+            #[cfg(feature = "middleware")]
+            impl ClientHooks<#inner_type> for &MiddlewareClient {
+                async fn exec(
+                    &self,
+                    request: reqwest::Request,
+                    _info: &OperationInfo,
+                ) -> reqwest::Result<reqwest::Response> {
+                    // For now, we'll convert middleware errors to panics
+                    // In a real implementation, you might want to handle this differently
+                    self.client.execute(request).await.map_err(|e| match e {
+                        reqwest_middleware::Error::Reqwest(reqwest_err) => reqwest_err,
+                        reqwest_middleware::Error::Middleware(middleware_err) => {
+                            panic!("Middleware error: {}", middleware_err)
+                        }
+                    })
+                }
+            }
 
             #operation_code
         };
