@@ -1876,6 +1876,7 @@ dependencies = [
  "rand 0.9.1",
  "regress",
  "reqwest",
+ "reqwest-middleware",
  "schemars",
  "serde",
  "serde_json",
