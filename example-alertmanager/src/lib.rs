@@ -3230,7 +3230,7 @@ Sends a 'GET' request to '/status'
     pub async fn get_status<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::GetStatusResponse>, Error<()>> {
-        let url = format!("{}/status", self.baseurl,);
+        let url = format!("{}/status", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3240,7 +3240,7 @@ Sends a 'GET' request to '/status'
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3273,7 +3273,7 @@ Sends a 'GET' request to '/receivers'
         ResponseValue<::std::vec::Vec<types::GetReceiversResponseItem>>,
         Error<()>,
     > {
-        let url = format!("{}/receivers", self.baseurl,);
+        let url = format!("{}/receivers", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3283,7 +3283,7 @@ Sends a 'GET' request to '/receivers'
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3319,7 +3319,7 @@ Arguments:
         ResponseValue<::std::vec::Vec<types::GettableSilence>>,
         Error<types::GetSilencesError>,
     > {
-        let url = format!("{}/silences", self.baseurl,);
+        let url = format!("{}/silences", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3329,7 +3329,7 @@ Arguments:
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3384,7 +3384,7 @@ Sends a 'POST' request to '/silences'
         ResponseValue<types::PostSilencesResponse>,
         Error<types::PostSilencesError>,
     > {
-        let url = format!("{}/silences", self.baseurl,);
+        let url = format!("{}/silences", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3394,7 +3394,7 @@ Sends a 'POST' request to '/silences'
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3452,7 +3452,7 @@ Arguments:
         Error<types::GetSilenceError>,
     > {
         let url = format!(
-            "{}/silence/{}", self.baseurl, encode_path(& silence_id.to_string()),
+            "{}/silence/{}", self.baseurl(), encode_path(& silence_id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
@@ -3463,7 +3463,7 @@ Arguments:
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3517,7 +3517,7 @@ Arguments:
         silence_id: &'a ::uuid::Uuid,
     ) -> Result<ResponseValue<()>, Error<types::DeleteSilenceError>> {
         let url = format!(
-            "{}/silence/{}", self.baseurl, encode_path(& silence_id.to_string()),
+            "{}/silence/{}", self.baseurl(), encode_path(& silence_id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
@@ -3527,7 +3527,7 @@ Arguments:
             );
         #[allow(unused_mut)]
         #[allow(unused_variables)]
-        let mut request = self.client.delete(url).headers(header_map).build()?;
+        let mut request = self.client().delete(url).headers(header_map).build()?;
         let info = OperationInfo {
             operation_id: "delete_silence",
         };
@@ -3586,7 +3586,7 @@ Arguments:
         ResponseValue<::std::vec::Vec<types::GettableAlert>>,
         Error<types::GetAlertsError>,
     > {
-        let url = format!("{}/alerts", self.baseurl,);
+        let url = format!("{}/alerts", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3596,7 +3596,7 @@ Arguments:
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3653,7 +3653,7 @@ Sends a 'POST' request to '/alerts'
         &'a self,
         body: &'a types::PostAlertsBody,
     ) -> Result<ResponseValue<()>, Error<types::PostAlertsError>> {
-        let url = format!("{}/alerts", self.baseurl,);
+        let url = format!("{}/alerts", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3663,7 +3663,7 @@ Sends a 'POST' request to '/alerts'
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3728,7 +3728,7 @@ Arguments:
         ResponseValue<::std::vec::Vec<types::AlertGroup>>,
         Error<types::GetAlertGroupsError>,
     > {
-        let url = format!("{}/alerts/groups", self.baseurl,);
+        let url = format!("{}/alerts/groups", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map
             .append(
@@ -3738,7 +3738,575 @@ Arguments:
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("active", &active))
+            .query(&progenitor_client::QueryParam::new("filter", &filter))
+            .query(&progenitor_client::QueryParam::new("inhibited", &inhibited))
+            .query(&progenitor_client::QueryParam::new("receiver", &receiver))
+            .query(&progenitor_client::QueryParam::new("silenced", &silenced))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_alert_groups",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetAlertGroupsError,
+                        >::from_response::<types::GetAlertGroupsError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            500u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetAlertGroupsError,
+                        >::from_response::<types::GetAlertGroupsError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+}
+#[cfg(feature = "middleware")]
+#[allow(clippy::all)]
+#[allow(elided_named_lifetimes)]
+impl MiddlewareClient {
+    /**Get current status of an Alertmanager instance and its cluster
+
+Sends a 'GET' request to '/status'
+
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn get_status<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::GetStatusResponse>, Error<()>> {
+        let url = format!("{}/status", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_status",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+    /**Get list of all receivers (name of notification integrations)
+
+Sends a 'GET' request to '/receivers'
+
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn get_receivers<'a>(
+        &'a self,
+    ) -> Result<
+        ResponseValue<::std::vec::Vec<types::GetReceiversResponseItem>>,
+        Error<()>,
+    > {
+        let url = format!("{}/receivers", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_receivers",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+    /**Get a list of silences
+
+Sends a 'GET' request to '/silences'
+
+Arguments:
+- `filter`: A list of matchers to filter silences by
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn get_silences<'a>(
+        &'a self,
+        filter: Option<&'a ::std::vec::Vec<::std::string::String>>,
+    ) -> Result<
+        ResponseValue<::std::vec::Vec<types::GettableSilence>>,
+        Error<types::GetSilencesError>,
+    > {
+        let url = format!("{}/silences", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("filter", &filter))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_silences",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetSilencesError,
+                        >::from_response::<types::GetSilencesError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            500u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetSilencesError,
+                        >::from_response::<types::GetSilencesError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Post a new silence or update an existing one
+
+Sends a 'POST' request to '/silences'
+
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn post_silences<'a>(
+        &'a self,
+        body: &'a types::PostSilencesBody,
+    ) -> Result<
+        ResponseValue<types::PostSilencesResponse>,
+        Error<types::PostSilencesError>,
+    > {
+        let url = format!("{}/silences", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .json(&body)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "post_silences",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::PostSilencesError,
+                        >::from_response::<types::PostSilencesError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            404u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::PostSilencesError,
+                        >::from_response::<types::PostSilencesError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Get a silence by its ID
+
+Sends a 'GET' request to '/silence/{silenceID}'
+
+Arguments:
+- `silence_id`: ID of the silence to get
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn get_silence<'a>(
+        &'a self,
+        silence_id: &'a ::uuid::Uuid,
+    ) -> Result<
+        ResponseValue<types::GetSilenceResponse>,
+        Error<types::GetSilenceError>,
+    > {
+        let url = format!(
+            "{}/silence/{}", self.baseurl(), encode_path(& silence_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_silence",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            404u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetSilenceError,
+                        >::from_response::<types::GetSilenceError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            500u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetSilenceError,
+                        >::from_response::<types::GetSilenceError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Delete a silence by its ID
+
+Sends a 'DELETE' request to '/silence/{silenceID}'
+
+Arguments:
+- `silence_id`: ID of the silence to get
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn delete_silence<'a>(
+        &'a self,
+        silence_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<()>, Error<types::DeleteSilenceError>> {
+        let url = format!(
+            "{}/silence/{}", self.baseurl(), encode_path(& silence_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self.client().delete(url).headers(header_map).build()?;
+        let info = OperationInfo {
+            operation_id: "delete_silence",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => Ok(ResponseValue::empty(response)),
+            404u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::DeleteSilenceError,
+                        >::from_response::<types::DeleteSilenceError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            500u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::DeleteSilenceError,
+                        >::from_response::<types::DeleteSilenceError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Get a list of alerts
+
+Sends a 'GET' request to '/alerts'
+
+Arguments:
+- `active`: Show active alerts
+- `filter`: A list of matchers to filter alerts by
+- `inhibited`: Show inhibited alerts
+- `receiver`: A regex matching receivers to filter alerts by
+- `silenced`: Show silenced alerts
+- `unprocessed`: Show unprocessed alerts
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn get_alerts<'a>(
+        &'a self,
+        active: Option<bool>,
+        filter: Option<&'a ::std::vec::Vec<::std::string::String>>,
+        inhibited: Option<bool>,
+        receiver: Option<&'a str>,
+        silenced: Option<bool>,
+        unprocessed: Option<bool>,
+    ) -> Result<
+        ResponseValue<::std::vec::Vec<types::GettableAlert>>,
+        Error<types::GetAlertsError>,
+    > {
+        let url = format!("{}/alerts", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("active", &active))
+            .query(&progenitor_client::QueryParam::new("filter", &filter))
+            .query(&progenitor_client::QueryParam::new("inhibited", &inhibited))
+            .query(&progenitor_client::QueryParam::new("receiver", &receiver))
+            .query(&progenitor_client::QueryParam::new("silenced", &silenced))
+            .query(&progenitor_client::QueryParam::new("unprocessed", &unprocessed))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "get_alerts",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetAlertsError,
+                        >::from_response::<types::GetAlertsError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            500u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::GetAlertsError,
+                        >::from_response::<types::GetAlertsError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Create new Alerts
+
+Sends a 'POST' request to '/alerts'
+
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn post_alerts<'a>(
+        &'a self,
+        body: &'a types::PostAlertsBody,
+    ) -> Result<ResponseValue<()>, Error<types::PostAlertsError>> {
+        let url = format!("{}/alerts", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .json(&body)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "post_alerts",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => Ok(ResponseValue::empty(response)),
+            400u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::PostAlertsError,
+                        >::from_response::<types::PostAlertsError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            500u16 => {
+                Err(
+                    Error::ErrorResponse(
+                        ResponseValue::<
+                            types::PostAlertsError,
+                        >::from_response::<types::PostAlertsError>(response)
+                            .await?,
+                    ),
+                )
+            }
+            _ => Err(Error::UnexpectedResponse(response)),
+        }
+    }
+    /**Get a list of alert groups
+
+Sends a 'GET' request to '/alerts/groups'
+
+Arguments:
+- `active`: Show active alerts
+- `filter`: A list of matchers to filter alerts by
+- `inhibited`: Show inhibited alerts
+- `receiver`: A regex matching receivers to filter alerts by
+- `silenced`: Show silenced alerts
+*/
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn get_alert_groups<'a>(
+        &'a self,
+        active: Option<bool>,
+        filter: Option<&'a ::std::vec::Vec<::std::string::String>>,
+        inhibited: Option<bool>,
+        receiver: Option<&'a str>,
+        silenced: Option<bool>,
+    ) -> Result<
+        ResponseValue<::std::vec::Vec<types::AlertGroup>>,
+        Error<types::GetAlertGroupsError>,
+    > {
+        let url = format!("{}/alerts/groups", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map
+            .append(
+                ::reqwest::header::HeaderName::from_static("api-version"),
+                ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+            );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -3788,4 +4356,7 @@ Arguments:
 pub mod prelude {
     #[allow(unused_imports)]
     pub use super::Client;
+    #[cfg(feature = "middleware")]
+    #[allow(unused_imports)]
+    pub use super::MiddlewareClient;
 }
