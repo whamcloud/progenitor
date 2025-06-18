@@ -569,6 +569,22 @@ impl Generator {
             impl ClientHooks<#inner_type> for &Client {}
 
             #[cfg(feature = "middleware")]
+            impl ClientHooks<#inner_type> for &MiddlewareClient {
+                async fn exec(
+                    &self,
+                    request: reqwest::Request,
+                    _info: &OperationInfo,
+                ) -> reqwest::Result<reqwest::Response> {
+                    self.client.execute(request).await.map_err(|e| match e {
+                        reqwest_middleware::Error::Reqwest(reqwest_err) => reqwest_err,
+                        reqwest_middleware::Error::Middleware(middleware_err) => {
+                            panic!("Middleware error: {}", middleware_err)
+                        }
+                    })
+                }
+            }
+
+            #[cfg(feature = "middleware")]
             impl ClientInfo<#inner_type> for MiddlewareClient {
                 fn api_version() -> &'static str {
                     #version_str
@@ -587,23 +603,7 @@ impl Generator {
                 }
             }
 
-            #[cfg(feature = "middleware")]
-            impl ClientHooks<#inner_type> for &MiddlewareClient {
-                async fn exec(
-                    &self,
-                    request: reqwest::Request,
-                    _info: &OperationInfo,
-                ) -> reqwest::Result<reqwest::Response> {
-                    // For now, we'll convert middleware errors to panics
-                    // In a real implementation, you might want to handle this differently
-                    self.client.execute(request).await.map_err(|e| match e {
-                        reqwest_middleware::Error::Reqwest(reqwest_err) => reqwest_err,
-                        reqwest_middleware::Error::Middleware(middleware_err) => {
-                            panic!("Middleware error: {}", middleware_err)
-                        }
-                    })
-                }
-            }
+
 
             #operation_code
         };

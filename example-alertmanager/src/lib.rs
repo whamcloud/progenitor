@@ -3185,21 +3185,6 @@ impl ClientInfo<()> for Client {
 }
 impl ClientHooks<()> for &Client {}
 #[cfg(feature = "middleware")]
-impl ClientInfo<()> for MiddlewareClient {
-    fn api_version() -> &'static str {
-        "0.0.1"
-    }
-    fn baseurl(&self) -> &str {
-        self.baseurl.as_str()
-    }
-    fn client(&self) -> &reqwest::Client {
-        &self.inner_client
-    }
-    fn inner(&self) -> &() {
-        &()
-    }
-}
-#[cfg(feature = "middleware")]
 impl ClientHooks<()> for &MiddlewareClient {
     async fn exec(
         &self,
@@ -3215,6 +3200,21 @@ impl ClientHooks<()> for &MiddlewareClient {
                     panic!("Middleware error: {}", middleware_err)
                 }
             })
+    }
+}
+#[cfg(feature = "middleware")]
+impl ClientInfo<()> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "0.0.1"
+    }
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+    fn client(&self) -> &reqwest::Client {
+        &self.inner_client
+    }
+    fn inner(&self) -> &() {
+        &()
     }
 }
 #[allow(clippy::all)]

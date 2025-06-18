@@ -574,15 +574,6 @@ impl Generator {
         method: &OperationMethod,
         has_inner: bool,
     ) -> Result<TokenStream> {
-        self.positional_method_with_visibility(method, has_inner, true)
-    }
-
-    pub(crate) fn positional_method_with_visibility(
-        &mut self,
-        method: &OperationMethod,
-        has_inner: bool,
-        include_pub: bool,
-    ) -> Result<TokenStream> {
         let operation_id = format_ident!("{}", method.operation_id);
 
         // Render each parameter as it will appear in the method signature.
@@ -641,13 +632,11 @@ impl Generator {
             body,
         } = self.method_sig_body(method, quote! { Self }, quote! { self }, has_inner)?;
 
-        let visibility = if include_pub { quote! { pub } } else { quote! {} };
-
         let method_impl = quote! {
             #[doc = #doc_comment]
             #[allow(unused_variables)]
             #[allow(irrefutable_let_patterns)]
-            #visibility async fn #operation_id #bounds (
+            pub async fn #operation_id #bounds (
                 &'a self,
                 #(#params),*
             ) -> Result<
@@ -725,7 +714,7 @@ impl Generator {
                 #[doc = #doc_comment]
                 #[allow(unused_variables)]
                 #[allow(irrefutable_let_patterns)]
-                #visibility fn #stream_id #bounds (
+                pub fn #stream_id #bounds (
                     &'a self,
                     #(#stream_params),*
                 ) -> impl futures::Stream<Item = Result<
@@ -1192,6 +1181,8 @@ impl Generator {
         let operation_id = &method.operation_id;
         let method_func = format_ident!("{}", method.method.as_str());
 
+
+
         let body_impl = quote! {
             #url_path
 
@@ -1225,8 +1216,6 @@ impl Generator {
             #client_value
                 .post(&#result_ident, &info)
                 .await?;
-            #post_hook_async
-            #post_hook
 
             let #response_ident = #result_ident?;
 
