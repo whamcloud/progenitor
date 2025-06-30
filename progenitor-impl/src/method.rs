@@ -431,7 +431,7 @@ impl Generator {
             self.uses_websockets = true;
         }
 
-        if let Some(body_param) = self.get_body_param(operation, components)? {
+        if let Some(body_param) = self.get_body_param(operation, components, method)? {
             params.push(body_param);
         }
 
@@ -2206,11 +2206,44 @@ impl Generator {
         &mut self,
         operation: &openapiv3::Operation,
         components: &Option<Components>,
+        method: &str,
     ) -> Result<Option<OperationParameter>> {
+        // GET, HEAD, and OPTIONS requests should never have request bodies
+        // This fixes an issue where Swagger 2.0 specs with global "consumes"
+        // incorrectly generate body parameters for these methods
+        if matches!(method.to_uppercase().as_str(), "GET" | "HEAD" | "OPTIONS") {
+            return Ok(None);
+        }
+
         let body = match &operation.request_body {
             Some(body) => body.item(components)?,
             None => return Ok(None),
         };
+
+        // Additional check for DELETE requests: if the request body is a generic
+        // object schema with no properties (likely from global "consumes"), skip it
+        if method.to_uppercase() == "DELETE" {
+            if let Some((content_str, media_type)) = body.content.first() {
+                if content_str == "application/json" {
+                    if let Some(schema) = &media_type.schema {
+                        if let Ok(resolved_schema) = schema.item(components) {
+                            // Check if this is a generic empty object schema
+                            if let openapiv3::Schema {
+                                schema_kind: openapiv3::SchemaKind::Type(openapiv3::Type::Object(
+                                    openapiv3::ObjectType { properties, .. }
+                                )),
+                                ..
+                            } = resolved_schema {
+                                if properties.is_empty() {
+                                    // This is likely a fake request body from global consumes
+                                    return Ok(None);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         let (content_str, media_type) = match (body.content.first(), body.content.len()) {
             (None, _) => return Ok(None),
