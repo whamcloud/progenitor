@@ -2229,11 +2229,13 @@ impl Generator {
                         if let Ok(resolved_schema) = schema.item(components) {
                             // Check if this is a generic empty object schema
                             if let openapiv3::Schema {
-                                schema_kind: openapiv3::SchemaKind::Type(openapiv3::Type::Object(
-                                    openapiv3::ObjectType { properties, .. }
-                                )),
+                                schema_kind:
+                                    openapiv3::SchemaKind::Type(openapiv3::Type::Object(
+                                        openapiv3::ObjectType { properties, .. },
+                                    )),
                                 ..
-                            } = resolved_schema {
+                            } = resolved_schema
+                            {
                                 if properties.is_empty() {
                                     // This is likely a fake request body from global consumes
                                     return Ok(None);
