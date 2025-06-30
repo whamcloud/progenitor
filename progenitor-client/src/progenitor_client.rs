@@ -51,7 +51,7 @@ impl DerefMut for ByteStream {
 }
 
 /// Interface for which an implementation is generated for all clients.
-pub trait ClientInfo<Inner> {
+pub trait ClientInfo<Inner, Client = reqwest::Client> {
     /// Get the version of this API.
     ///
     /// This string is pulled directly from the source OpenAPI document and may
@@ -61,16 +61,16 @@ pub trait ClientInfo<Inner> {
     /// Get the base URL to which requests are made.
     fn baseurl(&self) -> &str;
 
-    /// Get the internal `reqwest::Client` used to make requests.
-    fn client(&self) -> &reqwest::Client;
+    /// Get the internal client used to make requests.
+    fn client(&self) -> &Client;
 
     /// Get the inner value of type `T` if one is specified.
     fn inner(&self) -> &Inner;
 }
 
-impl<T, Inner> ClientInfo<Inner> for &T
+impl<T, Inner, Client> ClientInfo<Inner, Client> for &T
 where
-    T: ClientInfo<Inner>,
+    T: ClientInfo<Inner, Client>,
 {
     fn api_version() -> &'static str {
         T::api_version()
@@ -80,7 +80,7 @@ where
         (*self).baseurl()
     }
 
-    fn client(&self) -> &reqwest::Client {
+    fn client(&self) -> &Client {
         (*self).client()
     }
 
@@ -101,10 +101,41 @@ pub struct OperationInfo {
 /// implement this for `&Client`; to override the default behavior, implement
 /// some or all of the interfaces for the `Client` type (without the
 /// reference). This mechanism relies on so-called "auto-ref specialization".
+/// Trait for executing HTTP requests, abstracting over different client types.
+#[allow(async_fn_in_trait)]
+pub trait HttpExecutor {
+    /// Execute an HTTP request and return the response.
+    async fn execute(&self, request: reqwest::Request) -> reqwest::Result<reqwest::Response>;
+}
+
+impl HttpExecutor for reqwest::Client {
+    async fn execute(&self, request: reqwest::Request) -> reqwest::Result<reqwest::Response> {
+        self.execute(request).await
+    }
+}
+
+#[cfg(feature = "middleware")]
+impl HttpExecutor for reqwest_middleware::ClientWithMiddleware {
+    async fn execute(&self, request: reqwest::Request) -> reqwest::Result<reqwest::Response> {
+        self.execute(request).await.map_err(|e| match e {
+            reqwest_middleware::Error::Reqwest(reqwest_err) => reqwest_err,
+            reqwest_middleware::Error::Middleware(middleware_err) => {
+                panic!("Middleware error: {}", middleware_err)
+            }
+        })
+    }
+}
+
+/// Trait for which an implementation is generated for all clients.
+///
+/// This trait provides hooks for customizing the behavior of HTTP requests
+/// and responses. The default implementation provides basic functionality
+/// that should work for most use cases.
 #[allow(async_fn_in_trait, unused)]
-pub trait ClientHooks<Inner = ()>
+pub trait ClientHooks<Inner = (), Client = reqwest::Client>
 where
-    Self: ClientInfo<Inner>,
+    Self: ClientInfo<Inner, Client>,
+    Client: HttpExecutor,
 {
     /// Runs prior to the execution of the request. This may be used to modify
     /// the request before it is transmitted.
