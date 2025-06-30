@@ -935,8 +935,12 @@ impl Generator {
                     OperationParameterKind::Body(BodyContentType::Json),
                     OperationParameterType::Type(_),
                 ) => Some(quote! {
-                    // Serialization errors are deferred.
-                    .json(&body)
+                    // Manual JSON serialization for reqwest-middleware compatibility
+                    .header(
+                        ::reqwest::header::CONTENT_TYPE,
+                        ::reqwest::header::HeaderValue::from_static("application/json"),
+                    )
+                    .body(::serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
                 }),
                 (
                     OperationParameterKind::Body(BodyContentType::FormUrlencoded),
