@@ -3229,7 +3229,6 @@ Sends a 'GET' request to '/status'
     #[allow(irrefutable_let_patterns)]
     pub async fn get_status<'a>(
         &'a self,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<ResponseValue<types::GetStatusResponse>, Error<()>> {
         let url = format!("{}/status", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3247,7 +3246,6 @@ Sends a 'GET' request to '/status'
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -3271,7 +3269,6 @@ Sends a 'GET' request to '/receivers'
     #[allow(irrefutable_let_patterns)]
     pub async fn get_receivers<'a>(
         &'a self,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::GetReceiversResponseItem>>,
         Error<()>,
@@ -3292,7 +3289,6 @@ Sends a 'GET' request to '/receivers'
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -3313,14 +3309,12 @@ Sends a 'GET' request to '/silences'
 
 Arguments:
 - `filter`: A list of matchers to filter silences by
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn get_silences<'a>(
         &'a self,
         filter: Option<&'a ::std::vec::Vec<::std::string::String>>,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::GettableSilence>>,
         Error<types::GetSilencesError>,
@@ -3341,7 +3335,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("filter", &filter))
             .headers(header_map)
             .build()?;
@@ -3448,14 +3441,12 @@ Sends a 'GET' request to '/silence/{silenceID}'
 
 Arguments:
 - `silence_id`: ID of the silence to get
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn get_silence<'a>(
         &'a self,
         silence_id: &'a ::uuid::Uuid,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<types::GetSilenceResponse>,
         Error<types::GetSilenceError>,
@@ -3478,7 +3469,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -3519,14 +3509,12 @@ Sends a 'DELETE' request to '/silence/{silenceID}'
 
 Arguments:
 - `silence_id`: ID of the silence to get
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn delete_silence<'a>(
         &'a self,
         silence_id: &'a ::uuid::Uuid,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<ResponseValue<()>, Error<types::DeleteSilenceError>> {
         let url = format!(
             "{}/silence/{}", self.baseurl(), encode_path(& silence_id.to_string()),
@@ -3539,12 +3527,7 @@ Arguments:
             );
         #[allow(unused_mut)]
         #[allow(unused_variables)]
-        let mut request = self
-            .client()
-            .delete(url)
-            .json(&body)
-            .headers(header_map)
-            .build()?;
+        let mut request = self.client().delete(url).headers(header_map).build()?;
         let info = OperationInfo {
             operation_id: "delete_silence",
         };
@@ -3588,7 +3571,6 @@ Arguments:
 - `receiver`: A regex matching receivers to filter alerts by
 - `silenced`: Show silenced alerts
 - `unprocessed`: Show unprocessed alerts
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
@@ -3600,7 +3582,6 @@ Arguments:
         receiver: Option<&'a str>,
         silenced: Option<bool>,
         unprocessed: Option<bool>,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::GettableAlert>>,
         Error<types::GetAlertsError>,
@@ -3621,7 +3602,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("active", &active))
             .query(&progenitor_client::QueryParam::new("filter", &filter))
             .query(&progenitor_client::QueryParam::new("inhibited", &inhibited))
@@ -3734,7 +3714,6 @@ Arguments:
 - `inhibited`: Show inhibited alerts
 - `receiver`: A regex matching receivers to filter alerts by
 - `silenced`: Show silenced alerts
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
@@ -3745,7 +3724,6 @@ Arguments:
         inhibited: Option<bool>,
         receiver: Option<&'a str>,
         silenced: Option<bool>,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::AlertGroup>>,
         Error<types::GetAlertGroupsError>,
@@ -3766,7 +3744,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("active", &active))
             .query(&progenitor_client::QueryParam::new("filter", &filter))
             .query(&progenitor_client::QueryParam::new("inhibited", &inhibited))
@@ -3820,7 +3797,6 @@ Sends a 'GET' request to '/status'
     #[allow(irrefutable_let_patterns)]
     pub async fn get_status<'a>(
         &'a self,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<ResponseValue<types::GetStatusResponse>, Error<()>> {
         let url = format!("{}/status", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3838,7 +3814,6 @@ Sends a 'GET' request to '/status'
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -3862,7 +3837,6 @@ Sends a 'GET' request to '/receivers'
     #[allow(irrefutable_let_patterns)]
     pub async fn get_receivers<'a>(
         &'a self,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::GetReceiversResponseItem>>,
         Error<()>,
@@ -3883,7 +3857,6 @@ Sends a 'GET' request to '/receivers'
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -3904,14 +3877,12 @@ Sends a 'GET' request to '/silences'
 
 Arguments:
 - `filter`: A list of matchers to filter silences by
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn get_silences<'a>(
         &'a self,
         filter: Option<&'a ::std::vec::Vec<::std::string::String>>,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::GettableSilence>>,
         Error<types::GetSilencesError>,
@@ -3932,7 +3903,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("filter", &filter))
             .headers(header_map)
             .build()?;
@@ -4039,14 +4009,12 @@ Sends a 'GET' request to '/silence/{silenceID}'
 
 Arguments:
 - `silence_id`: ID of the silence to get
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn get_silence<'a>(
         &'a self,
         silence_id: &'a ::uuid::Uuid,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<types::GetSilenceResponse>,
         Error<types::GetSilenceError>,
@@ -4069,7 +4037,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -4110,14 +4077,12 @@ Sends a 'DELETE' request to '/silence/{silenceID}'
 
 Arguments:
 - `silence_id`: ID of the silence to get
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn delete_silence<'a>(
         &'a self,
         silence_id: &'a ::uuid::Uuid,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<ResponseValue<()>, Error<types::DeleteSilenceError>> {
         let url = format!(
             "{}/silence/{}", self.baseurl(), encode_path(& silence_id.to_string()),
@@ -4130,12 +4095,7 @@ Arguments:
             );
         #[allow(unused_mut)]
         #[allow(unused_variables)]
-        let mut request = self
-            .client()
-            .delete(url)
-            .json(&body)
-            .headers(header_map)
-            .build()?;
+        let mut request = self.client().delete(url).headers(header_map).build()?;
         let info = OperationInfo {
             operation_id: "delete_silence",
         };
@@ -4179,7 +4139,6 @@ Arguments:
 - `receiver`: A regex matching receivers to filter alerts by
 - `silenced`: Show silenced alerts
 - `unprocessed`: Show unprocessed alerts
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
@@ -4191,7 +4150,6 @@ Arguments:
         receiver: Option<&'a str>,
         silenced: Option<bool>,
         unprocessed: Option<bool>,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::GettableAlert>>,
         Error<types::GetAlertsError>,
@@ -4212,7 +4170,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("active", &active))
             .query(&progenitor_client::QueryParam::new("filter", &filter))
             .query(&progenitor_client::QueryParam::new("inhibited", &inhibited))
@@ -4325,7 +4282,6 @@ Arguments:
 - `inhibited`: Show inhibited alerts
 - `receiver`: A regex matching receivers to filter alerts by
 - `silenced`: Show silenced alerts
-- `body`
 */
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
@@ -4336,7 +4292,6 @@ Arguments:
         inhibited: Option<bool>,
         receiver: Option<&'a str>,
         silenced: Option<bool>,
-        body: &'a ::serde_json::Map<::std::string::String, ::serde_json::Value>,
     ) -> Result<
         ResponseValue<::std::vec::Vec<types::AlertGroup>>,
         Error<types::GetAlertGroupsError>,
@@ -4357,7 +4312,6 @@ Arguments:
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("active", &active))
             .query(&progenitor_client::QueryParam::new("filter", &filter))
             .query(&progenitor_client::QueryParam::new("inhibited", &inhibited))
