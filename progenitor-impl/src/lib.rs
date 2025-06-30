@@ -479,7 +479,6 @@ impl Generator {
             pub struct MiddlewareClient {
                 pub(crate) baseurl: String,
                 pub(crate) client: reqwest_middleware::ClientWithMiddleware,
-                pub(crate) inner_client: reqwest::Client,
                 #inner_property
             }
 
@@ -536,19 +535,17 @@ impl Generator {
                 pub fn new_with_client_middleware(
                     baseurl: &str,
                     client: reqwest_middleware::ClientWithMiddleware,
-                    inner_client: reqwest::Client,
                     #inner_parameter
                 ) -> MiddlewareClient {
                     MiddlewareClient {
                         baseurl: baseurl.to_string(),
                         client,
-                        inner_client,
                         #inner_value
                     }
                 }
             }
 
-            impl ClientInfo<#inner_type> for Client {
+            impl ClientInfo<#inner_type, reqwest::Client> for Client {
                 fn api_version() -> &'static str {
                     #version_str
                 }
@@ -566,26 +563,13 @@ impl Generator {
                 }
             }
 
-            impl ClientHooks<#inner_type> for &Client {}
+            impl ClientHooks<#inner_type, reqwest::Client> for &Client {}
 
             #[cfg(feature = "middleware")]
-            impl ClientHooks<#inner_type> for &MiddlewareClient {
-                async fn exec(
-                    &self,
-                    request: reqwest::Request,
-                    _info: &OperationInfo,
-                ) -> reqwest::Result<reqwest::Response> {
-                    self.client.execute(request).await.map_err(|e| match e {
-                        reqwest_middleware::Error::Reqwest(reqwest_err) => reqwest_err,
-                        reqwest_middleware::Error::Middleware(middleware_err) => {
-                            panic!("Middleware error: {}", middleware_err)
-                        }
-                    })
-                }
-            }
+            impl ClientHooks<#inner_type, reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
 
             #[cfg(feature = "middleware")]
-            impl ClientInfo<#inner_type> for MiddlewareClient {
+            impl ClientInfo<#inner_type, reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
                 fn api_version() -> &'static str {
                     #version_str
                 }
@@ -594,8 +578,8 @@ impl Generator {
                     self.baseurl.as_str()
                 }
 
-                fn client(&self) -> &reqwest::Client {
-                    &self.inner_client
+                fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+                    &self.client
                 }
 
                 fn inner(&self) -> &#inner_type {
