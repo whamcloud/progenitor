@@ -1026,8 +1026,15 @@ impl Generator {
         let (error_response_items, error_type_kind) =
             self.extract_responses(method, OperationResponseStatus::is_error_or_default);
 
-        let (error_type, error_response_matches, default_response) = if error_response_items
-            .is_empty()
+        // Check if we actually have error responses that would generate an enum
+        let has_actual_error_responses = error_response_items.iter().any(|response| {
+            matches!(
+                response.status_code,
+                OperationResponseStatus::Code(400..=599) | OperationResponseStatus::Range(4..=5)
+            )
+        });
+
+        let (error_type, error_response_matches, default_response) = if !has_actual_error_responses
         {
             (
                 quote! { () },
