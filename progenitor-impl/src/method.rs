@@ -1299,45 +1299,6 @@ impl Generator {
             }
         }
 
-        /*// Check if we have multiple response types
-        let mut response_types = std::collections::BTreeMap::new();
-
-        for response in &response_items {
-            if let OperationResponseKind::Type(type_id) = &response.typ {
-                response_types.insert(response.status_code.clone(), type_id.clone());
-            }
-        }
-
-        // If we have multiple different response types, create an enum
-        if response_types.len() > 1 {
-            let enum_name = format!("{}Response", method.operation_id.to_pascal_case());
-            return (
-                response_items,
-                OperationResponseKind::Multiple {
-                    variants: response_types,
-                    enum_name,
-                },
-            );
-        }
-
-        // If we have a single response type, use it
-        if let Some(response) = response_items.first() {
-            return (response_items.clone(), response.typ.clone());
-        }
-
-        // If we have no responses but this is a success filter, create an empty response type
-        if filter(&OperationResponseStatus::Range(2)) {
-            // For success responses, ensure we always have a response type
-            let response_name = format!("{}Response", method.operation_id.to_pascal_case());
-            return (
-                response_items,
-                OperationResponseKind::EmptyResponse(response_name),
-            );
-        }
-
-        // Otherwise, use None
-        (response_items, OperationResponseKind::None)*/
-
         // Collect all unique response types
         let response_types = response_items
             .iter()
