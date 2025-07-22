@@ -940,7 +940,7 @@ impl Generator {
                         ::reqwest::header::CONTENT_TYPE,
                         ::reqwest::header::HeaderValue::from_static("application/json"),
                     )
-                    .body(::serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+                    .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
                 }),
                 (
                     OperationParameterKind::Body(BodyContentType::FormUrlencoded),
