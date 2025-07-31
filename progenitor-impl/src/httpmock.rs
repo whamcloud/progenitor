@@ -5,6 +5,7 @@
 use openapiv3::OpenAPI;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
+use typify::{TypeDetails, TypeSpace};
 
 use crate::{
     method::{
@@ -145,6 +146,19 @@ impl Generator {
 
         let path_re = method.path.as_wildcard();
 
+        fn is_vec(type_space: &TypeSpace, typ: &OperationParameterType) -> bool {
+            match typ {
+                OperationParameterType::Type(arg_type_id) => {
+                    let ty = type_space.get_type(arg_type_id).unwrap();
+
+                    let details = ty.details();
+
+                    matches!(details, TypeDetails::Vec(_))
+                }
+                _ => false,
+            }
+        }
+
         // Generate methods corresponding to each parameter so that callers
         // can specify a prescribed value for that parameter.
         let when_methods = method.params.iter().map(
@@ -186,12 +200,25 @@ impl Generator {
                             },
                         )
                     }
-                    OperationParameterKind::Query(true) => (
-                        true,
-                        quote! {
-                            Self(self.0.query_param(#api_name, value.to_string()))
-                        },
-                    ),
+                    OperationParameterKind::Query(true) => {
+                        let handler = if is_vec(&self.type_space, typ) {
+                            quote! {
+                                let mut ptr = self;
+
+                                for x in value {
+                                    ptr = Self(self.0.query_param(#api_name, x.to_string()))
+                                }
+
+                                ptr
+                            }
+                        } else {
+                            quote! {
+                                Self(self.0.query_param(#api_name, value.to_string()))
+                            }
+                        };
+
+                        (true, handler)
+                    }
                     OperationParameterKind::Header(true) => (
                         true,
                         quote! {
@@ -199,27 +226,46 @@ impl Generator {
                         },
                     ),
 
-                    OperationParameterKind::Query(false) => (
-                        false,
-                        quote! {
-                            if let Some(value) = value.into() {
+                    OperationParameterKind::Query(false) => {
+                        let handler = if is_vec(&self.type_space, typ) {
+                            quote! {
+                                let mut ptr = self;
+
+                                for x in value {
+                                    ptr = Self(ptr.0.query_param(#api_name, x.to_string()))
+                                }
+
+                                ptr
+                            }
+                        } else {
+                            quote! {
                                 Self(self.0.query_param(
                                     #api_name,
-                                    value.to_string(),
+                                    value.to_string()
                                 ))
-                            } else {
-                                Self(self.0.matches(|req| {
-                                    req.query_params
-                                        .as_ref()
-                                        .and_then(|qs| {
-                                            qs.iter().find(
-                                                |(key, _)| key == #api_name)
-                                        })
-                                        .is_none()
-                                }))
                             }
-                        },
-                    ),
+                        };
+
+                        (
+                            false,
+                            quote! {
+                                if let Some(value) = value.into() {
+                                    #handler
+                                } else {
+                                    Self(self.0.matches(|req| {
+                                        req.query_params
+                                            .as_ref()
+                                            .and_then(|hs| {
+                                                hs.iter().find(
+                                                    |(key, _)| key == #api_name
+                                                )
+                                            })
+                                            .is_none()
+                                    }))
+                                }
+                            },
+                        )
+                    }
                     OperationParameterKind::Header(false) => (
                         false,
                         quote! {
