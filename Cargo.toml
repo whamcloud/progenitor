@@ -56,7 +56,7 @@ serde_urlencoded = "0.7.1"
 serde_yaml = "0.9"
 syn = { version = "2.0.104", features = ["parsing"] }
 thiserror = "2.0.12"
-tokio = { version = "1.45.1", features = ["rt", "net"] }
+tokio = { version = "1.45.1", features = ["rt", "net", "macros"] }
 typify = { git = "https://github.com/whamcloud/typify", branch = "whamcloud" }
 url = "2.5.4"
 unicode-ident = "1.0.18"
