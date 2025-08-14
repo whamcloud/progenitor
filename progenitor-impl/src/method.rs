@@ -641,7 +641,11 @@ impl Generator {
             body,
         } = self.method_sig_body(method, quote! { Self }, quote! { self }, has_inner)?;
 
-        let visibility = if include_pub { quote! { pub } } else { quote! {} };
+        let visibility = if include_pub {
+            quote! { pub }
+        } else {
+            quote! {}
+        };
 
         let method_impl = quote! {
             #[doc = #doc_comment]
