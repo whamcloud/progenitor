@@ -1168,12 +1168,12 @@ impl Generator {
                 }
             }
         });
-        let post_hook = self.settings.post_hook.as_ref().map(|hook| {
+        let _post_hook = self.settings.post_hook.as_ref().map(|hook| {
             quote! {
                 (#hook)(#inner &#result_ident);
             }
         });
-        let post_hook_async = self.settings.post_hook_async.as_ref().map(|hook| {
+        let _post_hook_async = self.settings.post_hook_async.as_ref().map(|hook| {
             quote! {
                 match (#hook)(#inner &#result_ident).await {
                     Ok(_) => (),
@@ -1184,8 +1184,6 @@ impl Generator {
 
         let operation_id = &method.operation_id;
         let method_func = format_ident!("{}", method.method.as_str());
-
-
 
         let body_impl = quote! {
             #url_path

@@ -652,6 +652,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "serde_urlencoded",
  "serde_yaml 0.9.34+deprecated",
  "serde_yml",
  "syn 2.0.106",
@@ -685,6 +686,7 @@ dependencies = [
  "reqwest",
  "schemars",
  "serde",
+ "serde_json",
  "uuid",
 ]
 
@@ -1917,6 +1919,7 @@ dependencies = [
  "quote",
  "regex",
  "reqwest",
+ "reqwest-middleware",
  "rustfmt-wrapper",
  "schemars",
  "semver 1.0.26",
