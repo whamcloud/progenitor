@@ -11,8 +11,6 @@ use futures_core::Stream;
 use reqwest::RequestBuilder;
 use serde::{de::DeserializeOwned, ser::SerializeStruct, Serialize};
 
-
-
 #[cfg(not(target_arch = "wasm32"))]
 type InnerByteStream = std::pin::Pin<Box<dyn Stream<Item = reqwest::Result<Bytes>> + Send + Sync>>;
 
@@ -89,8 +87,6 @@ where
     }
 }
 
-
-
 /// Information about an operation, consumed by hook implementations.
 pub struct OperationInfo {
     /// The corresponding operationId from the source OpenAPI document.
@@ -120,7 +116,7 @@ impl HttpExecutor for reqwest_middleware::ClientWithMiddleware {
         self.execute(request).await.map_err(|e| match e {
             reqwest_middleware::Error::Reqwest(reqwest_err) => reqwest_err,
             reqwest_middleware::Error::Middleware(middleware_err) => {
-                panic!("Middleware error: {}", middleware_err)
+                panic!("Middleware error: {middleware_err}")
             }
         })
     }
@@ -563,11 +559,29 @@ pub fn encode_path(pc: &str) -> String {
 
 #[doc(hidden)]
 pub trait RequestBuilderExt<E> {
-    fn form_urlencoded<T: Serialize + ?Sized>(self, body: &T) -> Result<RequestBuilder, Error<E>>;
+    type Output;
+    fn form_urlencoded<T: Serialize + ?Sized>(self, body: &T) -> Result<Self::Output, Error<E>>;
 }
 
 impl<E> RequestBuilderExt<E> for RequestBuilder {
-    fn form_urlencoded<T: Serialize + ?Sized>(self, body: &T) -> Result<Self, Error<E>> {
+    type Output = Self;
+    fn form_urlencoded<T: Serialize + ?Sized>(self, body: &T) -> Result<Self::Output, Error<E>> {
+        Ok(self
+            .header(
+                reqwest::header::CONTENT_TYPE,
+                reqwest::header::HeaderValue::from_static("application/x-www-form-urlencoded"),
+            )
+            .body(
+                serde_urlencoded::to_string(body)
+                    .map_err(|_| Error::InvalidRequest("failed to serialize body".to_string()))?,
+            ))
+    }
+}
+
+#[cfg(feature = "middleware")]
+impl<E> RequestBuilderExt<E> for reqwest_middleware::RequestBuilder {
+    type Output = Self;
+    fn form_urlencoded<T: Serialize + ?Sized>(self, body: &T) -> Result<Self::Output, Error<E>> {
         Ok(self
             .header(
                 reqwest::header::CONTENT_TYPE,
