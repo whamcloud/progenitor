@@ -35,7 +35,7 @@ impl PathTemplate {
                     "{}",
                     rename
                         .get(&n)
-                        .expect(&format!("missing path name mapping {}", n)),
+                        .unwrap_or_else(|| panic!("missing path name mapping {n}")),
                 );
                 Some(quote! {
                     encode_path(&#param.to_string())
@@ -69,7 +69,7 @@ impl PathTemplate {
                 Component::Parameter(_) => "[^/]*".to_string(),
             })
             .collect::<String>();
-        format!("^{}$", inner)
+        format!("^{inner}$")
     }
 
     pub fn as_wildcard_param(&self, param: &str) -> String {
@@ -82,7 +82,7 @@ impl PathTemplate {
                 Component::Parameter(_) => ".*".to_string(),
             })
             .collect::<String>();
-        format!("^{}$", inner)
+        format!("^{inner}$")
     }
 }
 
@@ -134,8 +134,7 @@ pub fn parse(t: &str) -> Result<PathTemplate> {
                 if c == '}' {
                     if a.contains('/') || a.contains('{') {
                         return Err(Error::InvalidPath(format!(
-                            "invalid parameter name {:?}",
-                            a,
+                            "invalid parameter name {a:?}",
                         )));
                     }
                     components.push(Component::Parameter(a));
@@ -158,15 +157,15 @@ pub fn parse(t: &str) -> Result<PathTemplate> {
     Ok(PathTemplate { components })
 }
 
-impl ToString for PathTemplate {
-    fn to_string(&self) -> std::string::String {
-        self.components
-            .iter()
-            .map(|component| match component {
-                Component::Constant(s) => s.clone(),
-                Component::Parameter(s) => format!("{{{}}}", s),
-            })
-            .fold(String::new(), |a, b| a + &b)
+impl std::fmt::Display for PathTemplate {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for component in &self.components {
+            match component {
+                Component::Constant(s) => write!(f, "{s}")?,
+                Component::Parameter(s) => write!(f, "{{{s}}}")?,
+            }
+        }
+        Ok(())
     }
 }
 

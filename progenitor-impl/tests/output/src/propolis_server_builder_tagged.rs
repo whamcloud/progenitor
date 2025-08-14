@@ -3339,7 +3339,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -3436,7 +3436,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -3526,7 +3526,7 @@ pub mod builder {
             let result = client.exec(request, &info).await;
             client.post(&result, &info).await?;
             let response = result?;
-            match response . status () . as_u16 () { 200u16 => { ResponseValue :: from_response (response) . await } 400u16 ..= 499u16 => { Err (Error :: ErrorResponse (ResponseValue :: < types :: InstanceIssueCrucibleSnapshotRequestError > :: from_response :: < types :: InstanceIssueCrucibleSnapshotRequestError > (response) . await ?)) } 500u16 ..= 599u16 => { Err (Error :: ErrorResponse (ResponseValue :: < types :: InstanceIssueCrucibleSnapshotRequestError > :: from_response :: < types :: InstanceIssueCrucibleSnapshotRequestError > (response) . await ?)) } _ => { Err (Error :: UnexpectedResponse (response)) } , }
+            match response . status () . as_u16 () { 200u16 => { ResponseValue :: from_response (response) . await } 400u16 ..= 499u16 => { Err (Error :: ErrorResponse (ResponseValue :: < types :: InstanceIssueCrucibleSnapshotRequestError > :: from_response :: < types :: InstanceIssueCrucibleSnapshotRequestError > (response) . await ?)) } 500u16 ..= 599u16 => { Err (Error :: ErrorResponse (ResponseValue :: < types :: InstanceIssueCrucibleSnapshotRequestError > :: from_response :: < types :: InstanceIssueCrucibleSnapshotRequestError > (response) . await ?)) } _ => { Err (Error :: UnexpectedResponse (Box :: new (response))) } , }
         }
     }
 
@@ -3591,7 +3591,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -3725,7 +3725,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -3791,7 +3791,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }

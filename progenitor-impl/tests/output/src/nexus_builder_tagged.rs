@@ -35812,7 +35812,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -35895,7 +35895,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -35978,7 +35978,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36065,7 +36065,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36149,7 +36149,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36232,7 +36232,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36315,7 +36315,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36399,7 +36399,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36482,7 +36482,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36565,7 +36565,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36648,7 +36648,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -36816,7 +36816,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37015,7 +37015,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -37157,7 +37157,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37278,7 +37278,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37372,7 +37372,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37488,7 +37488,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37549,7 +37549,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37671,7 +37671,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -37816,7 +37816,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -37903,7 +37903,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38020,7 +38020,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38106,7 +38106,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38195,7 +38195,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38316,7 +38316,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38456,7 +38456,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -38621,7 +38621,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38724,7 +38724,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38855,7 +38855,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -38956,7 +38956,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -39111,7 +39111,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -39295,7 +39295,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -39413,7 +39413,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -39535,7 +39535,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -39746,7 +39746,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -39954,7 +39954,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -40134,7 +40134,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -40254,7 +40254,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -40372,7 +40372,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -40529,7 +40529,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -40712,7 +40712,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -40832,7 +40832,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -40950,7 +40950,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -41123,7 +41123,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -41322,7 +41322,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -41470,7 +41470,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -41593,7 +41593,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -41741,7 +41741,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -41916,7 +41916,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -42123,7 +42123,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -42262,7 +42262,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -42433,7 +42433,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -42569,7 +42569,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -42689,7 +42689,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -42869,7 +42869,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -43102,7 +43102,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -43222,7 +43222,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -43326,7 +43326,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -43460,7 +43460,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -43617,7 +43617,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -43800,7 +43800,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -43920,7 +43920,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -44038,7 +44038,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -44193,7 +44193,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -44371,7 +44371,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -44489,7 +44489,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -44635,7 +44635,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -44753,7 +44753,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -44874,7 +44874,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -45030,7 +45030,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -45203,7 +45203,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -45402,7 +45402,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -45538,7 +45538,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -45702,7 +45702,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -45836,7 +45836,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -46027,7 +46027,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -46250,7 +46250,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -46403,7 +46403,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -46590,7 +46590,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -46742,7 +46742,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -46915,7 +46915,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -47114,7 +47114,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -47250,7 +47250,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -47414,7 +47414,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -47548,7 +47548,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -47739,7 +47739,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -47861,7 +47861,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -47953,7 +47953,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -48055,7 +48055,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -48183,7 +48183,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -48246,7 +48246,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -48366,7 +48366,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -48535,7 +48535,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -48676,7 +48676,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -48762,7 +48762,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -48848,7 +48848,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -48932,7 +48932,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -49015,7 +49015,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -49098,7 +49098,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -49218,7 +49218,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -49363,7 +49363,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -49449,7 +49449,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -49533,7 +49533,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -49655,7 +49655,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -49824,7 +49824,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -49953,7 +49953,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -50072,7 +50072,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -50201,7 +50201,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -50342,7 +50342,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -50512,7 +50512,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -50657,7 +50657,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -50740,7 +50740,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -50821,7 +50821,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -50945,7 +50945,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -51085,7 +51085,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51172,7 +51172,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51286,7 +51286,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51367,7 +51367,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51489,7 +51489,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -51640,7 +51640,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51741,7 +51741,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51804,7 +51804,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -51909,7 +51909,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -52039,7 +52039,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -52119,7 +52119,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -52296,7 +52296,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -52360,7 +52360,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -52453,7 +52453,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -52572,7 +52572,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -52701,7 +52701,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -52820,7 +52820,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -52964,7 +52964,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53045,7 +53045,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53130,7 +53130,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53272,7 +53272,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -53438,7 +53438,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53541,7 +53541,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53661,7 +53661,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53786,7 +53786,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53892,7 +53892,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -53976,7 +53976,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -54091,7 +54091,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -54230,7 +54230,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -54382,7 +54382,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -54502,7 +54502,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -54634,7 +54634,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -54739,7 +54739,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -54907,7 +54907,7 @@ pub mod builder {
                     )
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -55115,7 +55115,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -55296,7 +55296,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -55423,7 +55423,7 @@ pub mod builder {
                         .await?,
                     ))
                 }
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -55544,7 +55544,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -55701,7 +55701,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -55883,7 +55883,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -56006,7 +56006,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -56127,7 +56127,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -56303,7 +56303,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -56505,7 +56505,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -56656,7 +56656,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -56807,7 +56807,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -56930,7 +56930,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -57113,7 +57113,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -57353,7 +57353,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -57476,7 +57476,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -57598,7 +57598,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -57743,7 +57743,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -57830,7 +57830,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -57947,7 +57947,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58033,7 +58033,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58122,7 +58122,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58243,7 +58243,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58383,7 +58383,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -58547,7 +58547,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58653,7 +58653,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58787,7 +58787,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58891,7 +58891,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -58998,7 +58998,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -59135,7 +59135,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -59257,7 +59257,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -59432,7 +59432,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -59566,7 +59566,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -59629,7 +59629,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -59724,7 +59724,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -59785,7 +59785,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -59907,7 +59907,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
 
@@ -60041,7 +60041,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -60128,7 +60128,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
@@ -60191,7 +60191,7 @@ pub mod builder {
                     >(response)
                     .await?,
                 )),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::UnexpectedResponse(Box::new(response))),
             }
         }
     }
