@@ -2859,7 +2859,7 @@ pub mod types {
         }
     }
     ///Error enum for the `get_silences` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum GetSilencesError {
         #[doc = concat!("Error response for status code ", "400")]
         Status400(::std::string::String),
@@ -2892,7 +2892,7 @@ pub mod types {
         }
     }
     ///Error enum for the `post_silences` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum PostSilencesError {
         #[doc = concat!("Error response for status code ", "400")]
         Status400(::std::string::String),
@@ -2925,7 +2925,7 @@ pub mod types {
         }
     }
     ///Error enum for the `get_silence` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum GetSilenceError {
         #[doc = concat!("Error response for status code ", "404")]
         Status404(()),
@@ -2958,7 +2958,7 @@ pub mod types {
         }
     }
     ///Error enum for the `delete_silence` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum DeleteSilenceError {
         #[doc = concat!("Error response for status code ", "404")]
         Status404(()),
@@ -2991,7 +2991,7 @@ pub mod types {
         }
     }
     ///Error enum for the `get_alerts` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum GetAlertsError {
         #[doc = concat!("Error response for status code ", "400")]
         Status400(::std::string::String),
@@ -3024,7 +3024,7 @@ pub mod types {
         }
     }
     ///Error enum for the `post_alerts` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum PostAlertsError {
         #[doc = concat!("Error response for status code ", "400")]
         Status400(::std::string::String),
@@ -3057,7 +3057,7 @@ pub mod types {
         }
     }
     ///Error enum for the `get_alert_groups` operation
-    #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+    #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
     pub enum GetAlertGroupsError {
         #[doc = concat!("Error response for status code ", "400")]
         Status400(::std::string::String),
