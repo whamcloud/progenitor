@@ -3775,7 +3775,7 @@ Arguments:
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 }
@@ -3930,7 +3930,7 @@ Arguments:
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
     /**Post a new silence or update an existing one
@@ -4002,7 +4002,7 @@ Sends a 'POST' request to '/silences'
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
     /**Get a silence by its ID
@@ -4070,7 +4070,7 @@ Arguments:
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
     /**Delete a silence by its ID
@@ -4127,7 +4127,7 @@ Arguments:
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
     /**Get a list of alerts
@@ -4209,7 +4209,7 @@ Arguments:
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
     /**Create new Alerts
@@ -4278,7 +4278,7 @@ Sends a 'POST' request to '/alerts'
                     ),
                 )
             }
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
     /**Get a list of alert groups
