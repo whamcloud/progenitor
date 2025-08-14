@@ -10,7 +10,7 @@ pub mod operations {
             Self(
                 inner
                     .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/key$").unwrap()),
+                    .path_matches(regex::Regex::new("^/key$").expect("Invalid path regex pattern")),
             )
         }
 

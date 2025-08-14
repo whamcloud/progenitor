@@ -63,7 +63,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -102,7 +105,7 @@ impl ClientHooks<()> for &Client {}
 impl Client {
     ///Gets a key
     ///
-    ///Sends a `GET` request to `/key/{query}`
+    ///Sends a 'GET' request to '/key/{query}'
     ///
     ///Arguments:
     /// - `query`: Parameter name that was previously colliding
@@ -223,8 +226,10 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/key/{query}`
+        ///Sends a 'GET' request to '/key/{query}'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 _client,
                 query,
@@ -234,11 +239,17 @@ pub mod builder {
                 result,
                 url,
             } = self;
+            #[allow(unused_variables)]
             let query = query.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let client = client.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let request = request.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let response = response.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let result = result.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let url = url.map_err(Error::InvalidRequest)?;
             let _url = format!(
                 "{}/key/{}",
@@ -251,6 +262,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut _request = _client
                 .client
                 .get(_url)
@@ -270,7 +282,7 @@ pub mod builder {
             let _response = _result?;
             match _response.status().as_u16() {
                 200u16 => Ok(ResponseValue::empty(_response)),
-                _ => Err(Error::UnexpectedResponse(_response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(_response))),
             }
         }
     }

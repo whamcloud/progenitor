@@ -63,7 +63,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -102,7 +105,7 @@ impl ClientHooks<()> for &Client {}
 impl Client {
     ///Gets a key
     ///
-    ///Sends a `GET` request to `/key`
+    ///Sends a 'GET' request to '/key'
     ///
     ///Arguments:
     /// - `key`: The same key parameter that overlaps with the path level
@@ -170,14 +173,18 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/key`
+        ///Sends a 'GET' request to '/key'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 key,
                 unique_key,
             } = self;
+            #[allow(unused_variables)]
             let key = key.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let unique_key = unique_key.map_err(Error::InvalidRequest)?;
             let url = format!("{}/key", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -186,6 +193,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -205,7 +213,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }

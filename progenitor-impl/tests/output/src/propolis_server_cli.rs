@@ -70,26 +70,6 @@ impl<T: CliConfig> Cli<T> {
 
     pub fn cli_instance_migrate_status() -> ::clap::Command {
         ::clap::Command::new("")
-            .arg(
-                ::clap::Arg::new("migration-id")
-                    .long("migration-id")
-                    .value_parser(::clap::value_parser!(::uuid::Uuid))
-                    .required_unless_present("json-body"),
-            )
-            .arg(
-                ::clap::Arg::new("json-body")
-                    .long("json-body")
-                    .value_name("JSON-FILE")
-                    .required(false)
-                    .value_parser(::clap::value_parser!(std::path::PathBuf))
-                    .help("Path to a file that contains the full json body."),
-            )
-            .arg(
-                ::clap::Arg::new("json-body-template")
-                    .long("json-body-template")
-                    .action(::clap::ArgAction::SetTrue)
-                    .help("XXX"),
-            )
     }
 
     pub fn cli_instance_serial() -> ::clap::Command {
@@ -116,26 +96,6 @@ impl<T: CliConfig> Cli<T> {
 
     pub fn cli_instance_state_monitor() -> ::clap::Command {
         ::clap::Command::new("")
-            .arg(
-                ::clap::Arg::new("gen")
-                    .long("gen")
-                    .value_parser(::clap::value_parser!(u64))
-                    .required_unless_present("json-body"),
-            )
-            .arg(
-                ::clap::Arg::new("json-body")
-                    .long("json-body")
-                    .value_name("JSON-FILE")
-                    .required(false)
-                    .value_parser(::clap::value_parser!(std::path::PathBuf))
-                    .help("Path to a file that contains the full json body."),
-            )
-            .arg(
-                ::clap::Arg::new("json-body-template")
-                    .long("json-body-template")
-                    .action(::clap::ArgAction::SetTrue)
-                    .help("XXX"),
-            )
     }
 
     pub async fn execute(
@@ -238,17 +198,6 @@ impl<T: CliConfig> Cli<T> {
         matches: &::clap::ArgMatches,
     ) -> anyhow::Result<()> {
         let mut request = self.client.instance_migrate_status();
-        if let Some(value) = matches.get_one::<::uuid::Uuid>("migration-id") {
-            request = request.body_map(|body| body.migration_id(value.clone()))
-        }
-
-        if let Some(value) = matches.get_one::<std::path::PathBuf>("json-body") {
-            let body_txt = std::fs::read_to_string(value).unwrap();
-            let body_value =
-                serde_json::from_str::<types::InstanceMigrateStatusRequest>(&body_txt).unwrap();
-            request = request.body(body_value);
-        }
-
         self.config
             .execute_instance_migrate_status(matches, &mut request)?;
         let result = request.send().await;
@@ -313,17 +262,6 @@ impl<T: CliConfig> Cli<T> {
         matches: &::clap::ArgMatches,
     ) -> anyhow::Result<()> {
         let mut request = self.client.instance_state_monitor();
-        if let Some(value) = matches.get_one::<u64>("gen") {
-            request = request.body_map(|body| body.gen(value.clone()))
-        }
-
-        if let Some(value) = matches.get_one::<std::path::PathBuf>("json-body") {
-            let body_txt = std::fs::read_to_string(value).unwrap();
-            let body_value =
-                serde_json::from_str::<types::InstanceStateMonitorRequest>(&body_txt).unwrap();
-            request = request.body(body_value);
-        }
-
         self.config
             .execute_instance_state_monitor(matches, &mut request)?;
         let result = request.send().await;

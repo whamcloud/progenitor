@@ -1288,7 +1288,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -1325,7 +1328,7 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 impl Client {
-    ///Sends a `POST` request to `/enrol`
+    ///Sends a 'POST' request to '/enrol'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
@@ -1341,7 +1344,7 @@ impl Client {
         builder::Enrol::new(self)
     }
 
-    ///Sends a `GET` request to `/global/jobs`
+    ///Sends a 'GET' request to '/global/jobs'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
@@ -1355,7 +1358,7 @@ impl Client {
         builder::GlobalJobs::new(self)
     }
 
-    ///Sends a `GET` request to `/ping`
+    ///Sends a 'GET' request to '/ping'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
@@ -1369,7 +1372,7 @@ impl Client {
         builder::Ping::new(self)
     }
 
-    ///Sends a `POST` request to `/report/finish`
+    ///Sends a 'POST' request to '/report/finish'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
@@ -1385,7 +1388,7 @@ impl Client {
         builder::ReportFinish::new(self)
     }
 
-    ///Sends a `POST` request to `/report/output`
+    ///Sends a 'POST' request to '/report/output'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
@@ -1401,7 +1404,7 @@ impl Client {
         builder::ReportOutput::new(self)
     }
 
-    ///Sends a `POST` request to `/report/start`
+    ///Sends a 'POST' request to '/report/start'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
@@ -1476,14 +1479,18 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/enrol`
+        ///Sends a 'POST' request to '/enrol'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 authorization,
                 body,
             } = self;
+            #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::EnrolBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -1495,6 +1502,7 @@ pub mod builder {
             );
             header_map.append("Authorization", authorization.to_string().try_into()?);
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -1510,7 +1518,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -1542,12 +1550,15 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/global/jobs`
+        ///Sends a 'GET' request to '/global/jobs'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::GlobalJobsResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 authorization,
             } = self;
+            #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
             let url = format!("{}/global/jobs", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
@@ -1557,6 +1568,7 @@ pub mod builder {
             );
             header_map.append("Authorization", authorization.to_string().try_into()?);
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -1575,7 +1587,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -1607,12 +1619,15 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/ping`
+        ///Sends a 'GET' request to '/ping'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::PingResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 authorization,
             } = self;
+            #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
             let url = format!("{}/ping", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
@@ -1622,6 +1637,7 @@ pub mod builder {
             );
             header_map.append("Authorization", authorization.to_string().try_into()?);
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -1640,7 +1656,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -1696,14 +1712,18 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/report/finish`
+        ///Sends a 'POST' request to '/report/finish'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 authorization,
                 body,
             } = self;
+            #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::ReportFinishBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -1715,6 +1735,7 @@ pub mod builder {
             );
             header_map.append("Authorization", authorization.to_string().try_into()?);
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -1734,7 +1755,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -1790,14 +1811,18 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/report/output`
+        ///Sends a 'POST' request to '/report/output'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 authorization,
                 body,
             } = self;
+            #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::ReportOutputBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -1809,6 +1834,7 @@ pub mod builder {
             );
             header_map.append("Authorization", authorization.to_string().try_into()?);
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -1828,7 +1854,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -1882,14 +1908,18 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/report/start`
+        ///Sends a 'POST' request to '/report/start'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 authorization,
                 body,
             } = self;
+            #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::ReportStartBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -1901,6 +1931,7 @@ pub mod builder {
             );
             header_map.append("Authorization", authorization.to_string().try_into()?);
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -1920,7 +1951,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }

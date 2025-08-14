@@ -34,37 +34,6 @@ pub mod types {
             }
         }
     }
-
-    ///`UnoBody`
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "type": "object",
-    ///  "required": [
-    ///    "required"
-    ///  ],
-    ///  "properties": {
-    ///    "gateway": {
-    ///      "type": "string"
-    ///    }
-    ///  }
-    ///}
-    /// ```
-    /// </details>
-    #[derive(:: serde :: Deserialize, :: serde :: Serialize, Clone, Debug)]
-    pub struct UnoBody {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-        pub gateway: ::std::option::Option<::std::string::String>,
-        pub required: ::serde_json::Value,
-    }
-
-    impl ::std::convert::From<&UnoBody> for UnoBody {
-        fn from(value: &UnoBody) -> Self {
-            value.clone()
-        }
-    }
 }
 
 #[derive(Clone, Debug)]
@@ -94,7 +63,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -132,11 +104,12 @@ impl ClientInfo<()> for Client {
 impl ClientHooks<()> for &Client {}
 #[allow(clippy::all)]
 impl Client {
-    ///Sends a `GET` request to `/uno`
+    ///Sends a 'GET' request to '/uno'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn uno<'a>(
         &'a self,
         gateway: &'a str,
-        body: &'a types::UnoBody,
     ) -> Result<ResponseValue<ByteStream>, Error<()>> {
         let url = format!("{}/uno", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -145,10 +118,10 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
-            .json(&body)
             .query(&progenitor_client::QueryParam::new("gateway", &gateway))
             .headers(header_map)
             .build()?;
@@ -161,7 +134,7 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200..=299 => Ok(ResponseValue::stream(response)),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 }

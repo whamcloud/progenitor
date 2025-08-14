@@ -34,110 +34,6 @@ pub mod types {
             }
         }
     }
-
-    ///`UnoBody`
-    ///
-    /// <details><summary>JSON schema</summary>
-    ///
-    /// ```json
-    ///{
-    ///  "type": "object",
-    ///  "required": [
-    ///    "required"
-    ///  ],
-    ///  "properties": {
-    ///    "gateway": {
-    ///      "type": "string"
-    ///    }
-    ///  }
-    ///}
-    /// ```
-    /// </details>
-    #[derive(
-        :: serde :: Deserialize, :: serde :: Serialize, Clone, Debug, schemars :: JsonSchema,
-    )]
-    pub struct UnoBody {
-        #[serde(default, skip_serializing_if = "::std::option::Option::is_none")]
-        pub gateway: ::std::option::Option<::std::string::String>,
-        pub required: ::serde_json::Value,
-    }
-
-    impl ::std::convert::From<&UnoBody> for UnoBody {
-        fn from(value: &UnoBody) -> Self {
-            value.clone()
-        }
-    }
-
-    impl UnoBody {
-        pub fn builder() -> builder::UnoBody {
-            Default::default()
-        }
-    }
-
-    /// Types for composing complex structures.
-    pub mod builder {
-        #[derive(Clone, Debug)]
-        pub struct UnoBody {
-            gateway: ::std::result::Result<
-                ::std::option::Option<::std::string::String>,
-                ::std::string::String,
-            >,
-            required: ::std::result::Result<::serde_json::Value, ::std::string::String>,
-        }
-
-        impl ::std::default::Default for UnoBody {
-            fn default() -> Self {
-                Self {
-                    gateway: Ok(Default::default()),
-                    required: Err("no value supplied for required".to_string()),
-                }
-            }
-        }
-
-        impl UnoBody {
-            pub fn gateway<T>(mut self, value: T) -> Self
-            where
-                T: ::std::convert::TryInto<::std::option::Option<::std::string::String>>,
-                T::Error: ::std::fmt::Display,
-            {
-                self.gateway = value
-                    .try_into()
-                    .map_err(|e| format!("error converting supplied value for gateway: {}", e));
-                self
-            }
-            pub fn required<T>(mut self, value: T) -> Self
-            where
-                T: ::std::convert::TryInto<::serde_json::Value>,
-                T::Error: ::std::fmt::Display,
-            {
-                self.required = value
-                    .try_into()
-                    .map_err(|e| format!("error converting supplied value for required: {}", e));
-                self
-            }
-        }
-
-        impl ::std::convert::TryFrom<UnoBody> for super::UnoBody {
-            type Error = super::error::ConversionError;
-            fn try_from(
-                value: UnoBody,
-            ) -> ::std::result::Result<Self, super::error::ConversionError> {
-                Ok(Self {
-                    gateway: value.gateway?,
-                    required: value.required?,
-                })
-            }
-        }
-
-        impl ::std::convert::From<super::UnoBody> for UnoBody {
-            fn from(value: super::UnoBody) -> Self {
-                Self {
-                    gateway: Ok(value.gateway),
-                    required: Ok(value.required),
-                }
-            }
-        }
-    }
 }
 
 #[derive(Clone, Debug)]
@@ -167,7 +63,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -204,12 +103,11 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 impl Client {
-    ///Sends a `GET` request to `/uno`
+    ///Sends a 'GET' request to '/uno'
     ///
     ///```ignore
     /// let response = client.uno()
     ///    .gateway(gateway)
-    ///    .body(body)
     ///    .send()
     ///    .await;
     /// ```
@@ -234,7 +132,6 @@ pub mod builder {
     pub struct Uno<'a> {
         client: &'a super::Client,
         gateway: Result<::std::string::String, String>,
-        body: Result<types::builder::UnoBody, String>,
     }
 
     impl<'a> Uno<'a> {
@@ -242,7 +139,6 @@ pub mod builder {
             Self {
                 client: client,
                 gateway: Err("gateway was not initialized".to_string()),
-                body: Ok(::std::default::Default::default()),
             }
         }
 
@@ -256,37 +152,13 @@ pub mod builder {
             self
         }
 
-        pub fn body<V>(mut self, value: V) -> Self
-        where
-            V: std::convert::TryInto<types::UnoBody>,
-            <V as std::convert::TryInto<types::UnoBody>>::Error: std::fmt::Display,
-        {
-            self.body = value
-                .try_into()
-                .map(From::from)
-                .map_err(|s| format!("conversion to `UnoBody` for body failed: {}", s));
-            self
-        }
-
-        pub fn body_map<F>(mut self, f: F) -> Self
-        where
-            F: std::ops::FnOnce(types::builder::UnoBody) -> types::builder::UnoBody,
-        {
-            self.body = self.body.map(f);
-            self
-        }
-
-        ///Sends a `GET` request to `/uno`
+        ///Sends a 'GET' request to '/uno'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<ByteStream>, Error<()>> {
-            let Self {
-                client,
-                gateway,
-                body,
-            } = self;
+            #[allow(unused_variables)]
+            let Self { client, gateway } = self;
+            #[allow(unused_variables)]
             let gateway = gateway.map_err(Error::InvalidRequest)?;
-            let body = body
-                .and_then(|v| types::UnoBody::try_from(v).map_err(|e| e.to_string()))
-                .map_err(Error::InvalidRequest)?;
             let url = format!("{}/uno", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
             header_map.append(
@@ -294,10 +166,10 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
-                .json(&body)
                 .query(&progenitor_client::QueryParam::new("gateway", &gateway))
                 .headers(header_map)
                 .build()?;
@@ -310,7 +182,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200..=299 => Ok(ResponseValue::stream(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
