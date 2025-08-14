@@ -3,6 +3,9 @@
 use progenitor_client::{encode_path, ClientHooks, OperationInfo, RequestBuilderExt};
 #[allow(unused_imports)]
 pub use progenitor_client::{ByteStream, ClientInfo, Error, ResponseValue};
+#[cfg(feature = "middleware")]
+#[allow(unused_imports)]
+pub use reqwest_middleware;
 /// Types used as operation parameters and responses.
 #[allow(clippy::all)]
 pub mod types {
@@ -48,6 +51,21 @@ pub struct Client {
     pub(crate) client: reqwest::Client,
 }
 
+/// Client with middleware support for enhanced request/response processing.
+///
+/// This client type is only available when the "middleware" feature is enabled.
+#[cfg(feature = "middleware")]
+#[derive(Clone, Debug)]
+///Client for Parameter name collision test
+///
+///Minimal API for testing collision between parameter names and generated code
+///
+///Version: v1
+pub struct MiddlewareClient {
+    pub(crate) baseurl: String,
+    pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+}
+
 impl Client {
     /// Create a new client.
     ///
@@ -82,9 +100,29 @@ impl Client {
             client,
         }
     }
+
+    /// Construct a new client with an existing
+    /// `reqwest_middleware::ClientWithMiddleware`,
+    /// allowing the use of middleware for requests.
+    ///
+    /// `baseurl` is the base URL provided to the internal client, and should
+    /// include
+    /// a scheme and hostname, as well as port and a path stem if applicable.
+    ///
+    /// This method is only available when the "middleware" feature is enabled.
+    #[cfg(feature = "middleware")]
+    pub fn new_with_client_middleware(
+        baseurl: &str,
+        client: reqwest_middleware::ClientWithMiddleware,
+    ) -> MiddlewareClient {
+        MiddlewareClient {
+            baseurl: baseurl.to_string(),
+            client,
+        }
+    }
 }
 
-impl ClientInfo<()> for Client {
+impl ClientInfo<(), reqwest::Client> for Client {
     fn api_version() -> &'static str {
         "v1"
     }
@@ -102,7 +140,28 @@ impl ClientInfo<()> for Client {
     }
 }
 
-impl ClientHooks<()> for &Client {}
+impl ClientHooks<(), reqwest::Client> for &Client {}
+#[cfg(feature = "middleware")]
+impl ClientHooks<(), reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
+#[cfg(feature = "middleware")]
+impl ClientInfo<(), reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "v1"
+    }
+
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+
+    fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+        &self.client
+    }
+
+    fn inner(&self) -> &() {
+        &()
+    }
+}
+
 #[allow(clippy::all)]
 #[allow(mismatched_lifetime_syntaxes)]
 impl Client {
@@ -128,7 +187,7 @@ impl Client {
         result: bool,
         url: bool,
     ) -> Result<ResponseValue<()>, Error<()>> {
-        let _url = format!("{}/key/{}", self.baseurl, encode_path(&query.to_string()),);
+        let _url = format!("{}/key/{}", self.baseurl(), encode_path(&query.to_string()),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -137,7 +196,65 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut _request = self
-            .client
+            .client()
+            .get(_url)
+            .query(&progenitor_client::QueryParam::new("client", &client))
+            .query(&progenitor_client::QueryParam::new("request", &request))
+            .query(&progenitor_client::QueryParam::new("response", &response))
+            .query(&progenitor_client::QueryParam::new("result", &result))
+            .query(&progenitor_client::QueryParam::new("url", &url))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "key_get",
+        };
+        self.pre(&mut _request, &info).await?;
+        let _result = self.exec(_request, &info).await;
+        self.post(&_result, &info).await?;
+        let _response = _result?;
+        match _response.status().as_u16() {
+            200u16 => Ok(ResponseValue::empty(_response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(_response))),
+        }
+    }
+}
+
+#[cfg(feature = "middleware")]
+#[allow(clippy::all)]
+#[allow(elided_named_lifetimes)]
+impl MiddlewareClient {
+    ///Gets a key
+    ///
+    ///Sends a 'GET' request to '/key/{query}'
+    ///
+    ///Arguments:
+    /// - `query`: Parameter name that was previously colliding
+    /// - `client`: Parameter name that was previously colliding
+    /// - `request`: Parameter name that was previously colliding
+    /// - `response`: Parameter name that was previously colliding
+    /// - `result`: Parameter name that was previously colliding
+    /// - `url`: Parameter name that was previously colliding
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn key_get<'a>(
+        &'a self,
+        query: bool,
+        client: bool,
+        request: bool,
+        response: bool,
+        result: bool,
+        url: bool,
+    ) -> Result<ResponseValue<()>, Error<()>> {
+        let _url = format!("{}/key/{}", self.baseurl(), encode_path(&query.to_string()),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut _request = self
+            .client()
             .get(_url)
             .query(&progenitor_client::QueryParam::new("client", &client))
             .query(&progenitor_client::QueryParam::new("request", &request))
@@ -164,4 +281,7 @@ impl Client {
 pub mod prelude {
     #[allow(unused_imports)]
     pub use super::Client;
+    #[cfg(feature = "middleware")]
+    #[allow(unused_imports)]
+    pub use super::MiddlewareClient;
 }

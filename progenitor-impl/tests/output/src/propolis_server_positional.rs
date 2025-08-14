@@ -3,6 +3,9 @@
 use progenitor_client::{encode_path, ClientHooks, OperationInfo, RequestBuilderExt};
 #[allow(unused_imports)]
 pub use progenitor_client::{ByteStream, ClientInfo, Error, ResponseValue};
+#[cfg(feature = "middleware")]
+#[allow(unused_imports)]
+pub use reqwest_middleware;
 /// Types used as operation parameters and responses.
 #[allow(clippy::all)]
 pub mod types {
@@ -1694,6 +1697,21 @@ pub struct Client {
     pub(crate) client: reqwest::Client,
 }
 
+/// Client with middleware support for enhanced request/response processing.
+///
+/// This client type is only available when the "middleware" feature is enabled.
+#[cfg(feature = "middleware")]
+#[derive(Clone, Debug)]
+///Client for Oxide Propolis Server API
+///
+///API for interacting with the Propolis hypervisor frontend.
+///
+///Version: 0.0.1
+pub struct MiddlewareClient {
+    pub(crate) baseurl: String,
+    pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+}
+
 impl Client {
     /// Create a new client.
     ///
@@ -1728,9 +1746,29 @@ impl Client {
             client,
         }
     }
+
+    /// Construct a new client with an existing
+    /// `reqwest_middleware::ClientWithMiddleware`,
+    /// allowing the use of middleware for requests.
+    ///
+    /// `baseurl` is the base URL provided to the internal client, and should
+    /// include
+    /// a scheme and hostname, as well as port and a path stem if applicable.
+    ///
+    /// This method is only available when the "middleware" feature is enabled.
+    #[cfg(feature = "middleware")]
+    pub fn new_with_client_middleware(
+        baseurl: &str,
+        client: reqwest_middleware::ClientWithMiddleware,
+    ) -> MiddlewareClient {
+        MiddlewareClient {
+            baseurl: baseurl.to_string(),
+            client,
+        }
+    }
 }
 
-impl ClientInfo<()> for Client {
+impl ClientInfo<(), reqwest::Client> for Client {
     fn api_version() -> &'static str {
         "0.0.1"
     }
@@ -1748,7 +1786,28 @@ impl ClientInfo<()> for Client {
     }
 }
 
-impl ClientHooks<()> for &Client {}
+impl ClientHooks<(), reqwest::Client> for &Client {}
+#[cfg(feature = "middleware")]
+impl ClientHooks<(), reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
+#[cfg(feature = "middleware")]
+impl ClientInfo<(), reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "0.0.1"
+    }
+
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+
+    fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+        &self.client
+    }
+
+    fn inner(&self) -> &() {
+        &()
+    }
+}
+
 #[allow(clippy::all)]
 #[allow(mismatched_lifetime_syntaxes)]
 impl Client {
@@ -1758,7 +1817,7 @@ impl Client {
     pub async fn instance_get<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::InstanceGetResponse>, Error<types::InstanceGetError>> {
-        let url = format!("{}/instance", self.baseurl,);
+        let url = format!("{}/instance", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1767,7 +1826,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -1808,7 +1867,7 @@ impl Client {
         body: &'a types::InstanceEnsureRequest,
     ) -> Result<ResponseValue<types::InstanceEnsureResponse>, Error<types::InstanceEnsureError>>
     {
-        let url = format!("{}/instance", self.baseurl,);
+        let url = format!("{}/instance", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1817,13 +1876,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -1863,7 +1926,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::InstanceIssueCrucibleSnapshotRequestError>> {
         let url = format!(
             "{}/instance/disk/{}/snapshot/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
             encode_path(&snapshot_id.to_string()),
         );
@@ -1875,7 +1938,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -1917,7 +1980,7 @@ impl Client {
         ResponseValue<types::InstanceMigrateStatusResponse>,
         Error<types::InstanceMigrateStatusError>,
     > {
-        let url = format!("{}/instance/migrate/status", self.baseurl,);
+        let url = format!("{}/instance/migrate/status", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1926,7 +1989,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -1965,7 +2028,7 @@ impl Client {
     pub async fn instance_serial<'a>(
         &'a self,
     ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
-        let url = format!("{}/instance/serial", self.baseurl,);
+        let url = format!("{}/instance/serial", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1974,7 +2037,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .headers(header_map)
             .header(::reqwest::header::CONNECTION, "Upgrade")
@@ -2009,7 +2072,7 @@ impl Client {
         &'a self,
         body: types::InstanceStateRequested,
     ) -> Result<ResponseValue<()>, Error<types::InstanceStatePutError>> {
-        let url = format!("{}/instance/state", self.baseurl,);
+        let url = format!("{}/instance/state", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -2018,13 +2081,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -2061,7 +2128,7 @@ impl Client {
         ResponseValue<types::InstanceStateMonitorResponse>,
         Error<types::InstanceStateMonitorError>,
     > {
-        let url = format!("{}/instance/state-monitor", self.baseurl,);
+        let url = format!("{}/instance/state-monitor", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -2070,7 +2137,371 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_state_monitor",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStateMonitorError>::from_response::<
+                    types::InstanceStateMonitorError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStateMonitorError>::from_response::<
+                    types::InstanceStateMonitorError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+}
+
+#[cfg(feature = "middleware")]
+#[allow(clippy::all)]
+#[allow(elided_named_lifetimes)]
+impl MiddlewareClient {
+    ///Sends a 'GET' request to '/instance'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_get<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::InstanceGetResponse>, Error<types::InstanceGetError>> {
+        let url = format!("{}/instance", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_get",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceGetError>::from_response::<types::InstanceGetError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceGetError>::from_response::<types::InstanceGetError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Sends a 'PUT' request to '/instance'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_ensure<'a>(
+        &'a self,
+        body: &'a types::InstanceEnsureRequest,
+    ) -> Result<ResponseValue<types::InstanceEnsureResponse>, Error<types::InstanceEnsureError>>
+    {
+        let url = format!("{}/instance", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_ensure",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceEnsureError>::from_response::<
+                    types::InstanceEnsureError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceEnsureError>::from_response::<
+                    types::InstanceEnsureError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Issue a snapshot request to a crucible backend
+    ///
+    ///Sends a 'POST' request to '/instance/disk/{id}/snapshot/{snapshot_id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_issue_crucible_snapshot_request<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+        snapshot_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<()>, Error<types::InstanceIssueCrucibleSnapshotRequestError>> {
+        let url = format!(
+            "{}/instance/disk/{}/snapshot/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+            encode_path(&snapshot_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_issue_crucible_snapshot_request",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceIssueCrucibleSnapshotRequestError>::from_response::<
+                    types::InstanceIssueCrucibleSnapshotRequestError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceIssueCrucibleSnapshotRequestError>::from_response::<
+                    types::InstanceIssueCrucibleSnapshotRequestError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Sends a 'GET' request to '/instance/migrate/status'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_migrate_status<'a>(
+        &'a self,
+    ) -> Result<
+        ResponseValue<types::InstanceMigrateStatusResponse>,
+        Error<types::InstanceMigrateStatusError>,
+    > {
+        let url = format!("{}/instance/migrate/status", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_migrate_status",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceMigrateStatusError>::from_response::<
+                    types::InstanceMigrateStatusError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceMigrateStatusError>::from_response::<
+                    types::InstanceMigrateStatusError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Sends a 'GET' request to '/instance/serial'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_serial<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
+        let url = format!("{}/instance/serial", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .headers(header_map)
+            .header(::reqwest::header::CONNECTION, "Upgrade")
+            .header(::reqwest::header::UPGRADE, "websocket")
+            .header(::reqwest::header::SEC_WEBSOCKET_VERSION, "13")
+            .header(
+                ::reqwest::header::SEC_WEBSOCKET_KEY,
+                ::base64::Engine::encode(
+                    &::base64::engine::general_purpose::STANDARD,
+                    ::rand::random::<[u8; 16]>(),
+                ),
+            )
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_serial",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            101u16 => ResponseValue::upgrade(response).await,
+            200..=299 => ResponseValue::upgrade(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Sends a 'PUT' request to '/instance/state'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_state_put<'a>(
+        &'a self,
+        body: types::InstanceStateRequested,
+    ) -> Result<ResponseValue<()>, Error<types::InstanceStatePutError>> {
+        let url = format!("{}/instance/state", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_state_put",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStatePutError>::from_response::<
+                    types::InstanceStatePutError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStatePutError>::from_response::<
+                    types::InstanceStatePutError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Sends a 'GET' request to '/instance/state-monitor'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_state_monitor<'a>(
+        &'a self,
+    ) -> Result<
+        ResponseValue<types::InstanceStateMonitorResponse>,
+        Error<types::InstanceStateMonitorError>,
+    > {
+        let url = format!("{}/instance/state-monitor", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -2108,4 +2539,7 @@ impl Client {
 pub mod prelude {
     #[allow(unused_imports)]
     pub use super::Client;
+    #[cfg(feature = "middleware")]
+    #[allow(unused_imports)]
+    pub use super::MiddlewareClient;
 }

@@ -2,6 +2,9 @@
 use progenitor_client::{encode_path, ClientHooks, OperationInfo, RequestBuilderExt};
 #[allow(unused_imports)]
 pub use progenitor_client::{ByteStream, ClientInfo, Error, ResponseValue};
+#[cfg(feature = "middleware")]
+#[allow(unused_imports)]
+pub use reqwest_middleware;
 /// Types used as operation parameters and responses.
 #[allow(clippy::all)]
 pub mod types {
@@ -47,6 +50,21 @@ pub struct Client {
     pub(crate) client: reqwest::Client,
 }
 
+/// Client with middleware support for enhanced request/response processing.
+///
+/// This client type is only available when the "middleware" feature is enabled.
+#[cfg(feature = "middleware")]
+#[derive(Clone, Debug)]
+///Client for Parameter name collision test
+///
+///Minimal API for testing collision between parameter names and generated code
+///
+///Version: v1
+pub struct MiddlewareClient {
+    pub(crate) baseurl: String,
+    pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+}
+
 impl Client {
     /// Create a new client.
     ///
@@ -81,9 +99,29 @@ impl Client {
             client,
         }
     }
+
+    /// Construct a new client with an existing
+    /// `reqwest_middleware::ClientWithMiddleware`,
+    /// allowing the use of middleware for requests.
+    ///
+    /// `baseurl` is the base URL provided to the internal client, and should
+    /// include
+    /// a scheme and hostname, as well as port and a path stem if applicable.
+    ///
+    /// This method is only available when the "middleware" feature is enabled.
+    #[cfg(feature = "middleware")]
+    pub fn new_with_client_middleware(
+        baseurl: &str,
+        client: reqwest_middleware::ClientWithMiddleware,
+    ) -> MiddlewareClient {
+        MiddlewareClient {
+            baseurl: baseurl.to_string(),
+            client,
+        }
+    }
 }
 
-impl ClientInfo<()> for Client {
+impl ClientInfo<(), reqwest::Client> for Client {
     fn api_version() -> &'static str {
         "v1"
     }
@@ -101,7 +139,28 @@ impl ClientInfo<()> for Client {
     }
 }
 
-impl ClientHooks<()> for &Client {}
+impl ClientHooks<(), reqwest::Client> for &Client {}
+#[cfg(feature = "middleware")]
+impl ClientHooks<(), reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
+#[cfg(feature = "middleware")]
+impl ClientInfo<(), reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "v1"
+    }
+
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+
+    fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+        &self.client
+    }
+
+    fn inner(&self) -> &() {
+        &()
+    }
+}
+
 impl Client {
     ///Gets a key
     ///
@@ -253,7 +312,7 @@ pub mod builder {
             let url = url.map_err(Error::InvalidRequest)?;
             let _url = format!(
                 "{}/key/{}",
-                _client.baseurl,
+                _client.baseurl(),
                 encode_path(&query.to_string()),
             );
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -264,7 +323,7 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut _request = _client
-                .client
+                .client()
                 .get(_url)
                 .query(&progenitor_client::QueryParam::new("client", &client))
                 .query(&progenitor_client::QueryParam::new("request", &request))

@@ -3,6 +3,9 @@
 use progenitor_client::{encode_path, ClientHooks, OperationInfo, RequestBuilderExt};
 #[allow(unused_imports)]
 pub use progenitor_client::{ByteStream, ClientInfo, Error, ResponseValue};
+#[cfg(feature = "middleware")]
+#[allow(unused_imports)]
+pub use reqwest_middleware;
 /// Types used as operation parameters and responses.
 #[allow(clippy::all)]
 pub mod types {
@@ -455,6 +458,21 @@ pub struct Client {
     pub(crate) client: reqwest::Client,
 }
 
+/// Client with middleware support for enhanced request/response processing.
+///
+/// This client type is only available when the "middleware" feature is enabled.
+#[cfg(feature = "middleware")]
+#[derive(Clone, Debug)]
+///Client for Keeper API
+///
+///report execution of cron jobs through a mechanism other than mail
+///
+///Version: 1.0
+pub struct MiddlewareClient {
+    pub(crate) baseurl: String,
+    pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+}
+
 impl Client {
     /// Create a new client.
     ///
@@ -489,9 +507,29 @@ impl Client {
             client,
         }
     }
+
+    /// Construct a new client with an existing
+    /// `reqwest_middleware::ClientWithMiddleware`,
+    /// allowing the use of middleware for requests.
+    ///
+    /// `baseurl` is the base URL provided to the internal client, and should
+    /// include
+    /// a scheme and hostname, as well as port and a path stem if applicable.
+    ///
+    /// This method is only available when the "middleware" feature is enabled.
+    #[cfg(feature = "middleware")]
+    pub fn new_with_client_middleware(
+        baseurl: &str,
+        client: reqwest_middleware::ClientWithMiddleware,
+    ) -> MiddlewareClient {
+        MiddlewareClient {
+            baseurl: baseurl.to_string(),
+            client,
+        }
+    }
 }
 
-impl ClientInfo<()> for Client {
+impl ClientInfo<(), reqwest::Client> for Client {
     fn api_version() -> &'static str {
         "1.0"
     }
@@ -509,7 +547,28 @@ impl ClientInfo<()> for Client {
     }
 }
 
-impl ClientHooks<()> for &Client {}
+impl ClientHooks<(), reqwest::Client> for &Client {}
+#[cfg(feature = "middleware")]
+impl ClientHooks<(), reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
+#[cfg(feature = "middleware")]
+impl ClientInfo<(), reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "1.0"
+    }
+
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+
+    fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+        &self.client
+    }
+
+    fn inner(&self) -> &() {
+        &()
+    }
+}
+
 #[allow(clippy::all)]
 #[allow(mismatched_lifetime_syntaxes)]
 impl Client {
@@ -525,7 +584,7 @@ impl Client {
         authorization: &'a str,
         body: &'a types::EnrolBody,
     ) -> Result<ResponseValue<()>, Error<()>> {
-        let url = format!("{}/enrol", self.baseurl,);
+        let url = format!("{}/enrol", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -535,9 +594,13 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -563,7 +626,7 @@ impl Client {
         &'a self,
         authorization: &'a str,
     ) -> Result<ResponseValue<types::GlobalJobsResult>, Error<()>> {
-        let url = format!("{}/global/jobs", self.baseurl,);
+        let url = format!("{}/global/jobs", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -573,7 +636,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -604,7 +667,7 @@ impl Client {
         &'a self,
         authorization: &'a str,
     ) -> Result<ResponseValue<types::PingResult>, Error<()>> {
-        let url = format!("{}/ping", self.baseurl,);
+        let url = format!("{}/ping", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -614,7 +677,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -647,7 +710,7 @@ impl Client {
         authorization: &'a str,
         body: &'a types::ReportFinishBody,
     ) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
-        let url = format!("{}/report/finish", self.baseurl,);
+        let url = format!("{}/report/finish", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -657,13 +720,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -691,7 +758,7 @@ impl Client {
         authorization: &'a str,
         body: &'a types::ReportOutputBody,
     ) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
-        let url = format!("{}/report/output", self.baseurl,);
+        let url = format!("{}/report/output", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -701,13 +768,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -735,7 +806,7 @@ impl Client {
         authorization: &'a str,
         body: &'a types::ReportStartBody,
     ) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
-        let url = format!("{}/report/start", self.baseurl,);
+        let url = format!("{}/report/start", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -745,13 +816,292 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "report_start",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+}
+
+#[cfg(feature = "middleware")]
+#[allow(clippy::all)]
+#[allow(elided_named_lifetimes)]
+impl MiddlewareClient {
+    ///Sends a 'POST' request to '/enrol'
+    ///
+    ///Arguments:
+    /// - `authorization`: Authorization header (bearer token)
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn enrol<'a>(
+        &'a self,
+        authorization: &'a str,
+        body: &'a types::EnrolBody,
+    ) -> Result<ResponseValue<()>, Error<()>> {
+        let url = format!("{}/enrol", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        header_map.append("Authorization", authorization.to_string().try_into()?);
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "enrol",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => Ok(ResponseValue::empty(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Sends a 'GET' request to '/global/jobs'
+    ///
+    ///Arguments:
+    /// - `authorization`: Authorization header (bearer token)
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn global_jobs<'a>(
+        &'a self,
+        authorization: &'a str,
+    ) -> Result<ResponseValue<types::GlobalJobsResult>, Error<()>> {
+        let url = format!("{}/global/jobs", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        header_map.append("Authorization", authorization.to_string().try_into()?);
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "global_jobs",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Sends a 'GET' request to '/ping'
+    ///
+    ///Arguments:
+    /// - `authorization`: Authorization header (bearer token)
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ping<'a>(
+        &'a self,
+        authorization: &'a str,
+    ) -> Result<ResponseValue<types::PingResult>, Error<()>> {
+        let url = format!("{}/ping", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        header_map.append("Authorization", authorization.to_string().try_into()?);
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ping",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Sends a 'POST' request to '/report/finish'
+    ///
+    ///Arguments:
+    /// - `authorization`: Authorization header (bearer token)
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn report_finish<'a>(
+        &'a self,
+        authorization: &'a str,
+        body: &'a types::ReportFinishBody,
+    ) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
+        let url = format!("{}/report/finish", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        header_map.append("Authorization", authorization.to_string().try_into()?);
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "report_finish",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Sends a 'POST' request to '/report/output'
+    ///
+    ///Arguments:
+    /// - `authorization`: Authorization header (bearer token)
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn report_output<'a>(
+        &'a self,
+        authorization: &'a str,
+        body: &'a types::ReportOutputBody,
+    ) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
+        let url = format!("{}/report/output", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        header_map.append("Authorization", authorization.to_string().try_into()?);
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "report_output",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Sends a 'POST' request to '/report/start'
+    ///
+    ///Arguments:
+    /// - `authorization`: Authorization header (bearer token)
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn report_start<'a>(
+        &'a self,
+        authorization: &'a str,
+        body: &'a types::ReportStartBody,
+    ) -> Result<ResponseValue<types::ReportResult>, Error<()>> {
+        let url = format!("{}/report/start", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        header_map.append("Authorization", authorization.to_string().try_into()?);
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -772,4 +1122,7 @@ impl Client {
 pub mod prelude {
     #[allow(unused_imports)]
     pub use super::Client;
+    #[cfg(feature = "middleware")]
+    #[allow(unused_imports)]
+    pub use super::MiddlewareClient;
 }
