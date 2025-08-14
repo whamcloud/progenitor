@@ -2,6 +2,9 @@
 use progenitor_client::{encode_path, ClientHooks, OperationInfo, RequestBuilderExt};
 #[allow(unused_imports)]
 pub use progenitor_client::{ByteStream, ClientInfo, Error, ResponseValue};
+#[cfg(feature = "middleware")]
+#[allow(unused_imports)]
+pub use reqwest_middleware;
 /// Types used as operation parameters and responses.
 #[allow(clippy::all)]
 pub mod types {
@@ -1252,6 +1255,21 @@ pub struct Client {
     pub(crate) client: reqwest::Client,
 }
 
+/// Client with middleware support for enhanced request/response processing.
+///
+/// This client type is only available when the "middleware" feature is enabled.
+#[cfg(feature = "middleware")]
+#[derive(Clone, Debug)]
+///Client for Keeper API
+///
+///report execution of cron jobs through a mechanism other than mail
+///
+///Version: 1.0
+pub struct MiddlewareClient {
+    pub(crate) baseurl: String,
+    pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+}
+
 impl Client {
     /// Create a new client.
     ///
@@ -1286,9 +1304,29 @@ impl Client {
             client,
         }
     }
+
+    /// Construct a new client with an existing
+    /// `reqwest_middleware::ClientWithMiddleware`,
+    /// allowing the use of middleware for requests.
+    ///
+    /// `baseurl` is the base URL provided to the internal client, and should
+    /// include
+    /// a scheme and hostname, as well as port and a path stem if applicable.
+    ///
+    /// This method is only available when the "middleware" feature is enabled.
+    #[cfg(feature = "middleware")]
+    pub fn new_with_client_middleware(
+        baseurl: &str,
+        client: reqwest_middleware::ClientWithMiddleware,
+    ) -> MiddlewareClient {
+        MiddlewareClient {
+            baseurl: baseurl.to_string(),
+            client,
+        }
+    }
 }
 
-impl ClientInfo<()> for Client {
+impl ClientInfo<(), reqwest::Client> for Client {
     fn api_version() -> &'static str {
         "1.0"
     }
@@ -1306,7 +1344,28 @@ impl ClientInfo<()> for Client {
     }
 }
 
-impl ClientHooks<()> for &Client {}
+impl ClientHooks<(), reqwest::Client> for &Client {}
+#[cfg(feature = "middleware")]
+impl ClientHooks<(), reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
+#[cfg(feature = "middleware")]
+impl ClientInfo<(), reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "1.0"
+    }
+
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+
+    fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+        &self.client
+    }
+
+    fn inner(&self) -> &() {
+        &()
+    }
+}
+
 impl Client {
     ///Sends a 'POST' request to '/enrol'
     ///
@@ -1474,7 +1533,7 @@ pub mod builder {
             let body = body
                 .and_then(|v| types::EnrolBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
-            let url = format!("{}/enrol", client.baseurl,);
+            let url = format!("{}/enrol", client.baseurl(),);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
             header_map.append(
                 ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1484,9 +1543,16 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut request = client
-                .client
+                .client()
                 .post(url)
-                .json(&body)
+                .header(
+                    ::reqwest::header::CONTENT_TYPE,
+                    ::reqwest::header::HeaderValue::from_static("application/json"),
+                )
+                .body(
+                    serde_json::to_string(&body)
+                        .map_err(|e| Error::InvalidRequest(e.to_string()))?,
+                )
                 .headers(header_map)
                 .build()?;
             let info = OperationInfo {
@@ -1540,7 +1606,7 @@ pub mod builder {
             } = self;
             #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
-            let url = format!("{}/global/jobs", client.baseurl,);
+            let url = format!("{}/global/jobs", client.baseurl(),);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
             header_map.append(
                 ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1550,7 +1616,7 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut request = client
-                .client
+                .client()
                 .get(url)
                 .header(
                     ::reqwest::header::ACCEPT,
@@ -1609,7 +1675,7 @@ pub mod builder {
             } = self;
             #[allow(unused_variables)]
             let authorization = authorization.map_err(Error::InvalidRequest)?;
-            let url = format!("{}/ping", client.baseurl,);
+            let url = format!("{}/ping", client.baseurl(),);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
             header_map.append(
                 ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1619,7 +1685,7 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut request = client
-                .client
+                .client()
                 .get(url)
                 .header(
                     ::reqwest::header::ACCEPT,
@@ -1707,7 +1773,7 @@ pub mod builder {
             let body = body
                 .and_then(|v| types::ReportFinishBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
-            let url = format!("{}/report/finish", client.baseurl,);
+            let url = format!("{}/report/finish", client.baseurl(),);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
             header_map.append(
                 ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1717,13 +1783,20 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut request = client
-                .client
+                .client()
                 .post(url)
                 .header(
                     ::reqwest::header::ACCEPT,
                     ::reqwest::header::HeaderValue::from_static("application/json"),
                 )
-                .json(&body)
+                .header(
+                    ::reqwest::header::CONTENT_TYPE,
+                    ::reqwest::header::HeaderValue::from_static("application/json"),
+                )
+                .body(
+                    serde_json::to_string(&body)
+                        .map_err(|e| Error::InvalidRequest(e.to_string()))?,
+                )
                 .headers(header_map)
                 .build()?;
             let info = OperationInfo {
@@ -1806,7 +1879,7 @@ pub mod builder {
             let body = body
                 .and_then(|v| types::ReportOutputBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
-            let url = format!("{}/report/output", client.baseurl,);
+            let url = format!("{}/report/output", client.baseurl(),);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
             header_map.append(
                 ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1816,13 +1889,20 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut request = client
-                .client
+                .client()
                 .post(url)
                 .header(
                     ::reqwest::header::ACCEPT,
                     ::reqwest::header::HeaderValue::from_static("application/json"),
                 )
-                .json(&body)
+                .header(
+                    ::reqwest::header::CONTENT_TYPE,
+                    ::reqwest::header::HeaderValue::from_static("application/json"),
+                )
+                .body(
+                    serde_json::to_string(&body)
+                        .map_err(|e| Error::InvalidRequest(e.to_string()))?,
+                )
                 .headers(header_map)
                 .build()?;
             let info = OperationInfo {
@@ -1903,7 +1983,7 @@ pub mod builder {
             let body = body
                 .and_then(|v| types::ReportStartBody::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
-            let url = format!("{}/report/start", client.baseurl,);
+            let url = format!("{}/report/start", client.baseurl(),);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
             header_map.append(
                 ::reqwest::header::HeaderName::from_static("api-version"),
@@ -1913,13 +1993,20 @@ pub mod builder {
             #[allow(unused_mut)]
             #[allow(unused_variables)]
             let mut request = client
-                .client
+                .client()
                 .post(url)
                 .header(
                     ::reqwest::header::ACCEPT,
                     ::reqwest::header::HeaderValue::from_static("application/json"),
                 )
-                .json(&body)
+                .header(
+                    ::reqwest::header::CONTENT_TYPE,
+                    ::reqwest::header::HeaderValue::from_static("application/json"),
+                )
+                .body(
+                    serde_json::to_string(&body)
+                        .map_err(|e| Error::InvalidRequest(e.to_string()))?,
+                )
                 .headers(header_map)
                 .build()?;
             let info = OperationInfo {
