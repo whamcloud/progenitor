@@ -2,6 +2,9 @@
 use progenitor_client::{encode_path, ClientHooks, OperationInfo, RequestBuilderExt};
 #[allow(unused_imports)]
 pub use progenitor_client::{ByteStream, ClientInfo, Error, ResponseValue};
+#[cfg(feature = "middleware")]
+#[allow(unused_imports)]
+pub use reqwest_middleware;
 /// Types used as operation parameters and responses.
 #[allow(clippy::all)]
 pub mod types {
@@ -19890,6 +19893,21 @@ pub struct Client {
     pub(crate) client: reqwest::Client,
 }
 
+/// Client with middleware support for enhanced request/response processing.
+///
+/// This client type is only available when the "middleware" feature is enabled.
+#[cfg(feature = "middleware")]
+#[derive(Clone, Debug)]
+///Client for Oxide Region API
+///
+///API for interacting with the Oxide control plane
+///
+///Version: 0.0.1
+pub struct MiddlewareClient {
+    pub(crate) baseurl: String,
+    pub(crate) client: reqwest_middleware::ClientWithMiddleware,
+}
+
 impl Client {
     /// Create a new client.
     ///
@@ -19924,9 +19942,29 @@ impl Client {
             client,
         }
     }
+
+    /// Construct a new client with an existing
+    /// `reqwest_middleware::ClientWithMiddleware`,
+    /// allowing the use of middleware for requests.
+    ///
+    /// `baseurl` is the base URL provided to the internal client, and should
+    /// include
+    /// a scheme and hostname, as well as port and a path stem if applicable.
+    ///
+    /// This method is only available when the "middleware" feature is enabled.
+    #[cfg(feature = "middleware")]
+    pub fn new_with_client_middleware(
+        baseurl: &str,
+        client: reqwest_middleware::ClientWithMiddleware,
+    ) -> MiddlewareClient {
+        MiddlewareClient {
+            baseurl: baseurl.to_string(),
+            client,
+        }
+    }
 }
 
-impl ClientInfo<()> for Client {
+impl ClientInfo<(), reqwest::Client> for Client {
     fn api_version() -> &'static str {
         "0.0.1"
     }
@@ -19944,7 +19982,28 @@ impl ClientInfo<()> for Client {
     }
 }
 
-impl ClientHooks<()> for &Client {}
+impl ClientHooks<(), reqwest::Client> for &Client {}
+#[cfg(feature = "middleware")]
+impl ClientHooks<(), reqwest_middleware::ClientWithMiddleware> for &MiddlewareClient {}
+#[cfg(feature = "middleware")]
+impl ClientInfo<(), reqwest_middleware::ClientWithMiddleware> for MiddlewareClient {
+    fn api_version() -> &'static str {
+        "0.0.1"
+    }
+
+    fn baseurl(&self) -> &str {
+        self.baseurl.as_str()
+    }
+
+    fn client(&self) -> &reqwest_middleware::ClientWithMiddleware {
+        &self.client
+    }
+
+    fn inner(&self) -> &() {
+        &()
+    }
+}
+
 #[allow(clippy::all)]
 #[allow(mismatched_lifetime_syntaxes)]
 impl Client {
@@ -19961,7 +20020,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewByIdError>> {
         let url = format!(
             "{}/by-id/disks/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -19972,7 +20031,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20020,7 +20079,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Image>, Error<types::ImageViewByIdError>> {
         let url = format!(
             "{}/by-id/images/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20031,7 +20090,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20075,7 +20134,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewByIdError>> {
         let url = format!(
             "{}/by-id/instances/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20086,7 +20145,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20133,7 +20192,7 @@ impl Client {
     > {
         let url = format!(
             "{}/by-id/network-interfaces/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20144,7 +20203,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20190,7 +20249,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewByIdError>> {
         let url = format!(
             "{}/by-id/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20201,7 +20260,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20247,7 +20306,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewByIdError>> {
         let url = format!(
             "{}/by-id/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20258,7 +20317,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20302,7 +20361,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotViewByIdError>> {
         let url = format!(
             "{}/by-id/snapshots/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20313,7 +20372,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20357,7 +20416,7 @@ impl Client {
     ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteViewByIdError>> {
         let url = format!(
             "{}/by-id/vpc-router-routes/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20368,7 +20427,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20412,7 +20471,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterViewByIdError>> {
         let url = format!(
             "{}/by-id/vpc-routers/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20423,7 +20482,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20467,7 +20526,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetViewByIdError>> {
         let url = format!(
             "{}/by-id/vpc-subnets/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20478,7 +20537,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20522,7 +20581,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcViewByIdError>> {
         let url = format!(
             "{}/by-id/vpcs/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20533,7 +20592,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20579,7 +20638,7 @@ impl Client {
         &'a self,
         body: &'a types::DeviceAuthRequest,
     ) -> Result<ResponseValue<ByteStream>, Error<()>> {
-        let url = format!("{}/device/auth", self.baseurl,);
+        let url = format!("{}/device/auth", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -20588,7 +20647,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .form_urlencoded(&body)?
             .headers(header_map)
@@ -20620,7 +20679,7 @@ impl Client {
         &'a self,
         body: &'a types::DeviceAuthVerify,
     ) -> Result<ResponseValue<()>, Error<types::DeviceAuthConfirmError>> {
-        let url = format!("{}/device/confirm", self.baseurl,);
+        let url = format!("{}/device/confirm", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -20629,13 +20688,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -20675,7 +20738,7 @@ impl Client {
         &'a self,
         body: &'a types::DeviceAccessTokenRequest,
     ) -> Result<ResponseValue<ByteStream>, Error<()>> {
-        let url = format!("{}/device/token", self.baseurl,);
+        let url = format!("{}/device/token", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -20684,7 +20747,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .form_urlencoded(&body)?
             .headers(header_map)
@@ -20719,7 +20782,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::GroupListError>> {
-        let url = format!("{}/groups", self.baseurl,);
+        let url = format!("{}/groups", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -20728,7 +20791,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -20816,7 +20879,7 @@ impl Client {
         &'a self,
         body: &'a types::SpoofLoginBody,
     ) -> Result<ResponseValue<()>, Error<types::LoginSpoofError>> {
-        let url = format!("{}/login", self.baseurl,);
+        let url = format!("{}/login", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -20825,13 +20888,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -20871,7 +20938,7 @@ impl Client {
     ) -> Result<ResponseValue<ByteStream>, Error<types::LoginLocalError>> {
         let url = format!(
             "{}/login/{}/local",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -20882,9 +20949,13 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -20927,7 +20998,7 @@ impl Client {
     ) -> Result<ResponseValue<ByteStream>, Error<types::LoginSamlBeginError>> {
         let url = format!(
             "{}/login/{}/saml/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
             encode_path(&provider_name.to_string()),
         );
@@ -20938,7 +21009,7 @@ impl Client {
         );
         #[allow(unused_mut)]
         #[allow(unused_variables)]
-        let mut request = self.client.get(url).headers(header_map).build()?;
+        let mut request = self.client().get(url).headers(header_map).build()?;
         let info = OperationInfo {
             operation_id: "login_saml_begin",
         };
@@ -20977,7 +21048,7 @@ impl Client {
     ) -> Result<ResponseValue<ByteStream>, Error<types::LoginSamlError>> {
         let url = format!(
             "{}/login/{}/saml/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
             encode_path(&provider_name.to_string()),
         );
@@ -20989,7 +21060,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::CONTENT_TYPE,
@@ -21027,7 +21098,7 @@ impl Client {
     #[allow(unused_variables)]
     #[allow(irrefutable_let_patterns)]
     pub async fn logout<'a>(&'a self) -> Result<ResponseValue<()>, Error<types::LogoutError>> {
-        let url = format!("{}/logout", self.baseurl,);
+        let url = format!("{}/logout", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -21036,7 +21107,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21085,7 +21156,7 @@ impl Client {
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::OrganizationListError>>
     {
-        let url = format!("{}/organizations", self.baseurl,);
+        let url = format!("{}/organizations", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -21094,7 +21165,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21189,7 +21260,7 @@ impl Client {
         &'a self,
         body: &'a types::OrganizationCreate,
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationCreateError>> {
-        let url = format!("{}/organizations", self.baseurl,);
+        let url = format!("{}/organizations", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -21198,13 +21269,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -21248,7 +21323,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewError>> {
         let url = format!(
             "{}/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21259,7 +21334,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21310,7 +21385,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationUpdateError>> {
         let url = format!(
             "{}/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21321,13 +21396,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -21371,7 +21450,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::OrganizationDeleteError>> {
         let url = format!(
             "{}/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21382,7 +21461,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21434,7 +21513,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21445,7 +21524,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21499,7 +21578,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21510,13 +21589,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -21567,7 +21650,7 @@ impl Client {
     ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::ProjectListError>> {
         let url = format!(
             "{}/organizations/{}/projects",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21578,7 +21661,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21682,7 +21765,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -21693,13 +21776,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -21746,7 +21833,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -21758,7 +21845,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21812,7 +21899,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -21824,13 +21911,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -21877,7 +21968,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::ProjectDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -21889,7 +21980,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -21948,7 +22039,7 @@ impl Client {
     ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::DiskListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -21960,7 +22051,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22073,7 +22164,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::DiskCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -22085,13 +22176,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -22136,7 +22231,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&disk_name.to_string()),
@@ -22149,7 +22244,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22197,7 +22292,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::DiskDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&disk_name.to_string()),
@@ -22210,7 +22305,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22275,7 +22370,7 @@ impl Client {
     {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks/{}/metrics/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&disk_name.to_string()),
@@ -22289,7 +22384,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22431,7 +22526,7 @@ impl Client {
     ) -> Result<ResponseValue<types::ImageResultsPage>, Error<types::ImageListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -22443,7 +22538,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22559,7 +22654,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Image>, Error<types::ImageCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -22571,13 +22666,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -22622,7 +22721,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Image>, Error<types::ImageViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&image_name.to_string()),
@@ -22635,7 +22734,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22687,7 +22786,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::ImageDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&image_name.to_string()),
@@ -22700,7 +22799,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22757,7 +22856,7 @@ impl Client {
     ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::InstanceListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -22769,7 +22868,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -22886,7 +22985,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -22898,13 +22997,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -22949,7 +23052,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -22962,7 +23065,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23014,7 +23117,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::InstanceDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23027,7 +23130,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23089,7 +23192,7 @@ impl Client {
     ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::InstanceDiskListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/disks",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23102,7 +23205,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23224,7 +23327,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskAttachError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/disks/attach",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23237,13 +23340,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -23289,7 +23396,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskDetachError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/disks/detach",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23302,13 +23409,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -23354,7 +23465,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/external-ips",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23367,7 +23478,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23418,7 +23529,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceMigrateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/migrate",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23431,13 +23542,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -23495,7 +23610,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23508,7 +23623,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23631,7 +23746,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23644,13 +23759,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -23697,7 +23816,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23711,7 +23830,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23764,7 +23883,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23778,13 +23897,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -23833,7 +23956,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::InstanceNetworkInterfaceDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23847,7 +23970,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23897,7 +24020,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceRebootError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/reboot",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23910,7 +24033,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -23982,7 +24105,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/serial-console",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -23995,7 +24118,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24054,7 +24177,7 @@ impl Client {
     ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/serial-console/stream",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -24067,7 +24190,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .headers(header_map)
             .header(::reqwest::header::CONNECTION, "Upgrade")
@@ -24112,7 +24235,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStartError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/start",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -24125,7 +24248,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24175,7 +24298,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStopError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/stop",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&instance_name.to_string()),
@@ -24188,7 +24311,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24244,7 +24367,7 @@ impl Client {
     ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -24256,7 +24379,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24309,7 +24432,7 @@ impl Client {
     {
         let url = format!(
             "{}/organizations/{}/projects/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -24321,13 +24444,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -24379,7 +24506,7 @@ impl Client {
     ) -> Result<ResponseValue<types::SnapshotResultsPage>, Error<types::SnapshotListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -24391,7 +24518,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24508,7 +24635,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -24520,13 +24647,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -24569,7 +24700,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&snapshot_name.to_string()),
@@ -24582,7 +24713,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24634,7 +24765,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::SnapshotDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&snapshot_name.to_string()),
@@ -24647,7 +24778,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24704,7 +24835,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcResultsPage>, Error<types::VpcListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -24716,7 +24847,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24827,7 +24958,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
         );
@@ -24839,13 +24970,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -24888,7 +25023,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -24901,7 +25036,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -24950,7 +25085,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -24963,13 +25098,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -25012,7 +25151,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::VpcDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25025,7 +25164,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25074,7 +25213,7 @@ impl Client {
     {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/firewall/rules",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25087,7 +25226,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25137,7 +25276,7 @@ impl Client {
     {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/firewall/rules",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25150,13 +25289,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -25211,7 +25354,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcRouterResultsPage>, Error<types::VpcRouterListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25224,7 +25367,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25343,7 +25486,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25356,13 +25499,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -25406,7 +25553,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25420,7 +25567,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25470,7 +25617,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25484,13 +25631,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -25534,7 +25685,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::VpcRouterDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25548,7 +25699,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25613,7 +25764,7 @@ impl Client {
     {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25627,7 +25778,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25754,7 +25905,7 @@ impl Client {
     ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25768,13 +25919,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -25819,7 +25974,7 @@ impl Client {
     ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25834,7 +25989,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -25885,7 +26040,7 @@ impl Client {
     ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25900,13 +26055,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -25951,7 +26110,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::VpcRouterRouteDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -25966,7 +26125,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26026,7 +26185,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcSubnetResultsPage>, Error<types::VpcSubnetListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -26039,7 +26198,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26158,7 +26317,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -26171,13 +26330,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -26221,7 +26384,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -26235,7 +26398,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26285,7 +26448,7 @@ impl Client {
     ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -26299,13 +26462,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -26349,7 +26516,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::VpcSubnetDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -26363,7 +26530,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26428,7 +26595,7 @@ impl Client {
     > {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}/network-interfaces",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization_name.to_string()),
             encode_path(&project_name.to_string()),
             encode_path(&vpc_name.to_string()),
@@ -26442,7 +26609,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26559,7 +26726,7 @@ impl Client {
     pub async fn policy_view<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::PolicyViewError>> {
-        let url = format!("{}/policy", self.baseurl,);
+        let url = format!("{}/policy", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -26568,7 +26735,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26610,7 +26777,7 @@ impl Client {
         &'a self,
         body: &'a types::SiloRolePolicy,
     ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::PolicyUpdateError>> {
-        let url = format!("{}/policy", self.baseurl,);
+        let url = format!("{}/policy", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -26619,13 +26786,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -26672,7 +26843,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
     ) -> Result<ResponseValue<types::RoleResultsPage>, Error<types::RoleListError>> {
-        let url = format!("{}/roles", self.baseurl,);
+        let url = format!("{}/roles", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -26681,7 +26852,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26773,7 +26944,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Role>, Error<types::RoleViewError>> {
         let url = format!(
             "{}/roles/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&role_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -26784,7 +26955,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26825,7 +26996,7 @@ impl Client {
     pub async fn session_me<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::User>, Error<types::SessionMeError>> {
-        let url = format!("{}/session/me", self.baseurl,);
+        let url = format!("{}/session/me", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -26834,7 +27005,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26884,7 +27055,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::SessionMeGroupsError>> {
-        let url = format!("{}/session/me/groups", self.baseurl,);
+        let url = format!("{}/session/me/groups", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -26893,7 +27064,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -26993,7 +27164,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
     ) -> Result<ResponseValue<types::SshKeyResultsPage>, Error<types::SessionSshkeyListError>> {
-        let url = format!("{}/session/me/sshkeys", self.baseurl,);
+        let url = format!("{}/session/me/sshkeys", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -27002,7 +27173,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27097,7 +27268,7 @@ impl Client {
         &'a self,
         body: &'a types::SshKeyCreate,
     ) -> Result<ResponseValue<types::SshKey>, Error<types::SessionSshkeyCreateError>> {
-        let url = format!("{}/session/me/sshkeys", self.baseurl,);
+        let url = format!("{}/session/me/sshkeys", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -27106,13 +27277,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -27154,7 +27329,7 @@ impl Client {
     ) -> Result<ResponseValue<types::SshKey>, Error<types::SessionSshkeyViewError>> {
         let url = format!(
             "{}/session/me/sshkeys/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&ssh_key_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27165,7 +27340,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27212,7 +27387,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::SessionSshkeyDeleteError>> {
         let url = format!(
             "{}/session/me/sshkeys/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&ssh_key_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27223,7 +27398,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27267,7 +27442,7 @@ impl Client {
     ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageViewByIdError>> {
         let url = format!(
             "{}/system/by-id/images/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27278,7 +27453,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27322,7 +27497,7 @@ impl Client {
     ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolViewByIdError>> {
         let url = format!(
             "{}/system/by-id/ip-pools/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27333,7 +27508,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27377,7 +27552,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Silo>, Error<types::SiloViewByIdError>> {
         let url = format!(
             "{}/system/by-id/silos/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27388,7 +27563,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27447,7 +27622,7 @@ impl Client {
         sort_by: Option<types::NameSortMode>,
     ) -> Result<ResponseValue<types::CertificateResultsPage>, Error<types::CertificateListError>>
     {
-        let url = format!("{}/system/certificates", self.baseurl,);
+        let url = format!("{}/system/certificates", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -27456,7 +27631,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27554,7 +27729,7 @@ impl Client {
         &'a self,
         body: &'a types::CertificateCreate,
     ) -> Result<ResponseValue<types::Certificate>, Error<types::CertificateCreateError>> {
-        let url = format!("{}/system/certificates", self.baseurl,);
+        let url = format!("{}/system/certificates", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -27563,13 +27738,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -27610,7 +27789,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Certificate>, Error<types::CertificateViewError>> {
         let url = format!(
             "{}/system/certificates/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&certificate.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27621,7 +27800,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27667,7 +27846,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::CertificateDeleteError>> {
         let url = format!(
             "{}/system/certificates/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&certificate.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27678,7 +27857,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27729,7 +27908,7 @@ impl Client {
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::PhysicalDiskResultsPage>, Error<types::PhysicalDiskListError>>
     {
-        let url = format!("{}/system/hardware/disks", self.baseurl,);
+        let url = format!("{}/system/hardware/disks", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -27738,7 +27917,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27837,7 +28016,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::RackResultsPage>, Error<types::RackListError>> {
-        let url = format!("{}/system/hardware/racks", self.baseurl,);
+        let url = format!("{}/system/hardware/racks", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -27846,7 +28025,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -27941,7 +28120,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Rack>, Error<types::RackViewError>> {
         let url = format!(
             "{}/system/hardware/racks/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&rack_id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -27952,7 +28131,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28002,7 +28181,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::SledResultsPage>, Error<types::SledListError>> {
-        let url = format!("{}/system/hardware/sleds", self.baseurl,);
+        let url = format!("{}/system/hardware/sleds", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -28011,7 +28190,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28106,7 +28285,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Sled>, Error<types::SledViewError>> {
         let url = format!(
             "{}/system/hardware/sleds/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&sled_id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28117,7 +28296,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28174,7 +28353,7 @@ impl Client {
     > {
         let url = format!(
             "{}/system/hardware/sleds/{}/disks",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&sled_id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28185,7 +28364,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28293,7 +28472,7 @@ impl Client {
         sort_by: Option<types::NameSortMode>,
     ) -> Result<ResponseValue<types::GlobalImageResultsPage>, Error<types::SystemImageListError>>
     {
-        let url = format!("{}/system/images", self.baseurl,);
+        let url = format!("{}/system/images", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -28302,7 +28481,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28400,7 +28579,7 @@ impl Client {
         &'a self,
         body: &'a types::GlobalImageCreate,
     ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageCreateError>> {
-        let url = format!("{}/system/images", self.baseurl,);
+        let url = format!("{}/system/images", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -28409,13 +28588,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -28456,7 +28639,7 @@ impl Client {
     ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageViewError>> {
         let url = format!(
             "{}/system/images/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&image_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28467,7 +28650,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28515,7 +28698,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::SystemImageDeleteError>> {
         let url = format!(
             "{}/system/images/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&image_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28526,7 +28709,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28576,7 +28759,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::IpPoolResultsPage>, Error<types::IpPoolListError>> {
-        let url = format!("{}/system/ip-pools", self.baseurl,);
+        let url = format!("{}/system/ip-pools", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -28585,7 +28768,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28675,7 +28858,7 @@ impl Client {
         &'a self,
         body: &'a types::IpPoolCreate,
     ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolCreateError>> {
-        let url = format!("{}/system/ip-pools", self.baseurl,);
+        let url = format!("{}/system/ip-pools", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -28684,13 +28867,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -28733,7 +28920,7 @@ impl Client {
     ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolViewError>> {
         let url = format!(
             "{}/system/ip-pools/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&pool_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28744,7 +28931,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28789,7 +28976,7 @@ impl Client {
     ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolUpdateError>> {
         let url = format!(
             "{}/system/ip-pools/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&pool_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28800,13 +28987,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -28849,7 +29040,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::IpPoolDeleteError>> {
         let url = format!(
             "{}/system/ip-pools/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&pool_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28860,7 +29051,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -28919,7 +29110,7 @@ impl Client {
     {
         let url = format!(
             "{}/system/ip-pools/{}/ranges",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&pool_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -28930,7 +29121,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29025,7 +29216,7 @@ impl Client {
     ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::IpPoolRangeAddError>> {
         let url = format!(
             "{}/system/ip-pools/{}/ranges/add",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&pool_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -29036,13 +29227,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -29082,7 +29277,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::IpPoolRangeRemoveError>> {
         let url = format!(
             "{}/system/ip-pools/{}/ranges/remove",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&pool_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -29093,13 +29288,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -29135,7 +29334,7 @@ impl Client {
     pub async fn ip_pool_service_view<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolServiceViewError>> {
-        let url = format!("{}/system/ip-pools-service", self.baseurl,);
+        let url = format!("{}/system/ip-pools-service", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29144,7 +29343,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29197,7 +29396,7 @@ impl Client {
         ResponseValue<types::IpPoolRangeResultsPage>,
         Error<types::IpPoolServiceRangeListError>,
     > {
-        let url = format!("{}/system/ip-pools-service/ranges", self.baseurl,);
+        let url = format!("{}/system/ip-pools-service/ranges", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29206,7 +29405,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29297,7 +29496,7 @@ impl Client {
         &'a self,
         body: &'a types::IpRange,
     ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::IpPoolServiceRangeAddError>> {
-        let url = format!("{}/system/ip-pools-service/ranges/add", self.baseurl,);
+        let url = format!("{}/system/ip-pools-service/ranges/add", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29306,13 +29505,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -29349,7 +29552,7 @@ impl Client {
         &'a self,
         body: &'a types::IpRange,
     ) -> Result<ResponseValue<()>, Error<types::IpPoolServiceRangeRemoveError>> {
-        let url = format!("{}/system/ip-pools-service/ranges/remove", self.baseurl,);
+        let url = format!("{}/system/ip-pools-service/ranges/remove", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29358,13 +29561,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -29417,7 +29624,7 @@ impl Client {
     ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::SystemMetricError>> {
         let url = format!(
             "{}/system/metrics/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&metric_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -29428,7 +29635,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29484,7 +29691,7 @@ impl Client {
     pub async fn system_policy_view<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::SystemPolicyViewError>> {
-        let url = format!("{}/system/policy", self.baseurl,);
+        let url = format!("{}/system/policy", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29493,7 +29700,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29535,7 +29742,7 @@ impl Client {
         &'a self,
         body: &'a types::FleetRolePolicy,
     ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::SystemPolicyUpdateError>> {
-        let url = format!("{}/system/policy", self.baseurl,);
+        let url = format!("{}/system/policy", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29544,13 +29751,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -29595,7 +29806,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::SagaResultsPage>, Error<types::SagaListError>> {
-        let url = format!("{}/system/sagas", self.baseurl,);
+        let url = format!("{}/system/sagas", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29604,7 +29815,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29696,7 +29907,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Saga>, Error<types::SagaViewError>> {
         let url = format!(
             "{}/system/sagas/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&saga_id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -29707,7 +29918,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29759,7 +29970,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::SiloResultsPage>, Error<types::SiloListError>> {
-        let url = format!("{}/system/silos", self.baseurl,);
+        let url = format!("{}/system/silos", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29768,7 +29979,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29860,7 +30071,7 @@ impl Client {
         &'a self,
         body: &'a types::SiloCreate,
     ) -> Result<ResponseValue<types::Silo>, Error<types::SiloCreateError>> {
-        let url = format!("{}/system/silos", self.baseurl,);
+        let url = format!("{}/system/silos", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -29869,13 +30080,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -29919,7 +30134,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Silo>, Error<types::SiloViewError>> {
         let url = format!(
             "{}/system/silos/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -29930,7 +30145,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -29979,7 +30194,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::SiloDeleteError>> {
         let url = format!(
             "{}/system/silos/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -29990,7 +30205,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30047,7 +30262,7 @@ impl Client {
     > {
         let url = format!(
             "{}/system/silos/{}/identity-providers",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30058,7 +30273,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30165,7 +30380,7 @@ impl Client {
     ) -> Result<ResponseValue<types::User>, Error<types::LocalIdpUserCreateError>> {
         let url = format!(
             "{}/system/silos/{}/identity-providers/local/users",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30176,13 +30391,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -30227,7 +30446,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::LocalIdpUserDeleteError>> {
         let url = format!(
             "{}/system/silos/{}/identity-providers/local/users/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
             encode_path(&user_id.to_string()),
         );
@@ -30239,7 +30458,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30295,7 +30514,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::LocalIdpUserSetPasswordError>> {
         let url = format!(
             "{}/system/silos/{}/identity-providers/local/users/{}/set-password",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
             encode_path(&user_id.to_string()),
         );
@@ -30307,13 +30526,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -30361,7 +30584,7 @@ impl Client {
     > {
         let url = format!(
             "{}/system/silos/{}/identity-providers/saml",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30372,13 +30595,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -30426,7 +30653,7 @@ impl Client {
     > {
         let url = format!(
             "{}/system/silos/{}/identity-providers/saml/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
             encode_path(&provider_name.to_string()),
         );
@@ -30438,7 +30665,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30485,7 +30712,7 @@ impl Client {
     ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::SiloPolicyViewError>> {
         let url = format!(
             "{}/system/silos/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30496,7 +30723,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30545,7 +30772,7 @@ impl Client {
     ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::SiloPolicyUpdateError>> {
         let url = format!(
             "{}/system/silos/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30556,13 +30783,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -30611,7 +30842,7 @@ impl Client {
     ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::SiloUsersListError>> {
         let url = format!(
             "{}/system/silos/{}/users/all",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30622,7 +30853,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30721,7 +30952,7 @@ impl Client {
     ) -> Result<ResponseValue<types::User>, Error<types::SiloUserViewError>> {
         let url = format!(
             "{}/system/silos/{}/users/id/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&silo_name.to_string()),
             encode_path(&user_id.to_string()),
         );
@@ -30733,7 +30964,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30788,7 +31019,7 @@ impl Client {
         sort_by: Option<types::NameSortMode>,
     ) -> Result<ResponseValue<types::UserBuiltinResultsPage>, Error<types::SystemUserListError>>
     {
-        let url = format!("{}/system/user", self.baseurl,);
+        let url = format!("{}/system/user", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -30797,7 +31028,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30893,7 +31124,7 @@ impl Client {
     ) -> Result<ResponseValue<types::UserBuiltin>, Error<types::SystemUserViewError>> {
         let url = format!(
             "{}/system/user/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&user_name.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -30904,7 +31135,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -30955,7 +31186,7 @@ impl Client {
         ResponseValue<types::TimeseriesSchemaResultsPage>,
         Error<types::TimeseriesSchemaGetError>,
     > {
-        let url = format!("{}/timeseries/schema", self.baseurl,);
+        let url = format!("{}/timeseries/schema", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -30964,7 +31195,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31061,7 +31292,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::UserListError>> {
-        let url = format!("{}/users", self.baseurl,);
+        let url = format!("{}/users", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -31070,7 +31301,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31172,7 +31403,7 @@ impl Client {
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::DiskListV1Error>> {
-        let url = format!("{}/v1/disks", self.baseurl,);
+        let url = format!("{}/v1/disks", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -31181,7 +31412,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31282,7 +31513,7 @@ impl Client {
         project: &'a types::NameOrId,
         body: &'a types::DiskCreate,
     ) -> Result<ResponseValue<types::Disk>, Error<types::DiskCreateV1Error>> {
-        let url = format!("{}/v1/disks", self.baseurl,);
+        let url = format!("{}/v1/disks", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -31291,13 +31522,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -31347,7 +31582,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewV1Error>> {
         let url = format!(
             "{}/v1/disks/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&disk.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31358,7 +31593,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31409,7 +31644,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::DiskDeleteV1Error>> {
         let url = format!(
             "{}/v1/disks/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&disk.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31420,7 +31655,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31483,7 +31718,7 @@ impl Client {
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::InstanceListV1Error>> {
-        let url = format!("{}/v1/instances", self.baseurl,);
+        let url = format!("{}/v1/instances", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -31492,7 +31727,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31594,7 +31829,7 @@ impl Client {
         project: &'a types::NameOrId,
         body: &'a types::InstanceCreate,
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceCreateV1Error>> {
-        let url = format!("{}/v1/instances", self.baseurl,);
+        let url = format!("{}/v1/instances", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -31603,13 +31838,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -31655,7 +31894,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewV1Error>> {
         let url = format!(
             "{}/v1/instances/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31666,7 +31905,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31717,7 +31956,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::InstanceDeleteV1Error>> {
         let url = format!(
             "{}/v1/instances/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31728,7 +31967,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31791,7 +32030,7 @@ impl Client {
     ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::InstanceDiskListV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/disks",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31802,7 +32041,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -31916,7 +32155,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskAttachV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/disks/attach",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31927,13 +32166,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -31980,7 +32223,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskDetachV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/disks/detach",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -31991,13 +32234,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -32044,7 +32291,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceMigrateV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/migrate",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32055,13 +32302,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -32107,7 +32358,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceRebootV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/reboot",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32118,7 +32369,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32191,7 +32442,7 @@ impl Client {
     > {
         let url = format!(
             "{}/v1/instances/{}/serial-console",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32202,7 +32453,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32263,7 +32514,7 @@ impl Client {
     ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
         let url = format!(
             "{}/v1/instances/{}/serial-console/stream",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32274,7 +32525,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
@@ -32320,7 +32571,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStartV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/start",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32331,7 +32582,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32382,7 +32633,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStopV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/stop",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&instance.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32393,7 +32644,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32449,7 +32700,7 @@ impl Client {
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::OrganizationListV1Error>>
     {
-        let url = format!("{}/v1/organizations", self.baseurl,);
+        let url = format!("{}/v1/organizations", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -32458,7 +32709,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32550,7 +32801,7 @@ impl Client {
         &'a self,
         body: &'a types::OrganizationCreate,
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationCreateV1Error>> {
-        let url = format!("{}/v1/organizations", self.baseurl,);
+        let url = format!("{}/v1/organizations", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -32559,13 +32810,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -32604,7 +32859,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewV1Error>> {
         let url = format!(
             "{}/v1/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32615,7 +32870,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32660,7 +32915,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationUpdateV1Error>> {
         let url = format!(
             "{}/v1/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32671,13 +32926,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -32716,7 +32975,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::OrganizationDeleteV1Error>> {
         let url = format!(
             "{}/v1/organizations/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32727,7 +32986,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32774,7 +33033,7 @@ impl Client {
     > {
         let url = format!(
             "{}/v1/organizations/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32785,7 +33044,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -32833,7 +33092,7 @@ impl Client {
     > {
         let url = format!(
             "{}/v1/organizations/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&organization.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -32844,13 +33103,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -32897,7 +33160,7 @@ impl Client {
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
     ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::ProjectListV1Error>> {
-        let url = format!("{}/v1/projects", self.baseurl,);
+        let url = format!("{}/v1/projects", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -32906,7 +33169,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33003,7 +33266,7 @@ impl Client {
         organization: &'a types::NameOrId,
         body: &'a types::ProjectCreate,
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectCreateV1Error>> {
-        let url = format!("{}/v1/projects", self.baseurl,);
+        let url = format!("{}/v1/projects", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33012,13 +33275,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -33062,7 +33329,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewV1Error>> {
         let url = format!(
             "{}/v1/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&project.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33073,7 +33340,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33123,7 +33390,7 @@ impl Client {
     ) -> Result<ResponseValue<types::Project>, Error<types::ProjectUpdateV1Error>> {
         let url = format!(
             "{}/v1/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&project.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33134,13 +33401,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -33184,7 +33455,7 @@ impl Client {
     ) -> Result<ResponseValue<()>, Error<types::ProjectDeleteV1Error>> {
         let url = format!(
             "{}/v1/projects/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&project.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33195,7 +33466,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .delete(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33245,7 +33516,7 @@ impl Client {
     {
         let url = format!(
             "{}/v1/projects/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&project.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33256,7 +33527,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33307,7 +33578,7 @@ impl Client {
     {
         let url = format!(
             "{}/v1/projects/{}/policy",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&project.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33318,13 +33589,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .put(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .query(&progenitor_client::QueryParam::new(
                 "organization",
                 &organization,
@@ -33376,7 +33651,7 @@ impl Client {
         ResponseValue<types::UpdateableComponentResultsPage>,
         Error<types::SystemComponentVersionListError>,
     > {
-        let url = format!("{}/v1/system/update/components", self.baseurl,);
+        let url = format!("{}/v1/system/update/components", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33385,7 +33660,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33488,7 +33763,7 @@ impl Client {
         ResponseValue<types::UpdateDeploymentResultsPage>,
         Error<types::UpdateDeploymentsListError>,
     > {
-        let url = format!("{}/v1/system/update/deployments", self.baseurl,);
+        let url = format!("{}/v1/system/update/deployments", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33497,7 +33772,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33592,7 +33867,7 @@ impl Client {
     {
         let url = format!(
             "{}/v1/system/update/deployments/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&id.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33603,7 +33878,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33644,7 +33919,7 @@ impl Client {
     pub async fn system_update_refresh<'a>(
         &'a self,
     ) -> Result<ResponseValue<()>, Error<types::SystemUpdateRefreshError>> {
-        let url = format!("{}/v1/system/update/refresh", self.baseurl,);
+        let url = format!("{}/v1/system/update/refresh", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33653,7 +33928,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33695,7 +33970,7 @@ impl Client {
         &'a self,
         body: &'a types::SystemUpdateStart,
     ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::SystemUpdateStartError>> {
-        let url = format!("{}/v1/system/update/start", self.baseurl,);
+        let url = format!("{}/v1/system/update/start", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33704,13 +33979,17 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
                 ::reqwest::header::HeaderValue::from_static("application/json"),
             )
-            .json(&body)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
             .headers(header_map)
             .build()?;
         let info = OperationInfo {
@@ -33748,7 +34027,7 @@ impl Client {
     pub async fn system_update_stop<'a>(
         &'a self,
     ) -> Result<ResponseValue<()>, Error<types::SystemUpdateStopError>> {
-        let url = format!("{}/v1/system/update/stop", self.baseurl,);
+        let url = format!("{}/v1/system/update/stop", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33757,7 +34036,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .post(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33808,7 +34087,7 @@ impl Client {
         sort_by: Option<types::IdSortMode>,
     ) -> Result<ResponseValue<types::SystemUpdateResultsPage>, Error<types::SystemUpdateListError>>
     {
-        let url = format!("{}/v1/system/update/updates", self.baseurl,);
+        let url = format!("{}/v1/system/update/updates", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -33817,7 +34096,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33910,7 +34189,7 @@ impl Client {
     ) -> Result<ResponseValue<types::SystemUpdate>, Error<types::SystemUpdateViewError>> {
         let url = format!(
             "{}/v1/system/update/updates/{}",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&version.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33921,7 +34200,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -33969,7 +34248,7 @@ impl Client {
     > {
         let url = format!(
             "{}/v1/system/update/updates/{}/components",
-            self.baseurl,
+            self.baseurl(),
             encode_path(&version.to_string()),
         );
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -33980,7 +34259,7 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -34021,7 +34300,7 @@ impl Client {
     pub async fn system_version<'a>(
         &'a self,
     ) -> Result<ResponseValue<types::SystemVersion>, Error<types::SystemVersionError>> {
-        let url = format!("{}/v1/system/update/version", self.baseurl,);
+        let url = format!("{}/v1/system/update/version", self.baseurl(),);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
             ::reqwest::header::HeaderName::from_static("api-version"),
@@ -34030,7 +34309,14347 @@ impl Client {
         #[allow(unused_mut)]
         #[allow(unused_variables)]
         let mut request = self
-            .client
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_version",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemVersionError>::from_response::<
+                    types::SystemVersionError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemVersionError>::from_response::<
+                    types::SystemVersionError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+}
+
+#[cfg(feature = "middleware")]
+#[allow(clippy::all)]
+#[allow(elided_named_lifetimes)]
+impl MiddlewareClient {
+    ///Fetch a disk by id
+    ///
+    ///Use `GET /v1/disks/{disk}` instead
+    ///
+    ///Sends a 'GET' request to '/by-id/disks/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewByIdError>> {
+        let url = format!(
+            "{}/by-id/disks/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskViewByIdError>::from_response::<
+                        types::DiskViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskViewByIdError>::from_response::<
+                        types::DiskViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an image by id
+    ///
+    ///Sends a 'GET' request to '/by-id/images/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn image_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Image>, Error<types::ImageViewByIdError>> {
+        let url = format!(
+            "{}/by-id/images/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "image_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageViewByIdError>::from_response::<
+                    types::ImageViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageViewByIdError>::from_response::<
+                    types::ImageViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an instance by id
+    ///
+    ///Sends a 'GET' request to '/by-id/instances/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewByIdError>> {
+        let url = format!(
+            "{}/by-id/instances/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceViewByIdError>::from_response::<
+                    types::InstanceViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceViewByIdError>::from_response::<
+                    types::InstanceViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a network interface by id
+    ///
+    ///Sends a 'GET' request to '/by-id/network-interfaces/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_network_interface_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceViewByIdError>,
+    > {
+        let url = format!(
+            "{}/by-id/network-interfaces/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_network_interface_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceViewByIdError>::from_response::<
+                    types::InstanceNetworkInterfaceViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceViewByIdError>::from_response::<
+                    types::InstanceNetworkInterfaceViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an organization by id
+    ///
+    ///Use `GET /v1/organizations/{organization}` instead
+    ///
+    ///Sends a 'GET' request to '/by-id/organizations/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewByIdError>> {
+        let url = format!(
+            "{}/by-id/organizations/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationViewByIdError>::from_response::<
+                    types::OrganizationViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationViewByIdError>::from_response::<
+                    types::OrganizationViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a project by id
+    ///
+    ///Use `GET /v1/projects/{project}` instead
+    ///
+    ///Sends a 'GET' request to '/by-id/projects/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewByIdError>> {
+        let url = format!(
+            "{}/by-id/projects/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectViewByIdError>::from_response::<
+                    types::ProjectViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectViewByIdError>::from_response::<
+                    types::ProjectViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a snapshot by id
+    ///
+    ///Sends a 'GET' request to '/by-id/snapshots/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn snapshot_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotViewByIdError>> {
+        let url = format!(
+            "{}/by-id/snapshots/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "snapshot_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SnapshotViewByIdError>::from_response::<
+                    types::SnapshotViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SnapshotViewByIdError>::from_response::<
+                    types::SnapshotViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a route by id
+    ///
+    ///Sends a 'GET' request to '/by-id/vpc-router-routes/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_route_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteViewByIdError>> {
+        let url = format!(
+            "{}/by-id/vpc-router-routes/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_route_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteViewByIdError>::from_response::<
+                    types::VpcRouterRouteViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteViewByIdError>::from_response::<
+                    types::VpcRouterRouteViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Get a router by id
+    ///
+    ///Sends a 'GET' request to '/by-id/vpc-routers/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterViewByIdError>> {
+        let url = format!(
+            "{}/by-id/vpc-routers/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterViewByIdError>::from_response::<
+                    types::VpcRouterViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterViewByIdError>::from_response::<
+                    types::VpcRouterViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a subnet by id
+    ///
+    ///Sends a 'GET' request to '/by-id/vpc-subnets/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetViewByIdError>> {
+        let url = format!(
+            "{}/by-id/vpc-subnets/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetViewByIdError>::from_response::<
+                    types::VpcSubnetViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetViewByIdError>::from_response::<
+                    types::VpcSubnetViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a VPC
+    ///
+    ///Sends a 'GET' request to '/by-id/vpcs/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcViewByIdError>> {
+        let url = format!(
+            "{}/by-id/vpcs/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcViewByIdError>::from_response::<types::VpcViewByIdError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcViewByIdError>::from_response::<types::VpcViewByIdError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Start an OAuth 2.0 Device Authorization Grant
+    ///
+    ///This endpoint is designed to be accessed from an *unauthenticated* API
+    /// client. It generates and records a `device_code` and `user_code` which
+    /// must be verified and confirmed prior to a token being granted.
+    ///
+    ///Sends a 'POST' request to '/device/auth'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn device_auth_request<'a>(
+        &'a self,
+        body: &'a types::DeviceAuthRequest,
+    ) -> Result<ResponseValue<ByteStream>, Error<()>> {
+        let url = format!("{}/device/auth", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .form_urlencoded(&body)?
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "device_auth_request",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200..=299 => Ok(ResponseValue::stream(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Confirm an OAuth 2.0 Device Authorization Grant
+    ///
+    ///This endpoint is designed to be accessed by the user agent (browser),
+    /// not the client requesting the token. So we do not actually return the
+    /// token here; it will be returned in response to the poll on
+    /// `/device/token`.
+    ///
+    ///Sends a 'POST' request to '/device/confirm'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn device_auth_confirm<'a>(
+        &'a self,
+        body: &'a types::DeviceAuthVerify,
+    ) -> Result<ResponseValue<()>, Error<types::DeviceAuthConfirmError>> {
+        let url = format!("{}/device/confirm", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "device_auth_confirm",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DeviceAuthConfirmError>::from_response::<
+                    types::DeviceAuthConfirmError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DeviceAuthConfirmError>::from_response::<
+                    types::DeviceAuthConfirmError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Request a device access token
+    ///
+    ///This endpoint should be polled by the client until the user code is
+    /// verified and the grant is confirmed.
+    ///
+    ///Sends a 'POST' request to '/device/token'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn device_access_token<'a>(
+        &'a self,
+        body: &'a types::DeviceAccessTokenRequest,
+    ) -> Result<ResponseValue<ByteStream>, Error<()>> {
+        let url = format!("{}/device/token", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .form_urlencoded(&body)?
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "device_access_token",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200..=299 => Ok(ResponseValue::stream(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///List groups
+    ///
+    ///Sends a 'GET' request to '/groups'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn group_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::GroupListError>> {
+        let url = format!("{}/groups", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "group_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::GroupListError>::from_response::<types::GroupListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::GroupListError>::from_response::<types::GroupListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List groups as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/groups` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn group_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Group, Error<types::GroupListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.group_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.group_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Sends a 'POST' request to '/login'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn login_spoof<'a>(
+        &'a self,
+        body: &'a types::SpoofLoginBody,
+    ) -> Result<ResponseValue<()>, Error<types::LoginSpoofError>> {
+        let url = format!("{}/login", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "login_spoof",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginSpoofError>::from_response::<types::LoginSpoofError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginSpoofError>::from_response::<types::LoginSpoofError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Authenticate a user (i.e., log in) via username and password
+    ///
+    ///Sends a 'POST' request to '/login/{silo_name}/local'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn login_local<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        body: &'a types::UsernamePasswordCredentials,
+    ) -> Result<ResponseValue<ByteStream>, Error<types::LoginLocalError>> {
+        let url = format!(
+            "{}/login/{}/local",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "login_local",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200..=299 => Ok(ResponseValue::stream(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginLocalError>::from_response::<types::LoginLocalError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginLocalError>::from_response::<types::LoginLocalError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Prompt user login
+    ///
+    ///Either display a page asking a user for their credentials, or redirect
+    /// them to their identity provider.
+    ///
+    ///Sends a 'GET' request to '/login/{silo_name}/saml/{provider_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn login_saml_begin<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        provider_name: &'a types::Name,
+    ) -> Result<ResponseValue<ByteStream>, Error<types::LoginSamlBeginError>> {
+        let url = format!(
+            "{}/login/{}/saml/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+            encode_path(&provider_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self.client().get(url).headers(header_map).build()?;
+        let info = OperationInfo {
+            operation_id: "login_saml_begin",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200..=299 => Ok(ResponseValue::stream(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginSamlBeginError>::from_response::<
+                    types::LoginSamlBeginError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginSamlBeginError>::from_response::<
+                    types::LoginSamlBeginError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Authenticate a user (i.e., log in) via SAML
+    ///
+    ///Sends a 'POST' request to '/login/{silo_name}/saml/{provider_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn login_saml<'a, B: Into<reqwest::Body>>(
+        &'a self,
+        silo_name: &'a types::Name,
+        provider_name: &'a types::Name,
+        body: B,
+    ) -> Result<ResponseValue<ByteStream>, Error<types::LoginSamlError>> {
+        let url = format!(
+            "{}/login/{}/saml/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+            encode_path(&provider_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/octet-stream"),
+            )
+            .body(body)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "login_saml",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200..=299 => Ok(ResponseValue::stream(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginSamlError>::from_response::<types::LoginSamlError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LoginSamlError>::from_response::<types::LoginSamlError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Sends a 'POST' request to '/logout'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn logout<'a>(&'a self) -> Result<ResponseValue<()>, Error<types::LogoutError>> {
+        let url = format!("{}/logout", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "logout",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LogoutError>::from_response::<types::LogoutError>(response)
+                    .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LogoutError>::from_response::<types::LogoutError>(response)
+                    .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List organizations
+    ///
+    ///Use `GET /v1/organizations` instead
+    ///
+    ///Sends a 'GET' request to '/organizations'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::OrganizationListError>>
+    {
+        let url = format!("{}/organizations", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationListError>::from_response::<
+                    types::OrganizationListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationListError>::from_response::<
+                    types::OrganizationListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List organizations as a Stream
+    ///
+    ///Use `GET /v1/organizations` instead
+    ///
+    ///Sends repeated `GET` requests to `/organizations` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn organization_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Organization, Error<types::OrganizationListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.organization_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.organization_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an organization
+    ///
+    ///Use `POST /v1/organizations` instead
+    ///
+    ///Sends a 'POST' request to '/organizations'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_create<'a>(
+        &'a self,
+        body: &'a types::OrganizationCreate,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationCreateError>> {
+        let url = format!("{}/organizations", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationCreateError>::from_response::<
+                    types::OrganizationCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationCreateError>::from_response::<
+                    types::OrganizationCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an organization
+    ///
+    ///Use `GET /v1/organizations/{organization}` instead
+    ///
+    ///Sends a 'GET' request to '/organizations/{organization_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewError>> {
+        let url = format!(
+            "{}/organizations/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationViewError>::from_response::<
+                    types::OrganizationViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationViewError>::from_response::<
+                    types::OrganizationViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update an organization
+    ///
+    ///Use `PUT /v1/organizations/{organization}` instead
+    ///
+    ///Sends a 'PUT' request to '/organizations/{organization_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        body: &'a types::OrganizationUpdate,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationUpdateError>> {
+        let url = format!(
+            "{}/organizations/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationUpdateError>::from_response::<
+                    types::OrganizationUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationUpdateError>::from_response::<
+                    types::OrganizationUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an organization
+    ///
+    ///Use `DELETE /v1/organizations/{organization}` instead
+    ///
+    ///Sends a 'DELETE' request to '/organizations/{organization_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::OrganizationDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationDeleteError>::from_response::<
+                    types::OrganizationDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationDeleteError>::from_response::<
+                    types::OrganizationDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an organization's IAM policy
+    ///
+    ///Use `GET /v1/organizations/{organization}/policy` instead
+    ///
+    ///Sends a 'GET' request to '/organizations/{organization_name}/policy'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_policy_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyViewError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/policy",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_policy_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyViewError>::from_response::<
+                    types::OrganizationPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyViewError>::from_response::<
+                    types::OrganizationPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update an organization's IAM policy
+    ///
+    ///Use `PUT /v1/organizations/{organization}/policy` instead
+    ///
+    ///Sends a 'PUT' request to '/organizations/{organization_name}/policy'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_policy_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        body: &'a types::OrganizationRolePolicy,
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyUpdateError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/policy",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_policy_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyUpdateError>::from_response::<
+                    types::OrganizationPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyUpdateError>::from_response::<
+                    types::OrganizationPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List projects
+    ///
+    ///Use `GET /v1/projects` instead
+    ///
+    ///Sends a 'GET' request to '/organizations/{organization_name}/projects'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::ProjectListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectListError>::from_response::<types::ProjectListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectListError>::from_response::<types::ProjectListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List projects as a Stream
+    ///
+    ///Use `GET /v1/projects` instead
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn project_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Project, Error<types::ProjectListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.project_list(organization_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.project_list(organization_name, limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a project
+    ///
+    ///Use `POST /v1/projects` instead
+    ///
+    ///Sends a 'POST' request to '/organizations/{organization_name}/projects'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        body: &'a types::ProjectCreate,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectCreateError>::from_response::<
+                    types::ProjectCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectCreateError>::from_response::<
+                    types::ProjectCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a project
+    ///
+    ///Use `GET /v1/projects/{project}` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectViewError>::from_response::<types::ProjectViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectViewError>::from_response::<types::ProjectViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a project
+    ///
+    ///Use `PUT /v1/projects/{project}` instead
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::ProjectUpdate,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectUpdateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectUpdateError>::from_response::<
+                    types::ProjectUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectUpdateError>::from_response::<
+                    types::ProjectUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a project
+    ///
+    ///Use `DELETE /v1/projects/{project}` instead
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::ProjectDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectDeleteError>::from_response::<
+                    types::ProjectDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectDeleteError>::from_response::<
+                    types::ProjectDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List disks
+    ///
+    ///Use `GET /v1/disks` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::DiskListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/disks",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskListError>::from_response::<types::DiskListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskListError>::from_response::<types::DiskListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List disks as a Stream
+    ///
+    ///Use `GET /v1/disks` instead
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/disks` until
+    /// there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn disk_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::DiskListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.disk_list(organization_name, project_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.disk_list(
+                            organization_name,
+                            project_name,
+                            limit,
+                            state.as_deref(),
+                            None,
+                        )
+                        .map_ok(|page| {
+                            let page = page.into_inner();
+                            Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                        })
+                        .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Use `POST /v1/disks` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::DiskCreate,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/disks",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskCreateError>::from_response::<types::DiskCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskCreateError>::from_response::<types::DiskCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a disk
+    ///
+    ///Use `GET /v1/disks/{disk}` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        disk_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/disks/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&disk_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskViewError>::from_response::<types::DiskViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskViewError>::from_response::<types::DiskViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Use `DELETE /v1/disks/{disk}` instead
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        disk_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::DiskDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/disks/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&disk_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskDeleteError>::from_response::<types::DiskDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskDeleteError>::from_response::<types::DiskDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch disk metrics
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}/metrics/{metric_name}'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `disk_name`
+    /// - `metric_name`
+    /// - `end_time`: An exclusive end time of metrics.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `start_time`: An inclusive start time of metrics.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_metrics_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        disk_name: &'a types::Name,
+        metric_name: types::DiskMetricName,
+        end_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        start_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
+    ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::DiskMetricsListError>>
+    {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/disks/{}/metrics/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&disk_name.to_string()),
+            encode_path(&metric_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("end_time", &end_time))
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "start_time",
+                &start_time,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_metrics_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskMetricsListError>::from_response::<
+                    types::DiskMetricsListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskMetricsListError>::from_response::<
+                    types::DiskMetricsListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch disk metrics as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}/metrics/{metric_name}` until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `disk_name`
+    /// - `metric_name`
+    /// - `end_time`: An exclusive end time of metrics.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `start_time`: An inclusive start time of metrics.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn disk_metrics_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        disk_name: &'a types::Name,
+        metric_name: types::DiskMetricName,
+        end_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
+        limit: Option<::std::num::NonZeroU32>,
+        start_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
+    ) -> impl futures::Stream<Item = Result<types::Measurement, Error<types::DiskMetricsListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.disk_metrics_list(
+            organization_name,
+            project_name,
+            disk_name,
+            metric_name,
+            end_time,
+            limit,
+            None,
+            start_time,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.disk_metrics_list(
+                        organization_name,
+                        project_name,
+                        disk_name,
+                        metric_name,
+                        None,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///List images
+    ///
+    ///List images in a project. The images are returned sorted by creation
+    /// date, with the most recent images appearing first.
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn image_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::ImageResultsPage>, Error<types::ImageListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/images",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "image_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageListError>::from_response::<types::ImageListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageListError>::from_response::<types::ImageListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List images as a Stream
+    ///
+    ///List images in a project. The images are returned sorted by creation
+    /// date, with the most recent images appearing first.
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/images`
+    /// until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn image_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Image, Error<types::ImageListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.image_list(organization_name, project_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.image_list(
+                            organization_name,
+                            project_name,
+                            limit,
+                            state.as_deref(),
+                            None,
+                        )
+                        .map_ok(|page| {
+                            let page = page.into_inner();
+                            Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                        })
+                        .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an image
+    ///
+    ///Create a new image in a project.
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn image_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::ImageCreate,
+    ) -> Result<ResponseValue<types::Image>, Error<types::ImageCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/images",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "image_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageCreateError>::from_response::<types::ImageCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageCreateError>::from_response::<types::ImageCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an image
+    ///
+    ///Fetch the details for a specific image in a project.
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images/
+    /// {image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn image_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        image_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Image>, Error<types::ImageViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/images/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&image_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "image_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageViewError>::from_response::<types::ImageViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageViewError>::from_response::<types::ImageViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an image
+    ///
+    ///Permanently delete an image from a project. This operation cannot be
+    /// undone. Any instances in the project using the image will continue to
+    /// run, however new instances can not be created with this image.
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images/
+    /// {image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn image_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        image_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::ImageDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/images/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&image_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "image_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageDeleteError>::from_response::<types::ImageDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ImageDeleteError>::from_response::<types::ImageDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List instances
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::InstanceListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceListError>::from_response::<
+                        types::InstanceListError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceListError>::from_response::<
+                        types::InstanceListError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List instances as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/instances`
+    /// until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn instance_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Instance, Error<types::InstanceListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.instance_list(organization_name, project_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.instance_list(
+                            organization_name,
+                            project_name,
+                            limit,
+                            state.as_deref(),
+                            None,
+                        )
+                        .map_ok(|page| {
+                            let page = page.into_inner();
+                            Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                        })
+                        .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an instance
+    ///
+    ///Use `POST /v1/instances` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::InstanceCreate,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceCreateError>::from_response::<
+                    types::InstanceCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceCreateError>::from_response::<
+                    types::InstanceCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an instance
+    ///
+    ///Use `GET /v1/instances/{instance}` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceViewError>::from_response::<
+                        types::InstanceViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceViewError>::from_response::<
+                        types::InstanceViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an instance
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::InstanceDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDeleteError>::from_response::<
+                    types::InstanceDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDeleteError>::from_response::<
+                    types::InstanceDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List an instance's disks
+    ///
+    ///Use `GET /v1/instances/{instance}/disks` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `instance_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_disk_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::InstanceDiskListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/disks",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_disk_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskListError>::from_response::<
+                    types::InstanceDiskListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskListError>::from_response::<
+                    types::InstanceDiskListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List an instance's disks as a Stream
+    ///
+    ///Use `GET /v1/instances/{instance}/disks` instead
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks` until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `instance_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn instance_disk_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::InstanceDiskListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.instance_disk_list(
+            organization_name,
+            project_name,
+            instance_name,
+            limit,
+            None,
+            sort_by,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.instance_disk_list(
+                        organization_name,
+                        project_name,
+                        instance_name,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///Attach a disk to an instance
+    ///
+    ///Use `POST /v1/instances/{instance}/disks/attach` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks/attach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_disk_attach<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        body: &'a types::DiskIdentifier,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskAttachError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/disks/attach",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_disk_attach",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskAttachError>::from_response::<
+                    types::InstanceDiskAttachError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskAttachError>::from_response::<
+                    types::InstanceDiskAttachError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Detach a disk from an instance
+    ///
+    ///Use `POST /v1/disks/{disk}/detach` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks/detach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_disk_detach<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        body: &'a types::DiskIdentifier,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskDetachError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/disks/detach",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_disk_detach",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskDetachError>::from_response::<
+                    types::InstanceDiskDetachError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskDetachError>::from_response::<
+                    types::InstanceDiskDetachError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List external IP addresses
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/external-ips'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_external_ip_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<
+        ResponseValue<types::ExternalIpResultsPage>,
+        Error<types::InstanceExternalIpListError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/external-ips",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_external_ip_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceExternalIpListError>::from_response::<
+                    types::InstanceExternalIpListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceExternalIpListError>::from_response::<
+                    types::InstanceExternalIpListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Migrate an instance
+    ///
+    ///Use `POST /v1/instances/{instance}/migrate` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/migrate'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_migrate<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        body: &'a types::InstanceMigrate,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceMigrateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/migrate",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_migrate",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceMigrateError>::from_response::<
+                    types::InstanceMigrateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceMigrateError>::from_response::<
+                    types::InstanceMigrateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List network interfaces
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `instance_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_network_interface_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<
+        ResponseValue<types::NetworkInterfaceResultsPage>,
+        Error<types::InstanceNetworkInterfaceListError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/network-interfaces",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_network_interface_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceListError>::from_response::<
+                    types::InstanceNetworkInterfaceListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceListError>::from_response::<
+                    types::InstanceNetworkInterfaceListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List network interfaces as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces` until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `instance_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn instance_network_interface_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::NetworkInterface, Error<types::InstanceNetworkInterfaceListError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.instance_network_interface_list(
+            organization_name,
+            project_name,
+            instance_name,
+            limit,
+            None,
+            sort_by,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.instance_network_interface_list(
+                        organization_name,
+                        project_name,
+                        instance_name,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///Create a network interface
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_network_interface_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        body: &'a types::NetworkInterfaceCreate,
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceCreateError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/network-interfaces",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_network_interface_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceCreateError>::from_response::<
+                    types::InstanceNetworkInterfaceCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceCreateError>::from_response::<
+                    types::InstanceNetworkInterfaceCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a network interface
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces/{interface_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_network_interface_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        interface_name: &'a types::Name,
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceViewError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+            encode_path(&interface_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_network_interface_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceViewError>::from_response::<
+                    types::InstanceNetworkInterfaceViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceViewError>::from_response::<
+                    types::InstanceNetworkInterfaceViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a network interface
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces/{interface_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_network_interface_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        interface_name: &'a types::Name,
+        body: &'a types::NetworkInterfaceUpdate,
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceUpdateError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+            encode_path(&interface_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_network_interface_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceUpdateError>::from_response::<
+                    types::InstanceNetworkInterfaceUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceUpdateError>::from_response::<
+                    types::InstanceNetworkInterfaceUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a network interface
+    ///
+    ///Note that the primary interface for an instance cannot be deleted if
+    /// there are any secondary interfaces. A new primary interface must be
+    /// designated first. The primary interface can be deleted if there are no
+    /// secondary interfaces.
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces/{interface_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_network_interface_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        interface_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::InstanceNetworkInterfaceDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+            encode_path(&interface_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_network_interface_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceDeleteError>::from_response::<
+                    types::InstanceNetworkInterfaceDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceNetworkInterfaceDeleteError>::from_response::<
+                    types::InstanceNetworkInterfaceDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Reboot an instance
+    ///
+    ///Use `POST /v1/instances/{instance}/reboot` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/reboot'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_reboot<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceRebootError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/reboot",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_reboot",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceRebootError>::from_response::<
+                    types::InstanceRebootError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceRebootError>::from_response::<
+                    types::InstanceRebootError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an instance's serial console
+    ///
+    ///Use `GET /v1/instances/{instance}/serial-console` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/serial-console'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `instance_name`
+    /// - `from_start`: Character index in the serial buffer from which to read,
+    ///   counting the bytes output since instance start. If this is not
+    ///   provided, `most_recent` must be provided, and if this *is* provided,
+    ///   `most_recent` must *not* be provided.
+    /// - `max_bytes`: Maximum number of bytes of buffered serial console
+    ///   contents to return. If the requested range runs to the end of the
+    ///   available buffer, the data returned will be shorter than `max_bytes`.
+    /// - `most_recent`: Character index in the serial buffer from which to
+    ///   read, counting *backward* from the most recently buffered data
+    ///   retrieved from the instance. (See note on `from_start` about mutual
+    ///   exclusivity)
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_serial_console<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+        from_start: Option<u64>,
+        max_bytes: Option<u64>,
+        most_recent: Option<u64>,
+    ) -> Result<
+        ResponseValue<types::InstanceSerialConsoleData>,
+        Error<types::InstanceSerialConsoleError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/serial-console",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "from_start",
+                &from_start,
+            ))
+            .query(&progenitor_client::QueryParam::new("max_bytes", &max_bytes))
+            .query(&progenitor_client::QueryParam::new(
+                "most_recent",
+                &most_recent,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_serial_console",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceSerialConsoleError>::from_response::<
+                    types::InstanceSerialConsoleError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceSerialConsoleError>::from_response::<
+                    types::InstanceSerialConsoleError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Connect to an instance's serial console
+    ///
+    ///Use `GET /v1/instances/{instance}/serial-console/stream` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/serial-console/stream'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_serial_console_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/serial-console/stream",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .headers(header_map)
+            .header(::reqwest::header::CONNECTION, "Upgrade")
+            .header(::reqwest::header::UPGRADE, "websocket")
+            .header(::reqwest::header::SEC_WEBSOCKET_VERSION, "13")
+            .header(
+                ::reqwest::header::SEC_WEBSOCKET_KEY,
+                ::base64::Engine::encode(
+                    &::base64::engine::general_purpose::STANDARD,
+                    ::rand::random::<[u8; 16]>(),
+                ),
+            )
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_serial_console_stream",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            101u16 => ResponseValue::upgrade(response).await,
+            200..=299 => ResponseValue::upgrade(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Boot an instance
+    ///
+    ///Use `POST /v1/instances/{instance}/start` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/start'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_start<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStartError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/start",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_start",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStartError>::from_response::<
+                    types::InstanceStartError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStartError>::from_response::<
+                    types::InstanceStartError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Halt an instance
+    ///
+    ///Use `POST /v1/instances/{instance}/stop` instead
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/stop'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_stop<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        instance_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStopError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/instances/{}/stop",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&instance_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_stop",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceStopError>::from_response::<
+                        types::InstanceStopError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceStopError>::from_response::<
+                        types::InstanceStopError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a project's IAM policy
+    ///
+    ///Use `GET /v1/projects/{project}/policy` instead
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/policy'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_policy_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/policy",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_policy_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyViewError>::from_response::<
+                    types::ProjectPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyViewError>::from_response::<
+                    types::ProjectPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a project's IAM policy
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/policy'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_policy_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::ProjectRolePolicy,
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyUpdateError>>
+    {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/policy",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_policy_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyUpdateError>::from_response::<
+                    types::ProjectPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyUpdateError>::from_response::<
+                    types::ProjectPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List snapshots
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn snapshot_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::SnapshotResultsPage>, Error<types::SnapshotListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/snapshots",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "snapshot_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotListError>::from_response::<
+                        types::SnapshotListError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotListError>::from_response::<
+                        types::SnapshotListError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List snapshots as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/snapshots`
+    /// until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn snapshot_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Snapshot, Error<types::SnapshotListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.snapshot_list(organization_name, project_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.snapshot_list(
+                            organization_name,
+                            project_name,
+                            limit,
+                            state.as_deref(),
+                            None,
+                        )
+                        .map_ok(|page| {
+                            let page = page.into_inner();
+                            Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                        })
+                        .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a snapshot
+    ///
+    ///Creates a point-in-time snapshot from a disk.
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn snapshot_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::SnapshotCreate,
+    ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/snapshots",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "snapshot_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SnapshotCreateError>::from_response::<
+                    types::SnapshotCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SnapshotCreateError>::from_response::<
+                    types::SnapshotCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a snapshot
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots/
+    /// {snapshot_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn snapshot_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        snapshot_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/snapshots/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&snapshot_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "snapshot_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotViewError>::from_response::<
+                        types::SnapshotViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotViewError>::from_response::<
+                        types::SnapshotViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a snapshot
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots/
+    /// {snapshot_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn snapshot_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        snapshot_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::SnapshotDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/snapshots/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&snapshot_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "snapshot_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SnapshotDeleteError>::from_response::<
+                    types::SnapshotDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SnapshotDeleteError>::from_response::<
+                    types::SnapshotDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List VPCs
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::VpcResultsPage>, Error<types::VpcListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcListError>::from_response::<types::VpcListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcListError>::from_response::<types::VpcListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List VPCs as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/vpcs` until
+    /// there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn vpc_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Vpc, Error<types::VpcListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.vpc_list(organization_name, project_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.vpc_list(
+                            organization_name,
+                            project_name,
+                            limit,
+                            state.as_deref(),
+                            None,
+                        )
+                        .map_ok(|page| {
+                            let page = page.into_inner();
+                            Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                        })
+                        .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a VPC
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs'
+    ///
+    ///Arguments:
+    /// - `organization_name`: The organization's unique name.
+    /// - `project_name`: The project's unique name within the organization.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        body: &'a types::VpcCreate,
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcCreateError>::from_response::<types::VpcCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcCreateError>::from_response::<types::VpcCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a VPC
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcViewError>::from_response::<types::VpcViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcViewError>::from_response::<types::VpcViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a VPC
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        body: &'a types::VpcUpdate,
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcUpdateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcUpdateError>::from_response::<types::VpcUpdateError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcUpdateError>::from_response::<types::VpcUpdateError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a VPC
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::VpcDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcDeleteError>::from_response::<types::VpcDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcDeleteError>::from_response::<types::VpcDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List firewall rules
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/firewall/rules'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_firewall_rules_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::VpcFirewallRules>, Error<types::VpcFirewallRulesViewError>>
+    {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/firewall/rules",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_firewall_rules_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcFirewallRulesViewError>::from_response::<
+                    types::VpcFirewallRulesViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcFirewallRulesViewError>::from_response::<
+                    types::VpcFirewallRulesViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Replace firewall rules
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/firewall/rules'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_firewall_rules_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        body: &'a types::VpcFirewallRuleUpdateParams,
+    ) -> Result<ResponseValue<types::VpcFirewallRules>, Error<types::VpcFirewallRulesUpdateError>>
+    {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/firewall/rules",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_firewall_rules_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcFirewallRulesUpdateError>::from_response::<
+                    types::VpcFirewallRulesUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcFirewallRulesUpdateError>::from_response::<
+                    types::VpcFirewallRulesUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List routers
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::VpcRouterResultsPage>, Error<types::VpcRouterListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterListError>::from_response::<
+                    types::VpcRouterListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterListError>::from_response::<
+                    types::VpcRouterListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List routers as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers` until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn vpc_router_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::VpcRouter, Error<types::VpcRouterListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.vpc_router_list(
+            organization_name,
+            project_name,
+            vpc_name,
+            limit,
+            None,
+            sort_by,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.vpc_router_list(
+                        organization_name,
+                        project_name,
+                        vpc_name,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///Create a router
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        body: &'a types::VpcRouterCreate,
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterCreateError>::from_response::<
+                    types::VpcRouterCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterCreateError>::from_response::<
+                    types::VpcRouterCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Get a router
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterViewError>::from_response::<
+                    types::VpcRouterViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterViewError>::from_response::<
+                    types::VpcRouterViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a router
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        body: &'a types::VpcRouterUpdate,
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterUpdateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterUpdateError>::from_response::<
+                    types::VpcRouterUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterUpdateError>::from_response::<
+                    types::VpcRouterUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a router
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::VpcRouterDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterDeleteError>::from_response::<
+                    types::VpcRouterDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterDeleteError>::from_response::<
+                    types::VpcRouterDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List routes
+    ///
+    ///List the routes associated with a router in a particular VPC.
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `router_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_route_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::RouterRouteResultsPage>, Error<types::VpcRouterRouteListError>>
+    {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_route_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteListError>::from_response::<
+                    types::VpcRouterRouteListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteListError>::from_response::<
+                    types::VpcRouterRouteListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List routes as a Stream
+    ///
+    ///List the routes associated with a router in a particular VPC.
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `router_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn vpc_router_route_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::RouterRoute, Error<types::VpcRouterRouteListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.vpc_router_route_list(
+            organization_name,
+            project_name,
+            vpc_name,
+            router_name,
+            limit,
+            None,
+            sort_by,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.vpc_router_route_list(
+                        organization_name,
+                        project_name,
+                        vpc_name,
+                        router_name,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///Create a router
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_route_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        body: &'a types::RouterRouteCreateParams,
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_route_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteCreateError>::from_response::<
+                    types::VpcRouterRouteCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteCreateError>::from_response::<
+                    types::VpcRouterRouteCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a route
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes/{route_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_route_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        route_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+            encode_path(&route_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_route_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteViewError>::from_response::<
+                    types::VpcRouterRouteViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteViewError>::from_response::<
+                    types::VpcRouterRouteViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a route
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes/{route_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_route_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        route_name: &'a types::Name,
+        body: &'a types::RouterRouteUpdateParams,
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteUpdateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+            encode_path(&route_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_route_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteUpdateError>::from_response::<
+                    types::VpcRouterRouteUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteUpdateError>::from_response::<
+                    types::VpcRouterRouteUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a route
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes/{route_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_router_route_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        router_name: &'a types::Name,
+        route_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::VpcRouterRouteDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&router_name.to_string()),
+            encode_path(&route_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_router_route_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteDeleteError>::from_response::<
+                    types::VpcRouterRouteDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcRouterRouteDeleteError>::from_response::<
+                    types::VpcRouterRouteDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List subnets
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_list<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::VpcSubnetResultsPage>, Error<types::VpcSubnetListError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/subnets",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetListError>::from_response::<
+                    types::VpcSubnetListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetListError>::from_response::<
+                    types::VpcSubnetListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List subnets as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets` until there are no more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn vpc_subnet_list_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::VpcSubnet, Error<types::VpcSubnetListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.vpc_subnet_list(
+            organization_name,
+            project_name,
+            vpc_name,
+            limit,
+            None,
+            sort_by,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.vpc_subnet_list(
+                        organization_name,
+                        project_name,
+                        vpc_name,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///Create a subnet
+    ///
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_create<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        body: &'a types::VpcSubnetCreate,
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetCreateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/subnets",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetCreateError>::from_response::<
+                    types::VpcSubnetCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetCreateError>::from_response::<
+                    types::VpcSubnetCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a subnet
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_view<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        subnet_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetViewError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&subnet_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetViewError>::from_response::<
+                    types::VpcSubnetViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetViewError>::from_response::<
+                    types::VpcSubnetViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a subnet
+    ///
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_update<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        subnet_name: &'a types::Name,
+        body: &'a types::VpcSubnetUpdate,
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetUpdateError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&subnet_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetUpdateError>::from_response::<
+                    types::VpcSubnetUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetUpdateError>::from_response::<
+                    types::VpcSubnetUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a subnet
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_delete<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        subnet_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::VpcSubnetDeleteError>> {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&subnet_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetDeleteError>::from_response::<
+                    types::VpcSubnetDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetDeleteError>::from_response::<
+                    types::VpcSubnetDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List network interfaces
+    ///
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}/network-interfaces'
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `subnet_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn vpc_subnet_list_network_interfaces<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        subnet_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<
+        ResponseValue<types::NetworkInterfaceResultsPage>,
+        Error<types::VpcSubnetListNetworkInterfacesError>,
+    > {
+        let url = format!(
+            "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}/network-interfaces",
+            self.baseurl(),
+            encode_path(&organization_name.to_string()),
+            encode_path(&project_name.to_string()),
+            encode_path(&vpc_name.to_string()),
+            encode_path(&subnet_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "vpc_subnet_list_network_interfaces",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetListNetworkInterfacesError>::from_response::<
+                    types::VpcSubnetListNetworkInterfacesError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::VpcSubnetListNetworkInterfacesError>::from_response::<
+                    types::VpcSubnetListNetworkInterfacesError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List network interfaces as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}/network-interfaces` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `organization_name`
+    /// - `project_name`
+    /// - `vpc_name`
+    /// - `subnet_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn vpc_subnet_list_network_interfaces_stream<'a>(
+        &'a self,
+        organization_name: &'a types::Name,
+        project_name: &'a types::Name,
+        vpc_name: &'a types::Name,
+        subnet_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::NetworkInterface, Error<types::VpcSubnetListNetworkInterfacesError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.vpc_subnet_list_network_interfaces(
+            organization_name,
+            project_name,
+            vpc_name,
+            subnet_name,
+            limit,
+            None,
+            sort_by,
+        )
+        .map_ok(move |page| {
+            let page = page.into_inner();
+            let first = futures::stream::iter(page.items).map(Ok);
+            let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                if state.is_none() {
+                    Ok(None)
+                } else {
+                    self.vpc_subnet_list_network_interfaces(
+                        organization_name,
+                        project_name,
+                        vpc_name,
+                        subnet_name,
+                        limit,
+                        state.as_deref(),
+                        None,
+                    )
+                    .map_ok(|page| {
+                        let page = page.into_inner();
+                        Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                    })
+                    .await
+                }
+            })
+            .try_flatten();
+            first.chain(rest)
+        })
+        .try_flatten_stream()
+        .boxed()
+    }
+
+    ///Fetch the current silo's IAM policy
+    ///
+    ///Sends a 'GET' request to '/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn policy_view<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::PolicyViewError>> {
+        let url = format!("{}/policy", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "policy_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::PolicyViewError>::from_response::<types::PolicyViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::PolicyViewError>::from_response::<types::PolicyViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update the current silo's IAM policy
+    ///
+    ///Sends a 'PUT' request to '/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn policy_update<'a>(
+        &'a self,
+        body: &'a types::SiloRolePolicy,
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::PolicyUpdateError>> {
+        let url = format!("{}/policy", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "policy_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::PolicyUpdateError>::from_response::<
+                        types::PolicyUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::PolicyUpdateError>::from_response::<
+                        types::PolicyUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List built-in roles
+    ///
+    ///Sends a 'GET' request to '/roles'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn role_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+    ) -> Result<ResponseValue<types::RoleResultsPage>, Error<types::RoleListError>> {
+        let url = format!("{}/roles", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "role_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RoleListError>::from_response::<types::RoleListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RoleListError>::from_response::<types::RoleListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List built-in roles as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/roles` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn role_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+    ) -> impl futures::Stream<Item = Result<types::Role, Error<types::RoleListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.role_list(limit, None)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.role_list(limit, state.as_deref())
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a built-in role
+    ///
+    ///Sends a 'GET' request to '/roles/{role_name}'
+    ///
+    ///Arguments:
+    /// - `role_name`: The built-in role's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn role_view<'a>(
+        &'a self,
+        role_name: &'a str,
+    ) -> Result<ResponseValue<types::Role>, Error<types::RoleViewError>> {
+        let url = format!(
+            "{}/roles/{}",
+            self.baseurl(),
+            encode_path(&role_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "role_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RoleViewError>::from_response::<types::RoleViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RoleViewError>::from_response::<types::RoleViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch the user associated with the current session
+    ///
+    ///Sends a 'GET' request to '/session/me'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn session_me<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::User>, Error<types::SessionMeError>> {
+        let url = format!("{}/session/me", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "session_me",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionMeError>::from_response::<types::SessionMeError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionMeError>::from_response::<types::SessionMeError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch the silo groups the current user belongs to
+    ///
+    ///Sends a 'GET' request to '/session/me/groups'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn session_me_groups<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::SessionMeGroupsError>> {
+        let url = format!("{}/session/me/groups", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "session_me_groups",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionMeGroupsError>::from_response::<
+                    types::SessionMeGroupsError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionMeGroupsError>::from_response::<
+                    types::SessionMeGroupsError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch the silo groups the current user belongs to as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/session/me/groups` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn session_me_groups_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Group, Error<types::SessionMeGroupsError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.session_me_groups(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.session_me_groups(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///List SSH public keys
+    ///
+    ///Lists SSH public keys for the currently authenticated user.
+    ///
+    ///Sends a 'GET' request to '/session/me/sshkeys'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn session_sshkey_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::SshKeyResultsPage>, Error<types::SessionSshkeyListError>> {
+        let url = format!("{}/session/me/sshkeys", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "session_sshkey_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyListError>::from_response::<
+                    types::SessionSshkeyListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyListError>::from_response::<
+                    types::SessionSshkeyListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List SSH public keys as a Stream
+    ///
+    ///Lists SSH public keys for the currently authenticated user.
+    ///
+    ///Sends repeated `GET` requests to `/session/me/sshkeys` until there are
+    /// no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn session_sshkey_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::SshKey, Error<types::SessionSshkeyListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.session_sshkey_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.session_sshkey_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an SSH public key
+    ///
+    ///Create an SSH public key for the currently authenticated user.
+    ///
+    ///Sends a 'POST' request to '/session/me/sshkeys'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn session_sshkey_create<'a>(
+        &'a self,
+        body: &'a types::SshKeyCreate,
+    ) -> Result<ResponseValue<types::SshKey>, Error<types::SessionSshkeyCreateError>> {
+        let url = format!("{}/session/me/sshkeys", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "session_sshkey_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyCreateError>::from_response::<
+                    types::SessionSshkeyCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyCreateError>::from_response::<
+                    types::SessionSshkeyCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an SSH public key
+    ///
+    ///Fetch an SSH public key associated with the currently authenticated
+    /// user.
+    ///
+    ///Sends a 'GET' request to '/session/me/sshkeys/{ssh_key_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn session_sshkey_view<'a>(
+        &'a self,
+        ssh_key_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::SshKey>, Error<types::SessionSshkeyViewError>> {
+        let url = format!(
+            "{}/session/me/sshkeys/{}",
+            self.baseurl(),
+            encode_path(&ssh_key_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "session_sshkey_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyViewError>::from_response::<
+                    types::SessionSshkeyViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyViewError>::from_response::<
+                    types::SessionSshkeyViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an SSH public key
+    ///
+    ///Delete an SSH public key associated with the currently authenticated
+    /// user.
+    ///
+    ///Sends a 'DELETE' request to '/session/me/sshkeys/{ssh_key_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn session_sshkey_delete<'a>(
+        &'a self,
+        ssh_key_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::SessionSshkeyDeleteError>> {
+        let url = format!(
+            "{}/session/me/sshkeys/{}",
+            self.baseurl(),
+            encode_path(&ssh_key_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "session_sshkey_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyDeleteError>::from_response::<
+                    types::SessionSshkeyDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SessionSshkeyDeleteError>::from_response::<
+                    types::SessionSshkeyDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a system-wide image by id
+    ///
+    ///Sends a 'GET' request to '/system/by-id/images/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_image_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageViewByIdError>> {
+        let url = format!(
+            "{}/system/by-id/images/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_image_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageViewByIdError>::from_response::<
+                    types::SystemImageViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageViewByIdError>::from_response::<
+                    types::SystemImageViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an IP pool by id
+    ///
+    ///Sends a 'GET' request to '/system/by-id/ip-pools/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolViewByIdError>> {
+        let url = format!(
+            "{}/system/by-id/ip-pools/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolViewByIdError>::from_response::<
+                    types::IpPoolViewByIdError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolViewByIdError>::from_response::<
+                    types::IpPoolViewByIdError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a silo by id
+    ///
+    ///Sends a 'GET' request to '/system/by-id/silos/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_view_by_id<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Silo>, Error<types::SiloViewByIdError>> {
+        let url = format!(
+            "{}/system/by-id/silos/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_view_by_id",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloViewByIdError>::from_response::<
+                        types::SiloViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloViewByIdError>::from_response::<
+                        types::SiloViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List system-wide certificates
+    ///
+    ///Returns a list of all the system-wide certificates. System-wide
+    /// certificates are returned sorted by creation date, with the most recent
+    /// certificates appearing first.
+    ///
+    ///Sends a 'GET' request to '/system/certificates'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn certificate_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::CertificateResultsPage>, Error<types::CertificateListError>>
+    {
+        let url = format!("{}/system/certificates", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "certificate_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateListError>::from_response::<
+                    types::CertificateListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateListError>::from_response::<
+                    types::CertificateListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List system-wide certificates as a Stream
+    ///
+    ///Returns a list of all the system-wide certificates. System-wide
+    /// certificates are returned sorted by creation date, with the most recent
+    /// certificates appearing first.
+    ///
+    ///Sends repeated `GET` requests to `/system/certificates` until there are
+    /// no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn certificate_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Certificate, Error<types::CertificateListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.certificate_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.certificate_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a new system-wide x.509 certificate
+    ///
+    ///This certificate is automatically used by the Oxide Control plane to
+    /// serve external connections.
+    ///
+    ///Sends a 'POST' request to '/system/certificates'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn certificate_create<'a>(
+        &'a self,
+        body: &'a types::CertificateCreate,
+    ) -> Result<ResponseValue<types::Certificate>, Error<types::CertificateCreateError>> {
+        let url = format!("{}/system/certificates", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "certificate_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateCreateError>::from_response::<
+                    types::CertificateCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateCreateError>::from_response::<
+                    types::CertificateCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a certificate
+    ///
+    ///Returns the details of a specific certificate
+    ///
+    ///Sends a 'GET' request to '/system/certificates/{certificate}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn certificate_view<'a>(
+        &'a self,
+        certificate: &'a types::NameOrId,
+    ) -> Result<ResponseValue<types::Certificate>, Error<types::CertificateViewError>> {
+        let url = format!(
+            "{}/system/certificates/{}",
+            self.baseurl(),
+            encode_path(&certificate.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "certificate_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateViewError>::from_response::<
+                    types::CertificateViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateViewError>::from_response::<
+                    types::CertificateViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a certificate
+    ///
+    ///Permanently delete a certificate. This operation cannot be undone.
+    ///
+    ///Sends a 'DELETE' request to '/system/certificates/{certificate}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn certificate_delete<'a>(
+        &'a self,
+        certificate: &'a types::NameOrId,
+    ) -> Result<ResponseValue<()>, Error<types::CertificateDeleteError>> {
+        let url = format!(
+            "{}/system/certificates/{}",
+            self.baseurl(),
+            encode_path(&certificate.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "certificate_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateDeleteError>::from_response::<
+                    types::CertificateDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::CertificateDeleteError>::from_response::<
+                    types::CertificateDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List physical disks
+    ///
+    ///Sends a 'GET' request to '/system/hardware/disks'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn physical_disk_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::PhysicalDiskResultsPage>, Error<types::PhysicalDiskListError>>
+    {
+        let url = format!("{}/system/hardware/disks", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "physical_disk_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::PhysicalDiskListError>::from_response::<
+                    types::PhysicalDiskListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::PhysicalDiskListError>::from_response::<
+                    types::PhysicalDiskListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List physical disks as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/hardware/disks` until there
+    /// are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn physical_disk_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::PhysicalDisk, Error<types::PhysicalDiskListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.physical_disk_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.physical_disk_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///List racks
+    ///
+    ///Sends a 'GET' request to '/system/hardware/racks'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn rack_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::RackResultsPage>, Error<types::RackListError>> {
+        let url = format!("{}/system/hardware/racks", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "rack_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RackListError>::from_response::<types::RackListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RackListError>::from_response::<types::RackListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List racks as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/hardware/racks` until there
+    /// are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn rack_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Rack, Error<types::RackListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.rack_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.rack_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a rack
+    ///
+    ///Sends a 'GET' request to '/system/hardware/racks/{rack_id}'
+    ///
+    ///Arguments:
+    /// - `rack_id`: The rack's unique ID.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn rack_view<'a>(
+        &'a self,
+        rack_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Rack>, Error<types::RackViewError>> {
+        let url = format!(
+            "{}/system/hardware/racks/{}",
+            self.baseurl(),
+            encode_path(&rack_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "rack_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RackViewError>::from_response::<types::RackViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::RackViewError>::from_response::<types::RackViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List sleds
+    ///
+    ///Sends a 'GET' request to '/system/hardware/sleds'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn sled_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::SledResultsPage>, Error<types::SledListError>> {
+        let url = format!("{}/system/hardware/sleds", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "sled_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SledListError>::from_response::<types::SledListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SledListError>::from_response::<types::SledListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List sleds as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/hardware/sleds` until there
+    /// are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn sled_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Sled, Error<types::SledListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.sled_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.sled_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a sled
+    ///
+    ///Sends a 'GET' request to '/system/hardware/sleds/{sled_id}'
+    ///
+    ///Arguments:
+    /// - `sled_id`: The sled's unique ID.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn sled_view<'a>(
+        &'a self,
+        sled_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Sled>, Error<types::SledViewError>> {
+        let url = format!(
+            "{}/system/hardware/sleds/{}",
+            self.baseurl(),
+            encode_path(&sled_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "sled_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SledViewError>::from_response::<types::SledViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SledViewError>::from_response::<types::SledViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List physical disks attached to sleds
+    ///
+    ///Sends a 'GET' request to '/system/hardware/sleds/{sled_id}/disks'
+    ///
+    ///Arguments:
+    /// - `sled_id`: The sled's unique ID.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn sled_physical_disk_list<'a>(
+        &'a self,
+        sled_id: &'a ::uuid::Uuid,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<
+        ResponseValue<types::PhysicalDiskResultsPage>,
+        Error<types::SledPhysicalDiskListError>,
+    > {
+        let url = format!(
+            "{}/system/hardware/sleds/{}/disks",
+            self.baseurl(),
+            encode_path(&sled_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "sled_physical_disk_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SledPhysicalDiskListError>::from_response::<
+                    types::SledPhysicalDiskListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SledPhysicalDiskListError>::from_response::<
+                    types::SledPhysicalDiskListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List physical disks attached to sleds as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/system/hardware/sleds/{sled_id}/disks` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `sled_id`: The sled's unique ID.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn sled_physical_disk_list_stream<'a>(
+        &'a self,
+        sled_id: &'a ::uuid::Uuid,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::PhysicalDisk, Error<types::SledPhysicalDiskListError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.sled_physical_disk_list(sled_id, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.sled_physical_disk_list(sled_id, limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///List system-wide images
+    ///
+    ///Returns a list of all the system-wide images. System-wide images are
+    /// returned sorted by creation date, with the most recent images appearing
+    /// first.
+    ///
+    ///Sends a 'GET' request to '/system/images'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_image_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::GlobalImageResultsPage>, Error<types::SystemImageListError>>
+    {
+        let url = format!("{}/system/images", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_image_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageListError>::from_response::<
+                    types::SystemImageListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageListError>::from_response::<
+                    types::SystemImageListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List system-wide images as a Stream
+    ///
+    ///Returns a list of all the system-wide images. System-wide images are
+    /// returned sorted by creation date, with the most recent images appearing
+    /// first.
+    ///
+    ///Sends repeated `GET` requests to `/system/images` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn system_image_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::GlobalImage, Error<types::SystemImageListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.system_image_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.system_image_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a system-wide image
+    ///
+    ///Create a new system-wide image. This image can then be used by any user
+    /// in any silo as a base for instances.
+    ///
+    ///Sends a 'POST' request to '/system/images'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_image_create<'a>(
+        &'a self,
+        body: &'a types::GlobalImageCreate,
+    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageCreateError>> {
+        let url = format!("{}/system/images", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_image_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageCreateError>::from_response::<
+                    types::SystemImageCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageCreateError>::from_response::<
+                    types::SystemImageCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a system-wide image
+    ///
+    ///Returns the details of a specific system-wide image.
+    ///
+    ///Sends a 'GET' request to '/system/images/{image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_image_view<'a>(
+        &'a self,
+        image_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageViewError>> {
+        let url = format!(
+            "{}/system/images/{}",
+            self.baseurl(),
+            encode_path(&image_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_image_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageViewError>::from_response::<
+                    types::SystemImageViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageViewError>::from_response::<
+                    types::SystemImageViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a system-wide image
+    ///
+    ///Permanently delete a system-wide image. This operation cannot be undone.
+    /// Any instances using the system-wide image will continue to run, however
+    /// new instances can not be created with this image.
+    ///
+    ///Sends a 'DELETE' request to '/system/images/{image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_image_delete<'a>(
+        &'a self,
+        image_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::SystemImageDeleteError>> {
+        let url = format!(
+            "{}/system/images/{}",
+            self.baseurl(),
+            encode_path(&image_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_image_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageDeleteError>::from_response::<
+                    types::SystemImageDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemImageDeleteError>::from_response::<
+                    types::SystemImageDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List IP pools
+    ///
+    ///Sends a 'GET' request to '/system/ip-pools'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::IpPoolResultsPage>, Error<types::IpPoolListError>> {
+        let url = format!("{}/system/ip-pools", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolListError>::from_response::<types::IpPoolListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolListError>::from_response::<types::IpPoolListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List IP pools as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/ip-pools` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn ip_pool_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::IpPool, Error<types::IpPoolListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.ip_pool_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.ip_pool_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an IP pool
+    ///
+    ///Sends a 'POST' request to '/system/ip-pools'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_create<'a>(
+        &'a self,
+        body: &'a types::IpPoolCreate,
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolCreateError>> {
+        let url = format!("{}/system/ip-pools", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolCreateError>::from_response::<
+                        types::IpPoolCreateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolCreateError>::from_response::<
+                        types::IpPoolCreateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an IP pool
+    ///
+    ///Sends a 'GET' request to '/system/ip-pools/{pool_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_view<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolViewError>> {
+        let url = format!(
+            "{}/system/ip-pools/{}",
+            self.baseurl(),
+            encode_path(&pool_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolViewError>::from_response::<types::IpPoolViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolViewError>::from_response::<types::IpPoolViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update an IP Pool
+    ///
+    ///Sends a 'PUT' request to '/system/ip-pools/{pool_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_update<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+        body: &'a types::IpPoolUpdate,
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolUpdateError>> {
+        let url = format!(
+            "{}/system/ip-pools/{}",
+            self.baseurl(),
+            encode_path(&pool_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolUpdateError>::from_response::<
+                        types::IpPoolUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolUpdateError>::from_response::<
+                        types::IpPoolUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an IP Pool
+    ///
+    ///Sends a 'DELETE' request to '/system/ip-pools/{pool_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_delete<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::IpPoolDeleteError>> {
+        let url = format!(
+            "{}/system/ip-pools/{}",
+            self.baseurl(),
+            encode_path(&pool_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolDeleteError>::from_response::<
+                        types::IpPoolDeleteError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolDeleteError>::from_response::<
+                        types::IpPoolDeleteError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List ranges for an IP pool
+    ///
+    ///Ranges are ordered by their first address.
+    ///
+    ///Sends a 'GET' request to '/system/ip-pools/{pool_name}/ranges'
+    ///
+    ///Arguments:
+    /// - `pool_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_range_list<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+    ) -> Result<ResponseValue<types::IpPoolRangeResultsPage>, Error<types::IpPoolRangeListError>>
+    {
+        let url = format!(
+            "{}/system/ip-pools/{}/ranges",
+            self.baseurl(),
+            encode_path(&pool_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_range_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolRangeListError>::from_response::<
+                    types::IpPoolRangeListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolRangeListError>::from_response::<
+                    types::IpPoolRangeListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List ranges for an IP pool as a Stream
+    ///
+    ///Ranges are ordered by their first address.
+    ///
+    ///Sends repeated `GET` requests to `/system/ip-pools/{pool_name}/ranges`
+    /// until there are no more results.
+    ///
+    ///Arguments:
+    /// - `pool_name`
+    /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn ip_pool_range_list_stream<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+    ) -> impl futures::Stream<Item = Result<types::IpPoolRange, Error<types::IpPoolRangeListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.ip_pool_range_list(pool_name, limit, None)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.ip_pool_range_list(pool_name, limit, state.as_deref())
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Add a range to an IP pool
+    ///
+    ///Sends a 'POST' request to '/system/ip-pools/{pool_name}/ranges/add'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_range_add<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+        body: &'a types::IpRange,
+    ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::IpPoolRangeAddError>> {
+        let url = format!(
+            "{}/system/ip-pools/{}/ranges/add",
+            self.baseurl(),
+            encode_path(&pool_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_range_add",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolRangeAddError>::from_response::<
+                    types::IpPoolRangeAddError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolRangeAddError>::from_response::<
+                    types::IpPoolRangeAddError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Remove a range from an IP pool
+    ///
+    ///Sends a 'POST' request to '/system/ip-pools/{pool_name}/ranges/remove'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_range_remove<'a>(
+        &'a self,
+        pool_name: &'a types::Name,
+        body: &'a types::IpRange,
+    ) -> Result<ResponseValue<()>, Error<types::IpPoolRangeRemoveError>> {
+        let url = format!(
+            "{}/system/ip-pools/{}/ranges/remove",
+            self.baseurl(),
+            encode_path(&pool_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_range_remove",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolRangeRemoveError>::from_response::<
+                    types::IpPoolRangeRemoveError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolRangeRemoveError>::from_response::<
+                    types::IpPoolRangeRemoveError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch the IP pool used for Oxide services
+    ///
+    ///Sends a 'GET' request to '/system/ip-pools-service'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_service_view<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolServiceViewError>> {
+        let url = format!("{}/system/ip-pools-service", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_service_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceViewError>::from_response::<
+                    types::IpPoolServiceViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceViewError>::from_response::<
+                    types::IpPoolServiceViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List ranges for the IP pool used for Oxide services
+    ///
+    ///Ranges are ordered by their first address.
+    ///
+    ///Sends a 'GET' request to '/system/ip-pools-service/ranges'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_service_range_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+    ) -> Result<
+        ResponseValue<types::IpPoolRangeResultsPage>,
+        Error<types::IpPoolServiceRangeListError>,
+    > {
+        let url = format!("{}/system/ip-pools-service/ranges", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_service_range_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceRangeListError>::from_response::<
+                    types::IpPoolServiceRangeListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceRangeListError>::from_response::<
+                    types::IpPoolServiceRangeListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List ranges for the IP pool used for Oxide services as a Stream
+    ///
+    ///Ranges are ordered by their first address.
+    ///
+    ///Sends repeated `GET` requests to `/system/ip-pools-service/ranges` until
+    /// there are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn ip_pool_service_range_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+    ) -> impl futures::Stream<
+        Item = Result<types::IpPoolRange, Error<types::IpPoolServiceRangeListError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.ip_pool_service_range_list(limit, None)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.ip_pool_service_range_list(limit, state.as_deref())
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Add a range to an IP pool used for Oxide services
+    ///
+    ///Sends a 'POST' request to '/system/ip-pools-service/ranges/add'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_service_range_add<'a>(
+        &'a self,
+        body: &'a types::IpRange,
+    ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::IpPoolServiceRangeAddError>> {
+        let url = format!("{}/system/ip-pools-service/ranges/add", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_service_range_add",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceRangeAddError>::from_response::<
+                    types::IpPoolServiceRangeAddError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceRangeAddError>::from_response::<
+                    types::IpPoolServiceRangeAddError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Remove a range from an IP pool used for Oxide services
+    ///
+    ///Sends a 'POST' request to '/system/ip-pools-service/ranges/remove'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn ip_pool_service_range_remove<'a>(
+        &'a self,
+        body: &'a types::IpRange,
+    ) -> Result<ResponseValue<()>, Error<types::IpPoolServiceRangeRemoveError>> {
+        let url = format!("{}/system/ip-pools-service/ranges/remove", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "ip_pool_service_range_remove",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceRangeRemoveError>::from_response::<
+                    types::IpPoolServiceRangeRemoveError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::IpPoolServiceRangeRemoveError>::from_response::<
+                    types::IpPoolServiceRangeRemoveError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Access metrics data
+    ///
+    ///Sends a 'GET' request to '/system/metrics/{metric_name}'
+    ///
+    ///Arguments:
+    /// - `metric_name`
+    /// - `end_time`: An exclusive end time of metrics.
+    /// - `id`: The UUID of the container being queried
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `start_time`: An inclusive start time of metrics.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_metric<'a>(
+        &'a self,
+        metric_name: types::SystemMetricName,
+        end_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
+        id: &'a ::uuid::Uuid,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        start_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
+    ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::SystemMetricError>> {
+        let url = format!(
+            "{}/system/metrics/{}",
+            self.baseurl(),
+            encode_path(&metric_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("end_time", &end_time))
+            .query(&progenitor_client::QueryParam::new("id", &id))
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "start_time",
+                &start_time,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_metric",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SystemMetricError>::from_response::<
+                        types::SystemMetricError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SystemMetricError>::from_response::<
+                        types::SystemMetricError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch the top-level IAM policy
+    ///
+    ///Sends a 'GET' request to '/system/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_policy_view<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::SystemPolicyViewError>> {
+        let url = format!("{}/system/policy", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_policy_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemPolicyViewError>::from_response::<
+                    types::SystemPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemPolicyViewError>::from_response::<
+                    types::SystemPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update the top-level IAM policy
+    ///
+    ///Sends a 'PUT' request to '/system/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_policy_update<'a>(
+        &'a self,
+        body: &'a types::FleetRolePolicy,
+    ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::SystemPolicyUpdateError>> {
+        let url = format!("{}/system/policy", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_policy_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemPolicyUpdateError>::from_response::<
+                    types::SystemPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemPolicyUpdateError>::from_response::<
+                    types::SystemPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List sagas
+    ///
+    ///Sends a 'GET' request to '/system/sagas'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn saga_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::SagaResultsPage>, Error<types::SagaListError>> {
+        let url = format!("{}/system/sagas", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "saga_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SagaListError>::from_response::<types::SagaListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SagaListError>::from_response::<types::SagaListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List sagas as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/sagas` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn saga_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Saga, Error<types::SagaListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.saga_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.saga_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a saga
+    ///
+    ///Sends a 'GET' request to '/system/sagas/{saga_id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn saga_view<'a>(
+        &'a self,
+        saga_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::Saga>, Error<types::SagaViewError>> {
+        let url = format!(
+            "{}/system/sagas/{}",
+            self.baseurl(),
+            encode_path(&saga_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "saga_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SagaViewError>::from_response::<types::SagaViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SagaViewError>::from_response::<types::SagaViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List silos
+    ///
+    ///Lists silos that are discoverable based on the current permissions.
+    ///
+    ///Sends a 'GET' request to '/system/silos'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::SiloResultsPage>, Error<types::SiloListError>> {
+        let url = format!("{}/system/silos", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloListError>::from_response::<types::SiloListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloListError>::from_response::<types::SiloListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List silos as a Stream
+    ///
+    ///Lists silos that are discoverable based on the current permissions.
+    ///
+    ///Sends repeated `GET` requests to `/system/silos` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn silo_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Silo, Error<types::SiloListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.silo_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.silo_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a silo
+    ///
+    ///Sends a 'POST' request to '/system/silos'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_create<'a>(
+        &'a self,
+        body: &'a types::SiloCreate,
+    ) -> Result<ResponseValue<types::Silo>, Error<types::SiloCreateError>> {
+        let url = format!("{}/system/silos", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloCreateError>::from_response::<types::SiloCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloCreateError>::from_response::<types::SiloCreateError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a silo
+    ///
+    ///Fetch a silo by name.
+    ///
+    ///Sends a 'GET' request to '/system/silos/{silo_name}'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_view<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::Silo>, Error<types::SiloViewError>> {
+        let url = format!(
+            "{}/system/silos/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloViewError>::from_response::<types::SiloViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloViewError>::from_response::<types::SiloViewError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a silo
+    ///
+    ///Delete a silo by name.
+    ///
+    ///Sends a 'DELETE' request to '/system/silos/{silo_name}'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_delete<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+    ) -> Result<ResponseValue<()>, Error<types::SiloDeleteError>> {
+        let url = format!(
+            "{}/system/silos/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloDeleteError>::from_response::<types::SiloDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloDeleteError>::from_response::<types::SiloDeleteError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List a silo's IDPs
+    ///
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/identity-providers'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_identity_provider_list<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<
+        ResponseValue<types::IdentityProviderResultsPage>,
+        Error<types::SiloIdentityProviderListError>,
+    > {
+        let url = format!(
+            "{}/system/silos/{}/identity-providers",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_identity_provider_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloIdentityProviderListError>::from_response::<
+                    types::SiloIdentityProviderListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloIdentityProviderListError>::from_response::<
+                    types::SiloIdentityProviderListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List a silo's IDPs as a Stream
+    ///
+    ///Sends repeated `GET` requests to
+    /// `/system/silos/{silo_name}/identity-providers` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn silo_identity_provider_list_stream<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::IdentityProvider, Error<types::SiloIdentityProviderListError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.silo_identity_provider_list(silo_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.silo_identity_provider_list(silo_name, limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a user
+    ///
+    ///Users can only be created in Silos with `provision_type` == `Fixed`.
+    /// Otherwise, Silo users are just-in-time (JIT) provisioned when a user
+    /// first logs in using an external Identity Provider.
+    ///
+    ///Sends a 'POST' request to
+    /// '/system/silos/{silo_name}/identity-providers/local/users'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn local_idp_user_create<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        body: &'a types::UserCreate,
+    ) -> Result<ResponseValue<types::User>, Error<types::LocalIdpUserCreateError>> {
+        let url = format!(
+            "{}/system/silos/{}/identity-providers/local/users",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "local_idp_user_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LocalIdpUserCreateError>::from_response::<
+                    types::LocalIdpUserCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LocalIdpUserCreateError>::from_response::<
+                    types::LocalIdpUserCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a user
+    ///
+    ///Sends a 'DELETE' request to
+    /// '/system/silos/{silo_name}/identity-providers/local/users/{user_id}'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `user_id`: The user's internal id
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn local_idp_user_delete<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        user_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<()>, Error<types::LocalIdpUserDeleteError>> {
+        let url = format!(
+            "{}/system/silos/{}/identity-providers/local/users/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+            encode_path(&user_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "local_idp_user_delete",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LocalIdpUserDeleteError>::from_response::<
+                    types::LocalIdpUserDeleteError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LocalIdpUserDeleteError>::from_response::<
+                    types::LocalIdpUserDeleteError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Set or invalidate a user's password
+    ///
+    ///Passwords can only be updated for users in Silos with identity mode
+    /// `LocalOnly`.
+    ///
+    ///Sends a 'POST' request to
+    /// '/system/silos/{silo_name}/identity-providers/local/users/{user_id}/
+    /// set-password'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `user_id`: The user's internal id
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn local_idp_user_set_password<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        user_id: &'a ::uuid::Uuid,
+        body: &'a types::UserPassword,
+    ) -> Result<ResponseValue<()>, Error<types::LocalIdpUserSetPasswordError>> {
+        let url = format!(
+            "{}/system/silos/{}/identity-providers/local/users/{}/set-password",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+            encode_path(&user_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "local_idp_user_set_password",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LocalIdpUserSetPasswordError>::from_response::<
+                    types::LocalIdpUserSetPasswordError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::LocalIdpUserSetPasswordError>::from_response::<
+                    types::LocalIdpUserSetPasswordError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Create a SAML IDP
+    ///
+    ///Sends a 'POST' request to
+    /// '/system/silos/{silo_name}/identity-providers/saml'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn saml_identity_provider_create<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        body: &'a types::SamlIdentityProviderCreate,
+    ) -> Result<
+        ResponseValue<types::SamlIdentityProvider>,
+        Error<types::SamlIdentityProviderCreateError>,
+    > {
+        let url = format!(
+            "{}/system/silos/{}/identity-providers/saml",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "saml_identity_provider_create",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SamlIdentityProviderCreateError>::from_response::<
+                    types::SamlIdentityProviderCreateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SamlIdentityProviderCreateError>::from_response::<
+                    types::SamlIdentityProviderCreateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a SAML IDP
+    ///
+    ///Sends a 'GET' request to
+    /// '/system/silos/{silo_name}/identity-providers/saml/{provider_name}'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `provider_name`: The SAML identity provider's name
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn saml_identity_provider_view<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        provider_name: &'a types::Name,
+    ) -> Result<
+        ResponseValue<types::SamlIdentityProvider>,
+        Error<types::SamlIdentityProviderViewError>,
+    > {
+        let url = format!(
+            "{}/system/silos/{}/identity-providers/saml/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+            encode_path(&provider_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "saml_identity_provider_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SamlIdentityProviderViewError>::from_response::<
+                    types::SamlIdentityProviderViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SamlIdentityProviderViewError>::from_response::<
+                    types::SamlIdentityProviderViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a silo's IAM policy
+    ///
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/policy'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_policy_view<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::SiloPolicyViewError>> {
+        let url = format!(
+            "{}/system/silos/{}/policy",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_policy_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloPolicyViewError>::from_response::<
+                    types::SiloPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloPolicyViewError>::from_response::<
+                    types::SiloPolicyViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a silo's IAM policy
+    ///
+    ///Sends a 'PUT' request to '/system/silos/{silo_name}/policy'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_policy_update<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        body: &'a types::SiloRolePolicy,
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::SiloPolicyUpdateError>> {
+        let url = format!(
+            "{}/system/silos/{}/policy",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_policy_update",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloPolicyUpdateError>::from_response::<
+                    types::SiloPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloPolicyUpdateError>::from_response::<
+                    types::SiloPolicyUpdateError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List users in a silo
+    ///
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/users/all'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_users_list<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::SiloUsersListError>> {
+        let url = format!(
+            "{}/system/silos/{}/users/all",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_users_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloUsersListError>::from_response::<
+                    types::SiloUsersListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SiloUsersListError>::from_response::<
+                    types::SiloUsersListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List users in a silo as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/silos/{silo_name}/users/all`
+    /// until there are no more results.
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn silo_users_list_stream<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::User, Error<types::SiloUsersListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.silo_users_list(silo_name, limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.silo_users_list(silo_name, limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a user
+    ///
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/users/id/{user_id}'
+    ///
+    ///Arguments:
+    /// - `silo_name`: The silo's unique name.
+    /// - `user_id`: The user's internal id
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn silo_user_view<'a>(
+        &'a self,
+        silo_name: &'a types::Name,
+        user_id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::User>, Error<types::SiloUserViewError>> {
+        let url = format!(
+            "{}/system/silos/{}/users/id/{}",
+            self.baseurl(),
+            encode_path(&silo_name.to_string()),
+            encode_path(&user_id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "silo_user_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloUserViewError>::from_response::<
+                        types::SiloUserViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloUserViewError>::from_response::<
+                        types::SiloUserViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List built-in users
+    ///
+    ///Sends a 'GET' request to '/system/user'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_user_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> Result<ResponseValue<types::UserBuiltinResultsPage>, Error<types::SystemUserListError>>
+    {
+        let url = format!("{}/system/user", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_user_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUserListError>::from_response::<
+                    types::SystemUserListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUserListError>::from_response::<
+                    types::SystemUserListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List built-in users as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/system/user` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn system_user_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::UserBuiltin, Error<types::SystemUserListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.system_user_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.system_user_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a built-in user
+    ///
+    ///Sends a 'GET' request to '/system/user/{user_name}'
+    ///
+    ///Arguments:
+    /// - `user_name`: The built-in user's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_user_view<'a>(
+        &'a self,
+        user_name: &'a types::Name,
+    ) -> Result<ResponseValue<types::UserBuiltin>, Error<types::SystemUserViewError>> {
+        let url = format!(
+            "{}/system/user/{}",
+            self.baseurl(),
+            encode_path(&user_name.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_user_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUserViewError>::from_response::<
+                    types::SystemUserViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUserViewError>::from_response::<
+                    types::SystemUserViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List timeseries schema
+    ///
+    ///Sends a 'GET' request to '/timeseries/schema'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn timeseries_schema_get<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+    ) -> Result<
+        ResponseValue<types::TimeseriesSchemaResultsPage>,
+        Error<types::TimeseriesSchemaGetError>,
+    > {
+        let url = format!("{}/timeseries/schema", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "timeseries_schema_get",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::TimeseriesSchemaGetError>::from_response::<
+                    types::TimeseriesSchemaGetError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::TimeseriesSchemaGetError>::from_response::<
+                    types::TimeseriesSchemaGetError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List timeseries schema as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/timeseries/schema` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn timeseries_schema_get_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+    ) -> impl futures::Stream<
+        Item = Result<types::TimeseriesSchema, Error<types::TimeseriesSchemaGetError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.timeseries_schema_get(limit, None)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.timeseries_schema_get(limit, state.as_deref())
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///List users
+    ///
+    ///Sends a 'GET' request to '/users'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn user_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::UserListError>> {
+        let url = format!("{}/users", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "user_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::UserListError>::from_response::<types::UserListError>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::UserListError>::from_response::<types::UserListError>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List users as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/users` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn user_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::User, Error<types::UserListError>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.user_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.user_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///List disks
+    ///
+    ///Sends a 'GET' request to '/v1/disks'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `project`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_list_v1<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        page_token: Option<&'a str>,
+        project: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::DiskListV1Error>> {
+        let url = format!("{}/v1/disks", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_list_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskListV1Error>::from_response::<types::DiskListV1Error>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskListV1Error>::from_response::<types::DiskListV1Error>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List disks as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/disks` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `project`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn disk_list_v1_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::DiskListV1Error>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.disk_list_v1(limit, organization, None, project, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.disk_list_v1(limit, None, state.as_deref(), None, None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a disk
+    ///
+    ///Sends a 'POST' request to '/v1/disks'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_create_v1<'a>(
+        &'a self,
+        organization: Option<&'a types::NameOrId>,
+        project: &'a types::NameOrId,
+        body: &'a types::DiskCreate,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskCreateV1Error>> {
+        let url = format!("{}/v1/disks", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_create_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskCreateV1Error>::from_response::<
+                        types::DiskCreateV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskCreateV1Error>::from_response::<
+                        types::DiskCreateV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a disk
+    ///
+    ///Sends a 'GET' request to '/v1/disks/{disk}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_view_v1<'a>(
+        &'a self,
+        disk: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewV1Error>> {
+        let url = format!(
+            "{}/v1/disks/{}",
+            self.baseurl(),
+            encode_path(&disk.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_view_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskViewV1Error>::from_response::<types::DiskViewV1Error>(
+                    response,
+                )
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::DiskViewV1Error>::from_response::<types::DiskViewV1Error>(
+                    response,
+                )
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a disk
+    ///
+    ///Sends a 'DELETE' request to '/v1/disks/{disk}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn disk_delete_v1<'a>(
+        &'a self,
+        disk: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<()>, Error<types::DiskDeleteV1Error>> {
+        let url = format!(
+            "{}/v1/disks/{}",
+            self.baseurl(),
+            encode_path(&disk.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "disk_delete_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskDeleteV1Error>::from_response::<
+                        types::DiskDeleteV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskDeleteV1Error>::from_response::<
+                        types::DiskDeleteV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List instances
+    ///
+    ///Sends a 'GET' request to '/v1/instances'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `project`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_list_v1<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        page_token: Option<&'a str>,
+        project: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::InstanceListV1Error>> {
+        let url = format!("{}/v1/instances", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_list_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceListV1Error>::from_response::<
+                    types::InstanceListV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceListV1Error>::from_response::<
+                    types::InstanceListV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List instances as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/instances` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `project`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn instance_list_v1_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Instance, Error<types::InstanceListV1Error>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.instance_list_v1(limit, organization, None, project, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.instance_list_v1(limit, None, state.as_deref(), None, None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_create_v1<'a>(
+        &'a self,
+        organization: Option<&'a types::NameOrId>,
+        project: &'a types::NameOrId,
+        body: &'a types::InstanceCreate,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceCreateV1Error>> {
+        let url = format!("{}/v1/instances", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_create_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceCreateV1Error>::from_response::<
+                    types::InstanceCreateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceCreateV1Error>::from_response::<
+                    types::InstanceCreateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an instance
+    ///
+    ///Sends a 'GET' request to '/v1/instances/{instance}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_view_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_view_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceViewV1Error>::from_response::<
+                    types::InstanceViewV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceViewV1Error>::from_response::<
+                    types::InstanceViewV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an instance
+    ///
+    ///Sends a 'DELETE' request to '/v1/instances/{instance}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_delete_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<()>, Error<types::InstanceDeleteV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_delete_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDeleteV1Error>::from_response::<
+                    types::InstanceDeleteV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDeleteV1Error>::from_response::<
+                    types::InstanceDeleteV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List an instance's disks
+    ///
+    ///Sends a 'GET' request to '/v1/instances/{instance}/disks'
+    ///
+    ///Arguments:
+    /// - `instance`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `project`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_disk_list_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        page_token: Option<&'a str>,
+        project: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::InstanceDiskListV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/disks",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_disk_list_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskListV1Error>::from_response::<
+                    types::InstanceDiskListV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskListV1Error>::from_response::<
+                    types::InstanceDiskListV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List an instance's disks as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/instances/{instance}/disks` until
+    /// there are no more results.
+    ///
+    ///Arguments:
+    /// - `instance`
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `project`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn instance_disk_list_v1_stream<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::InstanceDiskListV1Error>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.instance_disk_list_v1(instance, limit, organization, None, project, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.instance_disk_list_v1(
+                            instance,
+                            limit,
+                            None,
+                            state.as_deref(),
+                            None,
+                            None,
+                        )
+                        .map_ok(|page| {
+                            let page = page.into_inner();
+                            Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                        })
+                        .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Attach a disk to an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances/{instance}/disks/attach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_disk_attach_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+        body: &'a types::DiskPath,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskAttachV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/disks/attach",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_disk_attach_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskAttachV1Error>::from_response::<
+                    types::InstanceDiskAttachV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskAttachV1Error>::from_response::<
+                    types::InstanceDiskAttachV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Detach a disk from an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances/{instance}/disks/detach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_disk_detach_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+        body: &'a types::DiskPath,
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskDetachV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/disks/detach",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_disk_detach_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskDetachV1Error>::from_response::<
+                    types::InstanceDiskDetachV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceDiskDetachV1Error>::from_response::<
+                    types::InstanceDiskDetachV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Migrate an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances/{instance}/migrate'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_migrate_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+        body: &'a types::InstanceMigrate,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceMigrateV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/migrate",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_migrate_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceMigrateV1Error>::from_response::<
+                    types::InstanceMigrateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceMigrateV1Error>::from_response::<
+                    types::InstanceMigrateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Reboot an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances/{instance}/reboot'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_reboot_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceRebootV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/reboot",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_reboot_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceRebootV1Error>::from_response::<
+                    types::InstanceRebootV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceRebootV1Error>::from_response::<
+                    types::InstanceRebootV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an instance's serial console
+    ///
+    ///Sends a 'GET' request to '/v1/instances/{instance}/serial-console'
+    ///
+    ///Arguments:
+    /// - `instance`
+    /// - `from_start`: Character index in the serial buffer from which to read,
+    ///   counting the bytes output since instance start. If this is not
+    ///   provided, `most_recent` must be provided, and if this *is* provided,
+    ///   `most_recent` must *not* be provided.
+    /// - `max_bytes`: Maximum number of bytes of buffered serial console
+    ///   contents to return. If the requested range runs to the end of the
+    ///   available buffer, the data returned will be shorter than `max_bytes`.
+    /// - `most_recent`: Character index in the serial buffer from which to
+    ///   read, counting *backward* from the most recently buffered data
+    ///   retrieved from the instance. (See note on `from_start` about mutual
+    ///   exclusivity)
+    /// - `organization`
+    /// - `project`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_serial_console_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        from_start: Option<u64>,
+        max_bytes: Option<u64>,
+        most_recent: Option<u64>,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<
+        ResponseValue<types::InstanceSerialConsoleData>,
+        Error<types::InstanceSerialConsoleV1Error>,
+    > {
+        let url = format!(
+            "{}/v1/instances/{}/serial-console",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "from_start",
+                &from_start,
+            ))
+            .query(&progenitor_client::QueryParam::new("max_bytes", &max_bytes))
+            .query(&progenitor_client::QueryParam::new(
+                "most_recent",
+                &most_recent,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_serial_console_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceSerialConsoleV1Error>::from_response::<
+                    types::InstanceSerialConsoleV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceSerialConsoleV1Error>::from_response::<
+                    types::InstanceSerialConsoleV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Stream an instance's serial console
+    ///
+    ///Sends a 'GET' request to
+    /// '/v1/instances/{instance}/serial-console/stream'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_serial_console_stream_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
+        let url = format!(
+            "{}/v1/instances/{}/serial-console/stream",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .header(::reqwest::header::CONNECTION, "Upgrade")
+            .header(::reqwest::header::UPGRADE, "websocket")
+            .header(::reqwest::header::SEC_WEBSOCKET_VERSION, "13")
+            .header(
+                ::reqwest::header::SEC_WEBSOCKET_KEY,
+                ::base64::Engine::encode(
+                    &::base64::engine::general_purpose::STANDARD,
+                    ::rand::random::<[u8; 16]>(),
+                ),
+            )
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_serial_console_stream_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            101u16 => ResponseValue::upgrade(response).await,
+            200..=299 => ResponseValue::upgrade(response).await,
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
+        }
+    }
+
+    ///Boot an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances/{instance}/start'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_start_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStartV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/start",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_start_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStartV1Error>::from_response::<
+                    types::InstanceStartV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStartV1Error>::from_response::<
+                    types::InstanceStartV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Stop an instance
+    ///
+    ///Sends a 'POST' request to '/v1/instances/{instance}/stop'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn instance_stop_v1<'a>(
+        &'a self,
+        instance: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        project: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStopV1Error>> {
+        let url = format!(
+            "{}/v1/instances/{}/stop",
+            self.baseurl(),
+            encode_path(&instance.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new("project", &project))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "instance_stop_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStopV1Error>::from_response::<
+                    types::InstanceStopV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::InstanceStopV1Error>::from_response::<
+                    types::InstanceStopV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List organizations
+    ///
+    ///Sends a 'GET' request to '/v1/organizations'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_list_v1<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::OrganizationListV1Error>>
+    {
+        let url = format!("{}/v1/organizations", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_list_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationListV1Error>::from_response::<
+                    types::OrganizationListV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationListV1Error>::from_response::<
+                    types::OrganizationListV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List organizations as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/organizations` until there are no
+    /// more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn organization_list_v1_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::Organization, Error<types::OrganizationListV1Error>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.organization_list_v1(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.organization_list_v1(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create an organization
+    ///
+    ///Sends a 'POST' request to '/v1/organizations'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_create_v1<'a>(
+        &'a self,
+        body: &'a types::OrganizationCreate,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationCreateV1Error>> {
+        let url = format!("{}/v1/organizations", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_create_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationCreateV1Error>::from_response::<
+                    types::OrganizationCreateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationCreateV1Error>::from_response::<
+                    types::OrganizationCreateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an organization
+    ///
+    ///Sends a 'GET' request to '/v1/organizations/{organization}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_view_v1<'a>(
+        &'a self,
+        organization: &'a types::NameOrId,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewV1Error>> {
+        let url = format!(
+            "{}/v1/organizations/{}",
+            self.baseurl(),
+            encode_path(&organization.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_view_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationViewV1Error>::from_response::<
+                    types::OrganizationViewV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationViewV1Error>::from_response::<
+                    types::OrganizationViewV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update an organization
+    ///
+    ///Sends a 'PUT' request to '/v1/organizations/{organization}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_update_v1<'a>(
+        &'a self,
+        organization: &'a types::NameOrId,
+        body: &'a types::OrganizationUpdate,
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationUpdateV1Error>> {
+        let url = format!(
+            "{}/v1/organizations/{}",
+            self.baseurl(),
+            encode_path(&organization.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_update_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationUpdateV1Error>::from_response::<
+                    types::OrganizationUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationUpdateV1Error>::from_response::<
+                    types::OrganizationUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete an organization
+    ///
+    ///Sends a 'DELETE' request to '/v1/organizations/{organization}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_delete_v1<'a>(
+        &'a self,
+        organization: &'a types::NameOrId,
+    ) -> Result<ResponseValue<()>, Error<types::OrganizationDeleteV1Error>> {
+        let url = format!(
+            "{}/v1/organizations/{}",
+            self.baseurl(),
+            encode_path(&organization.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_delete_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationDeleteV1Error>::from_response::<
+                    types::OrganizationDeleteV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationDeleteV1Error>::from_response::<
+                    types::OrganizationDeleteV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch an organization's IAM policy
+    ///
+    ///Sends a 'GET' request to '/v1/organizations/{organization}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_policy_view_v1<'a>(
+        &'a self,
+        organization: &'a types::NameOrId,
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyViewV1Error>,
+    > {
+        let url = format!(
+            "{}/v1/organizations/{}/policy",
+            self.baseurl(),
+            encode_path(&organization.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_policy_view_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyViewV1Error>::from_response::<
+                    types::OrganizationPolicyViewV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyViewV1Error>::from_response::<
+                    types::OrganizationPolicyViewV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update an organization's IAM policy
+    ///
+    ///Sends a 'PUT' request to '/v1/organizations/{organization}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn organization_policy_update_v1<'a>(
+        &'a self,
+        organization: &'a types::NameOrId,
+        body: &'a types::OrganizationRolePolicy,
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyUpdateV1Error>,
+    > {
+        let url = format!(
+            "{}/v1/organizations/{}/policy",
+            self.baseurl(),
+            encode_path(&organization.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "organization_policy_update_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyUpdateV1Error>::from_response::<
+                    types::OrganizationPolicyUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::OrganizationPolicyUpdateV1Error>::from_response::<
+                    types::OrganizationPolicyUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List projects
+    ///
+    ///Sends a 'GET' request to '/v1/projects'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_list_v1<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::ProjectListV1Error>> {
+        let url = format!("{}/v1/projects", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_list_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectListV1Error>::from_response::<
+                    types::ProjectListV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectListV1Error>::from_response::<
+                    types::ProjectListV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List projects as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/projects` until there are no more
+    /// results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `organization`
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn project_list_v1_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        organization: Option<&'a types::NameOrId>,
+        sort_by: Option<types::NameOrIdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::Project, Error<types::ProjectListV1Error>>> + Unpin + '_
+    {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.project_list_v1(limit, organization, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.project_list_v1(limit, None, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Create a project
+    ///
+    ///Sends a 'POST' request to '/v1/projects'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_create_v1<'a>(
+        &'a self,
+        organization: &'a types::NameOrId,
+        body: &'a types::ProjectCreate,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectCreateV1Error>> {
+        let url = format!("{}/v1/projects", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_create_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            201u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectCreateV1Error>::from_response::<
+                    types::ProjectCreateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectCreateV1Error>::from_response::<
+                    types::ProjectCreateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a project
+    ///
+    ///Sends a 'GET' request to '/v1/projects/{project}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_view_v1<'a>(
+        &'a self,
+        project: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewV1Error>> {
+        let url = format!(
+            "{}/v1/projects/{}",
+            self.baseurl(),
+            encode_path(&project.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_view_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectViewV1Error>::from_response::<
+                    types::ProjectViewV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectViewV1Error>::from_response::<
+                    types::ProjectViewV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a project
+    ///
+    ///Sends a 'PUT' request to '/v1/projects/{project}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_update_v1<'a>(
+        &'a self,
+        project: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        body: &'a types::ProjectUpdate,
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectUpdateV1Error>> {
+        let url = format!(
+            "{}/v1/projects/{}",
+            self.baseurl(),
+            encode_path(&project.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_update_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectUpdateV1Error>::from_response::<
+                    types::ProjectUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectUpdateV1Error>::from_response::<
+                    types::ProjectUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Delete a project
+    ///
+    ///Sends a 'DELETE' request to '/v1/projects/{project}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_delete_v1<'a>(
+        &'a self,
+        project: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<()>, Error<types::ProjectDeleteV1Error>> {
+        let url = format!(
+            "{}/v1/projects/{}",
+            self.baseurl(),
+            encode_path(&project.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .delete(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_delete_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectDeleteV1Error>::from_response::<
+                    types::ProjectDeleteV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectDeleteV1Error>::from_response::<
+                    types::ProjectDeleteV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Fetch a project's IAM policy
+    ///
+    ///Sends a 'GET' request to '/v1/projects/{project}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_policy_view_v1<'a>(
+        &'a self,
+        project: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyViewV1Error>>
+    {
+        let url = format!(
+            "{}/v1/projects/{}/policy",
+            self.baseurl(),
+            encode_path(&project.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_policy_view_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyViewV1Error>::from_response::<
+                    types::ProjectPolicyViewV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyViewV1Error>::from_response::<
+                    types::ProjectPolicyViewV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Update a project's IAM policy
+    ///
+    ///Sends a 'PUT' request to '/v1/projects/{project}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn project_policy_update_v1<'a>(
+        &'a self,
+        project: &'a types::NameOrId,
+        organization: Option<&'a types::NameOrId>,
+        body: &'a types::ProjectRolePolicy,
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyUpdateV1Error>>
+    {
+        let url = format!(
+            "{}/v1/projects/{}/policy",
+            self.baseurl(),
+            encode_path(&project.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .put(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .query(&progenitor_client::QueryParam::new(
+                "organization",
+                &organization,
+            ))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "project_policy_update_v1",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyUpdateV1Error>::from_response::<
+                    types::ProjectPolicyUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::ProjectPolicyUpdateV1Error>::from_response::<
+                    types::ProjectPolicyUpdateV1Error,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///View version and update status of component tree
+    ///
+    ///Sends a 'GET' request to '/v1/system/update/components'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_component_version_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<
+        ResponseValue<types::UpdateableComponentResultsPage>,
+        Error<types::SystemComponentVersionListError>,
+    > {
+        let url = format!("{}/v1/system/update/components", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_component_version_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemComponentVersionListError>::from_response::<
+                    types::SystemComponentVersionListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemComponentVersionListError>::from_response::<
+                    types::SystemComponentVersionListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///View version and update status of component tree as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/system/update/components` until
+    /// there are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn system_component_version_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::UpdateableComponent, Error<types::SystemComponentVersionListError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.system_component_version_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.system_component_version_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///List all update deployments
+    ///
+    ///Sends a 'GET' request to '/v1/system/update/deployments'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn update_deployments_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<
+        ResponseValue<types::UpdateDeploymentResultsPage>,
+        Error<types::UpdateDeploymentsListError>,
+    > {
+        let url = format!("{}/v1/system/update/deployments", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "update_deployments_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::UpdateDeploymentsListError>::from_response::<
+                    types::UpdateDeploymentsListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::UpdateDeploymentsListError>::from_response::<
+                    types::UpdateDeploymentsListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List all update deployments as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/system/update/deployments` until
+    /// there are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn update_deployments_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<
+        Item = Result<types::UpdateDeployment, Error<types::UpdateDeploymentsListError>>,
+    > + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.update_deployments_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.update_deployments_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///Fetch a system update deployment
+    ///
+    ///Sends a 'GET' request to '/v1/system/update/deployments/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn update_deployment_view<'a>(
+        &'a self,
+        id: &'a ::uuid::Uuid,
+    ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::UpdateDeploymentViewError>>
+    {
+        let url = format!(
+            "{}/v1/system/update/deployments/{}",
+            self.baseurl(),
+            encode_path(&id.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "update_deployment_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::UpdateDeploymentViewError>::from_response::<
+                    types::UpdateDeploymentViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::UpdateDeploymentViewError>::from_response::<
+                    types::UpdateDeploymentViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Refresh update data
+    ///
+    ///Sends a 'POST' request to '/v1/system/update/refresh'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_update_refresh<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<()>, Error<types::SystemUpdateRefreshError>> {
+        let url = format!("{}/v1/system/update/refresh", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_update_refresh",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateRefreshError>::from_response::<
+                    types::SystemUpdateRefreshError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateRefreshError>::from_response::<
+                    types::SystemUpdateRefreshError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Start system update
+    ///
+    ///Sends a 'POST' request to '/v1/system/update/start'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_update_start<'a>(
+        &'a self,
+        body: &'a types::SystemUpdateStart,
+    ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::SystemUpdateStartError>> {
+        let url = format!("{}/v1/system/update/start", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .header(
+                ::reqwest::header::CONTENT_TYPE,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .body(serde_json::to_string(&body).map_err(|e| Error::InvalidRequest(e.to_string()))?)
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_update_start",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            202u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateStartError>::from_response::<
+                    types::SystemUpdateStartError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateStartError>::from_response::<
+                    types::SystemUpdateStartError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///Stop system update
+    ///
+    ///If there is no update in progress, do nothing.
+    ///
+    ///Sends a 'POST' request to '/v1/system/update/stop'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_update_stop<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<()>, Error<types::SystemUpdateStopError>> {
+        let url = format!("{}/v1/system/update/stop", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .post(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_update_stop",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            204u16 => Ok(ResponseValue::empty(response)),
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateStopError>::from_response::<
+                    types::SystemUpdateStopError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateStopError>::from_response::<
+                    types::SystemUpdateStopError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List all updates
+    ///
+    ///Sends a 'GET' request to '/v1/system/update/updates'
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `page_token`: Token returned by previous call to retrieve the
+    ///   subsequent page
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_update_list<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        page_token: Option<&'a str>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> Result<ResponseValue<types::SystemUpdateResultsPage>, Error<types::SystemUpdateListError>>
+    {
+        let url = format!("{}/v1/system/update/updates", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .query(&progenitor_client::QueryParam::new("limit", &limit))
+            .query(&progenitor_client::QueryParam::new(
+                "page_token",
+                &page_token,
+            ))
+            .query(&progenitor_client::QueryParam::new("sort_by", &sort_by))
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_update_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateListError>::from_response::<
+                    types::SystemUpdateListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateListError>::from_response::<
+                    types::SystemUpdateListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///List all updates as a Stream
+    ///
+    ///Sends repeated `GET` requests to `/v1/system/update/updates` until there
+    /// are no more results.
+    ///
+    ///Arguments:
+    /// - `limit`: Maximum number of items returned by a single call
+    /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub fn system_update_list_stream<'a>(
+        &'a self,
+        limit: Option<::std::num::NonZeroU32>,
+        sort_by: Option<types::IdSortMode>,
+    ) -> impl futures::Stream<Item = Result<types::SystemUpdate, Error<types::SystemUpdateListError>>>
+           + Unpin
+           + '_ {
+        use futures::StreamExt;
+        use futures::TryFutureExt;
+        use futures::TryStreamExt;
+        self.system_update_list(limit, None, sort_by)
+            .map_ok(move |page| {
+                let page = page.into_inner();
+                let first = futures::stream::iter(page.items).map(Ok);
+                let rest = futures::stream::try_unfold(page.next_page, move |state| async move {
+                    if state.is_none() {
+                        Ok(None)
+                    } else {
+                        self.system_update_list(limit, state.as_deref(), None)
+                            .map_ok(|page| {
+                                let page = page.into_inner();
+                                Some((futures::stream::iter(page.items).map(Ok), page.next_page))
+                            })
+                            .await
+                    }
+                })
+                .try_flatten();
+                first.chain(rest)
+            })
+            .try_flatten_stream()
+            .boxed()
+    }
+
+    ///View system update
+    ///
+    ///Sends a 'GET' request to '/v1/system/update/updates/{version}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_update_view<'a>(
+        &'a self,
+        version: &'a types::SemverVersion,
+    ) -> Result<ResponseValue<types::SystemUpdate>, Error<types::SystemUpdateViewError>> {
+        let url = format!(
+            "{}/v1/system/update/updates/{}",
+            self.baseurl(),
+            encode_path(&version.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_update_view",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateViewError>::from_response::<
+                    types::SystemUpdateViewError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateViewError>::from_response::<
+                    types::SystemUpdateViewError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///View system update component tree
+    ///
+    ///Sends a 'GET' request to
+    /// '/v1/system/update/updates/{version}/components'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_update_components_list<'a>(
+        &'a self,
+        version: &'a types::SemverVersion,
+    ) -> Result<
+        ResponseValue<types::ComponentUpdateResultsPage>,
+        Error<types::SystemUpdateComponentsListError>,
+    > {
+        let url = format!(
+            "{}/v1/system/update/updates/{}/components",
+            self.baseurl(),
+            encode_path(&version.to_string()),
+        );
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
+            .get(url)
+            .header(
+                ::reqwest::header::ACCEPT,
+                ::reqwest::header::HeaderValue::from_static("application/json"),
+            )
+            .headers(header_map)
+            .build()?;
+        let info = OperationInfo {
+            operation_id: "system_update_components_list",
+        };
+        self.pre(&mut request, &info).await?;
+        let result = self.exec(request, &info).await;
+        self.post(&result, &info).await?;
+        let response = result?;
+        match response.status().as_u16() {
+            200u16 => ResponseValue::from_response(response).await,
+            400u16..=499u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateComponentsListError>::from_response::<
+                    types::SystemUpdateComponentsListError,
+                >(response)
+                .await?,
+            )),
+            500u16..=599u16 => Err(Error::ErrorResponse(
+                ResponseValue::<types::SystemUpdateComponentsListError>::from_response::<
+                    types::SystemUpdateComponentsListError,
+                >(response)
+                .await?,
+            )),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
+        }
+    }
+
+    ///View system version and update status
+    ///
+    ///Sends a 'GET' request to '/v1/system/update/version'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn system_version<'a>(
+        &'a self,
+    ) -> Result<ResponseValue<types::SystemVersion>, Error<types::SystemVersionError>> {
+        let url = format!("{}/v1/system/update/version", self.baseurl(),);
+        let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
+        header_map.append(
+            ::reqwest::header::HeaderName::from_static("api-version"),
+            ::reqwest::header::HeaderValue::from_static(Self::api_version()),
+        );
+        #[allow(unused_mut)]
+        #[allow(unused_variables)]
+        let mut request = self
+            .client()
             .get(url)
             .header(
                 ::reqwest::header::ACCEPT,
@@ -34068,4 +48687,7 @@ impl Client {
 pub mod prelude {
     #[allow(unused_imports)]
     pub use super::Client;
+    #[cfg(feature = "middleware")]
+    #[allow(unused_imports)]
+    pub use super::MiddlewareClient;
 }
