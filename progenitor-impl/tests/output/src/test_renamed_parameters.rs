@@ -74,6 +74,37 @@ pub mod types {
             value.clone()
         }
     }
+
+    ///Error enum for the `renamed_parameters` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum RenamedParametersError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for RenamedParametersError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -101,7 +132,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -140,7 +174,9 @@ impl ClientHooks<()> for &Client {}
 #[allow(clippy::all)]
 #[allow(elided_named_lifetimes)]
 impl Client {
-    ///Sends a `GET` request to `/{ref}/{type}/{trait}`
+    ///Sends a 'GET' request to '/{ref}/{type}/{trait}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn renamed_parameters<'a>(
         &'a self,
         ref_: &'a str,
@@ -149,7 +185,7 @@ impl Client {
         if_: &'a str,
         in_: &'a str,
         use_: &'a str,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::RenamedParametersError>> {
         let url = format!(
             "{}/{}/{}/{}",
             self.baseurl,
@@ -163,6 +199,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -185,10 +222,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RenamedParametersError>::from_response::<
+                    types::RenamedParametersError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RenamedParametersError>::from_response::<
+                    types::RenamedParametersError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }

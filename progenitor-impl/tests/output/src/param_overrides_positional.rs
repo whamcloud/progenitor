@@ -64,7 +64,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -105,13 +108,15 @@ impl ClientHooks<()> for &Client {}
 impl Client {
     ///Gets a key
     ///
-    ///Sends a `GET` request to `/key`
+    ///Sends a 'GET' request to '/key'
     ///
     ///Arguments:
     /// - `key`: The same key parameter that overlaps with the path level
     ///   parameter
     /// - `unique_key`: A key parameter that will not be overridden by the path
     ///   spec
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn key_get<'a>(
         &'a self,
         key: Option<bool>,
@@ -124,6 +129,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -143,7 +149,7 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => Ok(ResponseValue::empty(response)),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 }

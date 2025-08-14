@@ -275,6 +275,37 @@ pub mod types {
             }
         }
     }
+
+    ///Error enum for the `paginated_u32s` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum PaginatedU32sError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for PaginatedU32sError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -302,7 +333,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -339,7 +373,7 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 impl Client {
-    ///Sends a `GET` request to `/`
+    ///Sends a 'GET' request to '/'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
@@ -405,16 +439,21 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/`
+        ///Sends a 'GET' request to '/'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(
             self,
-        ) -> Result<ResponseValue<types::Uint32ResultsPage>, Error<types::Error>> {
+        ) -> Result<ResponseValue<types::Uint32ResultsPage>, Error<types::PaginatedU32sError>>
+        {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 limit,
                 page_token,
             } = self;
+            #[allow(unused_variables)]
             let limit = limit.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let page_token = page_token.map_err(Error::InvalidRequest)?;
             let url = format!("{}/", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -423,6 +462,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -447,19 +487,28 @@ pub mod builder {
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
                 400u16..=499u16 => Err(Error::ErrorResponse(
-                    ResponseValue::from_response(response).await?,
+                    ResponseValue::<types::PaginatedU32sError>::from_response::<
+                        types::PaginatedU32sError,
+                    >(response)
+                    .await?,
                 )),
                 500u16..=599u16 => Err(Error::ErrorResponse(
-                    ResponseValue::from_response(response).await?,
+                    ResponseValue::<types::PaginatedU32sError>::from_response::<
+                        types::PaginatedU32sError,
+                    >(response)
+                    .await?,
                 )),
                 _ => Err(Error::UnexpectedResponse(response)),
             }
         }
 
-        ///Streams `GET` requests to `/`
+        ///Streams 'GET' requests to '/'
+        #[allow(unused_variables)]
+        #[allow(irrefutable_let_patterns)]
         pub fn stream(
             self,
-        ) -> impl futures::Stream<Item = Result<u32, Error<types::Error>>> + Unpin + 'a {
+        ) -> impl futures::Stream<Item = Result<u32, Error<types::PaginatedU32sError>>> + Unpin + 'a
+        {
             use ::futures::StreamExt;
             use ::futures::TryFutureExt;
             use ::futures::TryStreamExt;

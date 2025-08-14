@@ -5109,6 +5109,7 @@ pub mod types {
 
     impl ::std::str::FromStr for IpNet {
         type Err = self::error::ConversionError;
+        #[allow(irrefutable_let_patterns)]
         fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             if let Ok(v) = value.parse() {
                 Ok(Self::V4(v))
@@ -5567,7 +5568,7 @@ pub mod types {
                          ){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])/\
                          ([8-9]|1[0-9]|2[0-9]|3[0-2])$",
                     )
-                    .unwrap()
+                    .expect("Invalid regex pattern in schema")
                 });
             if (&*PATTERN).find(value).is_none() {
                 return Err("doesn't match pattern \
@@ -5708,7 +5709,7 @@ pub mod types {
                         "^([fF][dD])[0-9a-fA-F]{2}:(([0-9a-fA-F]{1,4}:){6}[0-9a-fA-F]{1,\
                          4}|([0-9a-fA-F]{1,4}:){1,6}:)\\/([1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8])$",
                     )
-                    .unwrap()
+                    .expect("Invalid regex pattern in schema")
                 });
             if (&*PATTERN).find(value).is_none() {
                 return Err("doesn't match pattern \
@@ -5853,7 +5854,8 @@ pub mod types {
             }
             static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
                 ::std::sync::LazyLock::new(|| {
-                    ::regress::Regex::new("^[0-9]{1,5}(-[0-9]{1,5})?$").unwrap()
+                    ::regress::Regex::new("^[0-9]{1,5}(-[0-9]{1,5})?$")
+                        .expect("Invalid regex pattern in schema")
                 });
             if (&*PATTERN).find(value).is_none() {
                 return Err("doesn't match pattern \"^[0-9]{1,5}(-[0-9]{1,5})?$\"".into());
@@ -5951,7 +5953,8 @@ pub mod types {
             }
             static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
                 ::std::sync::LazyLock::new(|| {
-                    ::regress::Regex::new("^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$").unwrap()
+                    ::regress::Regex::new("^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$")
+                        .expect("Invalid regex pattern in schema")
                 });
             if (&*PATTERN).find(value).is_none() {
                 return Err(
@@ -6134,7 +6137,7 @@ pub mod types {
             }
             static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(
                 || {
-                    :: regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . unwrap ()
+                    :: regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . expect ("Invalid regex pattern in schema")
                 },
             );
             if (&*PATTERN).find(value).is_none() {
@@ -6225,6 +6228,7 @@ pub mod types {
 
     impl ::std::str::FromStr for NameOrId {
         type Err = self::error::ConversionError;
+        #[allow(irrefutable_let_patterns)]
         fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             if let Ok(v) = value.parse() {
                 Ok(Self::Id(v))
@@ -8139,7 +8143,10 @@ pub mod types {
                 return Err("longer than 63 characters".into());
             }
             static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
-                ::std::sync::LazyLock::new(|| ::regress::Regex::new("[a-z-]+\\.[a-z-]+").unwrap());
+                ::std::sync::LazyLock::new(|| {
+                    ::regress::Regex::new("[a-z-]+\\.[a-z-]+")
+                        .expect("Invalid regex pattern in schema")
+                });
             if (&*PATTERN).find(value).is_none() {
                 return Err("doesn't match pattern \"[a-z-]+\\.[a-z-]+\"".into());
             }
@@ -9454,7 +9461,8 @@ pub mod types {
         fn from_str(value: &str) -> ::std::result::Result<Self, self::error::ConversionError> {
             static PATTERN: ::std::sync::LazyLock<::regress::Regex> =
                 ::std::sync::LazyLock::new(|| {
-                    ::regress::Regex::new("^\\d+\\.\\d+\\.\\d+([\\-\\+].+)?$").unwrap()
+                    ::regress::Regex::new("^\\d+\\.\\d+\\.\\d+([\\-\\+].+)?$")
+                        .expect("Invalid regex pattern in schema")
                 });
             if (&*PATTERN).find(value).is_none() {
                 return Err("doesn't match pattern \"^\\d+\\.\\d+\\.\\d+([\\-\\+].+)?$\"".into());
@@ -10975,7 +10983,7 @@ pub mod types {
                     ::regress::Regex::new(
                         "(([a-z]+[a-z0-9]*)(_([a-z0-9]+))*):(([a-z]+[a-z0-9]*)(_([a-z0-9]+))*)",
                     )
-                    .unwrap()
+                    .expect("Invalid regex pattern in schema")
                 });
             if (&*PATTERN).find(value).is_none() {
                 return Err("doesn't match pattern \
@@ -11860,7 +11868,7 @@ pub mod types {
             }
             static PATTERN: ::std::sync::LazyLock<::regress::Regex> = ::std::sync::LazyLock::new(
                 || {
-                    :: regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . unwrap ()
+                    :: regress :: Regex :: new ("^(?![0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$)^[a-z][a-z0-9-]*[a-zA-Z0-9]$") . expect ("Invalid regex pattern in schema")
                 },
             );
             if (&*PATTERN).find(value).is_none() {
@@ -14042,6 +14050,5834 @@ pub mod types {
             super::InstanceNetworkInterfaceAttachment::Default
         }
     }
+
+    ///Error enum for the `disk_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `image_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ImageViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ImageViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_network_interface_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceNetworkInterfaceViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceNetworkInterfaceViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `snapshot_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SnapshotViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SnapshotViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_route_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterRouteViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterRouteViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `device_auth_confirm` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DeviceAuthConfirmError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DeviceAuthConfirmError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `group_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum GroupListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for GroupListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `login_spoof` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LoginSpoofError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LoginSpoofError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `login_local` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LoginLocalError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LoginLocalError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `login_saml_begin` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LoginSamlBeginError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LoginSamlBeginError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `login_saml` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LoginSamlError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LoginSamlError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `logout` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LogoutError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LogoutError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_policy_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationPolicyViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationPolicyViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_policy_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationPolicyUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationPolicyUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_metrics_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskMetricsListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskMetricsListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `image_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ImageListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ImageListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `image_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ImageCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ImageCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `image_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ImageViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ImageViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `image_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ImageDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ImageDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_disk_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDiskListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDiskListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_disk_attach` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDiskAttachError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDiskAttachError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_disk_detach` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDiskDetachError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDiskDetachError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_external_ip_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceExternalIpListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceExternalIpListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_migrate` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceMigrateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceMigrateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_network_interface_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceNetworkInterfaceListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceNetworkInterfaceListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_network_interface_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceNetworkInterfaceCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceNetworkInterfaceCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_network_interface_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceNetworkInterfaceViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceNetworkInterfaceViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_network_interface_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceNetworkInterfaceUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceNetworkInterfaceUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_network_interface_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceNetworkInterfaceDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceNetworkInterfaceDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_reboot` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceRebootError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceRebootError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_serial_console` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceSerialConsoleError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceSerialConsoleError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_start` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceStartError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceStartError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_stop` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceStopError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceStopError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_policy_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectPolicyViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectPolicyViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_policy_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectPolicyUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectPolicyUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `snapshot_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SnapshotListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SnapshotListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `snapshot_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SnapshotCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SnapshotCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `snapshot_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SnapshotViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SnapshotViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `snapshot_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SnapshotDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SnapshotDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_firewall_rules_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcFirewallRulesViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcFirewallRulesViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_firewall_rules_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcFirewallRulesUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcFirewallRulesUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_route_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterRouteListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterRouteListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_route_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterRouteCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterRouteCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_route_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterRouteViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterRouteViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_route_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterRouteUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterRouteUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_router_route_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcRouterRouteDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcRouterRouteDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `vpc_subnet_list_network_interfaces` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum VpcSubnetListNetworkInterfacesError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for VpcSubnetListNetworkInterfacesError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `policy_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum PolicyViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for PolicyViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `policy_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum PolicyUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for PolicyUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `role_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum RoleListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for RoleListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `role_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum RoleViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for RoleViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `session_me` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SessionMeError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SessionMeError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `session_me_groups` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SessionMeGroupsError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SessionMeGroupsError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `session_sshkey_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SessionSshkeyListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SessionSshkeyListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `session_sshkey_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SessionSshkeyCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SessionSshkeyCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `session_sshkey_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SessionSshkeyViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SessionSshkeyViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `session_sshkey_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SessionSshkeyDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SessionSshkeyDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_image_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemImageViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemImageViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_view_by_id` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloViewByIdError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloViewByIdError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `certificate_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum CertificateListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for CertificateListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `certificate_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum CertificateCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for CertificateCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `certificate_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum CertificateViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for CertificateViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `certificate_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum CertificateDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for CertificateDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `physical_disk_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum PhysicalDiskListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for PhysicalDiskListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `rack_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum RackListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for RackListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `rack_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum RackViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for RackViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `sled_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SledListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SledListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `sled_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SledViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SledViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `sled_physical_disk_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SledPhysicalDiskListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SledPhysicalDiskListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_image_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemImageListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemImageListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_image_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemImageCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemImageCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_image_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemImageViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemImageViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_image_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemImageDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemImageDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_range_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolRangeListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolRangeListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_range_add` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolRangeAddError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolRangeAddError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_range_remove` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolRangeRemoveError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolRangeRemoveError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_service_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolServiceViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolServiceViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_service_range_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolServiceRangeListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolServiceRangeListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_service_range_add` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolServiceRangeAddError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolServiceRangeAddError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `ip_pool_service_range_remove` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum IpPoolServiceRangeRemoveError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for IpPoolServiceRangeRemoveError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_metric` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemMetricError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemMetricError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_policy_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemPolicyViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemPolicyViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_policy_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemPolicyUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemPolicyUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `saga_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SagaListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SagaListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `saga_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SagaViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SagaViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_identity_provider_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloIdentityProviderListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloIdentityProviderListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `local_idp_user_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LocalIdpUserCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LocalIdpUserCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `local_idp_user_delete` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LocalIdpUserDeleteError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LocalIdpUserDeleteError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `local_idp_user_set_password` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum LocalIdpUserSetPasswordError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for LocalIdpUserSetPasswordError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `saml_identity_provider_create` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SamlIdentityProviderCreateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SamlIdentityProviderCreateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `saml_identity_provider_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SamlIdentityProviderViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SamlIdentityProviderViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_policy_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloPolicyViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloPolicyViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_policy_update` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloPolicyUpdateError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloPolicyUpdateError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_users_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloUsersListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloUsersListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `silo_user_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SiloUserViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SiloUserViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_user_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUserListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUserListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_user_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUserViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUserViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `timeseries_schema_get` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum TimeseriesSchemaGetError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for TimeseriesSchemaGetError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `user_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum UserListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for UserListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_list_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskListV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskListV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_create_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskCreateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskCreateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_view_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskViewV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskViewV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `disk_delete_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum DiskDeleteV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for DiskDeleteV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_list_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceListV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceListV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_create_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceCreateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceCreateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_view_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceViewV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceViewV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_delete_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDeleteV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDeleteV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_disk_list_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDiskListV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDiskListV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_disk_attach_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDiskAttachV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDiskAttachV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_disk_detach_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceDiskDetachV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceDiskDetachV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_migrate_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceMigrateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceMigrateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_reboot_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceRebootV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceRebootV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_serial_console_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceSerialConsoleV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceSerialConsoleV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_start_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceStartV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceStartV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `instance_stop_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum InstanceStopV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for InstanceStopV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_list_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationListV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationListV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_create_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationCreateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationCreateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_view_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationViewV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationViewV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_update_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationUpdateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationUpdateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_delete_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationDeleteV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationDeleteV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_policy_view_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationPolicyViewV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationPolicyViewV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `organization_policy_update_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum OrganizationPolicyUpdateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for OrganizationPolicyUpdateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_list_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectListV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectListV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_create_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectCreateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectCreateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_view_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectViewV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectViewV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_update_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectUpdateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectUpdateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_delete_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectDeleteV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectDeleteV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_policy_view_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectPolicyViewV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectPolicyViewV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `project_policy_update_v1` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum ProjectPolicyUpdateV1Error {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for ProjectPolicyUpdateV1Error {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_component_version_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemComponentVersionListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemComponentVersionListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `update_deployments_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum UpdateDeploymentsListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for UpdateDeploymentsListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `update_deployment_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum UpdateDeploymentViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for UpdateDeploymentViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_update_refresh` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUpdateRefreshError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUpdateRefreshError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_update_start` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUpdateStartError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUpdateStartError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_update_stop` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUpdateStopError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUpdateStopError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_update_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUpdateListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUpdateListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_update_view` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUpdateViewError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUpdateViewError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_update_components_list` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemUpdateComponentsListError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemUpdateComponentsListError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
+
+    ///Error enum for the `system_version` operation
+    #[derive(Debug, Clone, :: serde :: Serialize, :: serde :: Deserialize)]
+    pub enum SystemVersionError {
+        # [doc = concat ! ("Error response for status code " , "4")]
+        Status4xx(Error),
+        # [doc = concat ! ("Error response for status code " , "5")]
+        Status5xx(Error),
+        /// Error response for an unknown status code
+        UnknownValue(serde_json::Value),
+    }
+
+    impl std::str::FromStr for SystemVersionError {
+        type Err = std::string::String;
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let (status_code, value) = match s.split_once(':') {
+                Some((status_code, value)) => (status_code, value),
+                None => return Err("Unable to split status code and value".to_string()),
+            };
+            let status_code: u16 = match status_code.parse() {
+                Ok(code) => code,
+                Err(e) => return Err(format!("Unable to parse status code: {}", e)),
+            };
+            match status_code {
+                _ => match serde_json::from_str(value) {
+                    Ok(json_value) => Ok(Self::UnknownValue(json_value)),
+                    Err(_) => Err("Unable to parse as JSON".to_string()),
+                },
+            }
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -14071,7 +19907,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -14114,11 +19953,13 @@ impl Client {
     ///
     ///Use `GET /v1/disks/{disk}` instead
     ///
-    ///Sends a `GET` request to `/by-id/disks/{id}`
+    ///Sends a 'GET' request to '/by-id/disks/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewByIdError>> {
         let url = format!(
             "{}/by-id/disks/{}",
             self.baseurl,
@@ -14130,6 +19971,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14148,23 +19990,35 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskViewByIdError>::from_response::<
+                        types::DiskViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskViewByIdError>::from_response::<
+                        types::DiskViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Fetch an image by id
     ///
-    ///Sends a `GET` request to `/by-id/images/{id}`
+    ///Sends a 'GET' request to '/by-id/images/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn image_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Image>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Image>, Error<types::ImageViewByIdError>> {
         let url = format!(
             "{}/by-id/images/{}",
             self.baseurl,
@@ -14176,6 +20030,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14195,10 +20050,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageViewByIdError>::from_response::<
+                    types::ImageViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageViewByIdError>::from_response::<
+                    types::ImageViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14206,11 +20067,13 @@ impl Client {
 
     ///Fetch an instance by id
     ///
-    ///Sends a `GET` request to `/by-id/instances/{id}`
+    ///Sends a 'GET' request to '/by-id/instances/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewByIdError>> {
         let url = format!(
             "{}/by-id/instances/{}",
             self.baseurl,
@@ -14222,6 +20085,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14241,10 +20105,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceViewByIdError>::from_response::<
+                    types::InstanceViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceViewByIdError>::from_response::<
+                    types::InstanceViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14252,11 +20122,16 @@ impl Client {
 
     ///Fetch a network interface by id
     ///
-    ///Sends a `GET` request to `/by-id/network-interfaces/{id}`
+    ///Sends a 'GET' request to '/by-id/network-interfaces/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_network_interface_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::NetworkInterface>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceViewByIdError>,
+    > {
         let url = format!(
             "{}/by-id/network-interfaces/{}",
             self.baseurl,
@@ -14268,6 +20143,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14287,10 +20163,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceViewByIdError>::from_response::<
+                    types::InstanceNetworkInterfaceViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceViewByIdError>::from_response::<
+                    types::InstanceNetworkInterfaceViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14300,11 +20182,13 @@ impl Client {
     ///
     ///Use `GET /v1/organizations/{organization}` instead
     ///
-    ///Sends a `GET` request to `/by-id/organizations/{id}`
+    ///Sends a 'GET' request to '/by-id/organizations/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewByIdError>> {
         let url = format!(
             "{}/by-id/organizations/{}",
             self.baseurl,
@@ -14316,6 +20200,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14335,10 +20220,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationViewByIdError>::from_response::<
+                    types::OrganizationViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationViewByIdError>::from_response::<
+                    types::OrganizationViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14348,11 +20239,13 @@ impl Client {
     ///
     ///Use `GET /v1/projects/{project}` instead
     ///
-    ///Sends a `GET` request to `/by-id/projects/{id}`
+    ///Sends a 'GET' request to '/by-id/projects/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewByIdError>> {
         let url = format!(
             "{}/by-id/projects/{}",
             self.baseurl,
@@ -14364,6 +20257,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14383,10 +20277,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectViewByIdError>::from_response::<
+                    types::ProjectViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectViewByIdError>::from_response::<
+                    types::ProjectViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14394,11 +20294,13 @@ impl Client {
 
     ///Fetch a snapshot by id
     ///
-    ///Sends a `GET` request to `/by-id/snapshots/{id}`
+    ///Sends a 'GET' request to '/by-id/snapshots/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn snapshot_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Snapshot>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotViewByIdError>> {
         let url = format!(
             "{}/by-id/snapshots/{}",
             self.baseurl,
@@ -14410,6 +20312,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14429,10 +20332,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SnapshotViewByIdError>::from_response::<
+                    types::SnapshotViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SnapshotViewByIdError>::from_response::<
+                    types::SnapshotViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14440,11 +20349,13 @@ impl Client {
 
     ///Fetch a route by id
     ///
-    ///Sends a `GET` request to `/by-id/vpc-router-routes/{id}`
+    ///Sends a 'GET' request to '/by-id/vpc-router-routes/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_route_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteViewByIdError>> {
         let url = format!(
             "{}/by-id/vpc-router-routes/{}",
             self.baseurl,
@@ -14456,6 +20367,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14475,10 +20387,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteViewByIdError>::from_response::<
+                    types::VpcRouterRouteViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteViewByIdError>::from_response::<
+                    types::VpcRouterRouteViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14486,11 +20404,13 @@ impl Client {
 
     ///Get a router by id
     ///
-    ///Sends a `GET` request to `/by-id/vpc-routers/{id}`
+    ///Sends a 'GET' request to '/by-id/vpc-routers/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterViewByIdError>> {
         let url = format!(
             "{}/by-id/vpc-routers/{}",
             self.baseurl,
@@ -14502,6 +20422,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14521,10 +20442,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterViewByIdError>::from_response::<
+                    types::VpcRouterViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterViewByIdError>::from_response::<
+                    types::VpcRouterViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14532,11 +20459,13 @@ impl Client {
 
     ///Fetch a subnet by id
     ///
-    ///Sends a `GET` request to `/by-id/vpc-subnets/{id}`
+    ///Sends a 'GET' request to '/by-id/vpc-subnets/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetViewByIdError>> {
         let url = format!(
             "{}/by-id/vpc-subnets/{}",
             self.baseurl,
@@ -14548,6 +20477,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14567,10 +20497,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetViewByIdError>::from_response::<
+                    types::VpcSubnetViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetViewByIdError>::from_response::<
+                    types::VpcSubnetViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14578,11 +20514,13 @@ impl Client {
 
     ///Fetch a VPC
     ///
-    ///Sends a `GET` request to `/by-id/vpcs/{id}`
+    ///Sends a 'GET' request to '/by-id/vpcs/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Vpc>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcViewByIdError>> {
         let url = format!(
             "{}/by-id/vpcs/{}",
             self.baseurl,
@@ -14594,6 +20532,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14613,10 +20552,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcViewByIdError>::from_response::<types::VpcViewByIdError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcViewByIdError>::from_response::<types::VpcViewByIdError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14628,11 +20573,13 @@ impl Client {
     /// client. It generates and records a `device_code` and `user_code` which
     /// must be verified and confirmed prior to a token being granted.
     ///
-    ///Sends a `POST` request to `/device/auth`
+    ///Sends a 'POST' request to '/device/auth'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn device_auth_request<'a>(
         &'a self,
         body: &'a types::DeviceAuthRequest,
-    ) -> Result<ResponseValue<ByteStream>, Error<ByteStream>> {
+    ) -> Result<ResponseValue<ByteStream>, Error<()>> {
         let url = format!("{}/device/auth", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -14640,6 +20587,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -14655,7 +20603,7 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200..=299 => Ok(ResponseValue::stream(response)),
-            _ => Err(Error::ErrorResponse(ResponseValue::stream(response))),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
@@ -14666,11 +20614,13 @@ impl Client {
     /// token here; it will be returned in response to the poll on
     /// `/device/token`.
     ///
-    ///Sends a `POST` request to `/device/confirm`
+    ///Sends a 'POST' request to '/device/confirm'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn device_auth_confirm<'a>(
         &'a self,
         body: &'a types::DeviceAuthVerify,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::DeviceAuthConfirmError>> {
         let url = format!("{}/device/confirm", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -14678,6 +20628,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -14698,10 +20649,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DeviceAuthConfirmError>::from_response::<
+                    types::DeviceAuthConfirmError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DeviceAuthConfirmError>::from_response::<
+                    types::DeviceAuthConfirmError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14712,11 +20669,13 @@ impl Client {
     ///This endpoint should be polled by the client until the user code is
     /// verified and the grant is confirmed.
     ///
-    ///Sends a `POST` request to `/device/token`
+    ///Sends a 'POST' request to '/device/token'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn device_access_token<'a>(
         &'a self,
         body: &'a types::DeviceAccessTokenRequest,
-    ) -> Result<ResponseValue<ByteStream>, Error<ByteStream>> {
+    ) -> Result<ResponseValue<ByteStream>, Error<()>> {
         let url = format!("{}/device/token", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -14724,6 +20683,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -14739,25 +20699,27 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200..=299 => Ok(ResponseValue::stream(response)),
-            _ => Err(Error::ErrorResponse(ResponseValue::stream(response))),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
     ///List groups
     ///
-    ///Sends a `GET` request to `/groups`
+    ///Sends a 'GET' request to '/groups'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn group_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::GroupListError>> {
         let url = format!("{}/groups", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -14765,6 +20727,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -14790,10 +20753,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::GroupListError>::from_response::<types::GroupListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::GroupListError>::from_response::<types::GroupListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14807,11 +20776,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn group_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Group, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Group, Error<types::GroupListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -14838,11 +20810,13 @@ impl Client {
             .boxed()
     }
 
-    ///Sends a `POST` request to `/login`
+    ///Sends a 'POST' request to '/login'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn login_spoof<'a>(
         &'a self,
         body: &'a types::SpoofLoginBody,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::LoginSpoofError>> {
         let url = format!("{}/login", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -14850,6 +20824,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -14870,10 +20845,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginSpoofError>::from_response::<types::LoginSpoofError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginSpoofError>::from_response::<types::LoginSpoofError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14881,12 +20862,14 @@ impl Client {
 
     ///Authenticate a user (i.e., log in) via username and password
     ///
-    ///Sends a `POST` request to `/login/{silo_name}/local`
+    ///Sends a 'POST' request to '/login/{silo_name}/local'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn login_local<'a>(
         &'a self,
         silo_name: &'a types::Name,
         body: &'a types::UsernamePasswordCredentials,
-    ) -> Result<ResponseValue<ByteStream>, Error<types::Error>> {
+    ) -> Result<ResponseValue<ByteStream>, Error<types::LoginLocalError>> {
         let url = format!(
             "{}/login/{}/local",
             self.baseurl,
@@ -14898,6 +20881,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -14914,10 +20898,16 @@ impl Client {
         match response.status().as_u16() {
             200..=299 => Ok(ResponseValue::stream(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginLocalError>::from_response::<types::LoginLocalError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginLocalError>::from_response::<types::LoginLocalError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14928,12 +20918,14 @@ impl Client {
     ///Either display a page asking a user for their credentials, or redirect
     /// them to their identity provider.
     ///
-    ///Sends a `GET` request to `/login/{silo_name}/saml/{provider_name}`
+    ///Sends a 'GET' request to '/login/{silo_name}/saml/{provider_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn login_saml_begin<'a>(
         &'a self,
         silo_name: &'a types::Name,
         provider_name: &'a types::Name,
-    ) -> Result<ResponseValue<ByteStream>, Error<types::Error>> {
+    ) -> Result<ResponseValue<ByteStream>, Error<types::LoginSamlBeginError>> {
         let url = format!(
             "{}/login/{}/saml/{}",
             self.baseurl,
@@ -14946,6 +20938,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self.client.get(url).headers(header_map).build()?;
         let info = OperationInfo {
             operation_id: "login_saml_begin",
@@ -14957,10 +20950,16 @@ impl Client {
         match response.status().as_u16() {
             200..=299 => Ok(ResponseValue::stream(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginSamlBeginError>::from_response::<
+                    types::LoginSamlBeginError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginSamlBeginError>::from_response::<
+                    types::LoginSamlBeginError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -14968,13 +20967,15 @@ impl Client {
 
     ///Authenticate a user (i.e., log in) via SAML
     ///
-    ///Sends a `POST` request to `/login/{silo_name}/saml/{provider_name}`
+    ///Sends a 'POST' request to '/login/{silo_name}/saml/{provider_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn login_saml<'a, B: Into<reqwest::Body>>(
         &'a self,
         silo_name: &'a types::Name,
         provider_name: &'a types::Name,
         body: B,
-    ) -> Result<ResponseValue<ByteStream>, Error<types::Error>> {
+    ) -> Result<ResponseValue<ByteStream>, Error<types::LoginSamlError>> {
         let url = format!(
             "{}/login/{}/saml/{}",
             self.baseurl,
@@ -14987,6 +20988,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -15007,17 +21009,25 @@ impl Client {
         match response.status().as_u16() {
             200..=299 => Ok(ResponseValue::stream(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginSamlError>::from_response::<types::LoginSamlError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LoginSamlError>::from_response::<types::LoginSamlError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
-    ///Sends a `POST` request to `/logout`
-    pub async fn logout<'a>(&'a self) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ///Sends a 'POST' request to '/logout'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
+    pub async fn logout<'a>(&'a self) -> Result<ResponseValue<()>, Error<types::LogoutError>> {
         let url = format!("{}/logout", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -15025,6 +21035,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -15044,10 +21055,12 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LogoutError>::from_response::<types::LogoutError>(response)
+                    .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LogoutError>::from_response::<types::LogoutError>(response)
+                    .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15057,19 +21070,22 @@ impl Client {
     ///
     ///Use `GET /v1/organizations` instead
     ///
-    ///Sends a `GET` request to `/organizations`
+    ///Sends a 'GET' request to '/organizations'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::OrganizationListError>>
+    {
         let url = format!("{}/organizations", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -15077,6 +21093,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -15102,10 +21119,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationListError>::from_response::<
+                    types::OrganizationListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationListError>::from_response::<
+                    types::OrganizationListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15121,12 +21144,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn organization_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Organization, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::Organization, Error<types::OrganizationListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -15157,11 +21183,13 @@ impl Client {
     ///
     ///Use `POST /v1/organizations` instead
     ///
-    ///Sends a `POST` request to `/organizations`
+    ///Sends a 'POST' request to '/organizations'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_create<'a>(
         &'a self,
         body: &'a types::OrganizationCreate,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationCreateError>> {
         let url = format!("{}/organizations", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -15169,6 +21197,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -15189,10 +21218,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationCreateError>::from_response::<
+                    types::OrganizationCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationCreateError>::from_response::<
+                    types::OrganizationCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15202,14 +21237,16 @@ impl Client {
     ///
     ///Use `GET /v1/organizations/{organization}` instead
     ///
-    ///Sends a `GET` request to `/organizations/{organization_name}`
+    ///Sends a 'GET' request to '/organizations/{organization_name}'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewError>> {
         let url = format!(
             "{}/organizations/{}",
             self.baseurl,
@@ -15221,6 +21258,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -15240,10 +21278,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationViewError>::from_response::<
+                    types::OrganizationViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationViewError>::from_response::<
+                    types::OrganizationViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15253,16 +21297,18 @@ impl Client {
     ///
     ///Use `PUT /v1/organizations/{organization}` instead
     ///
-    ///Sends a `PUT` request to `/organizations/{organization_name}`
+    ///Sends a 'PUT' request to '/organizations/{organization_name}'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
         body: &'a types::OrganizationUpdate,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationUpdateError>> {
         let url = format!(
             "{}/organizations/{}",
             self.baseurl,
@@ -15274,6 +21320,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -15294,10 +21341,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationUpdateError>::from_response::<
+                    types::OrganizationUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationUpdateError>::from_response::<
+                    types::OrganizationUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15307,14 +21360,16 @@ impl Client {
     ///
     ///Use `DELETE /v1/organizations/{organization}` instead
     ///
-    ///Sends a `DELETE` request to `/organizations/{organization_name}`
+    ///Sends a 'DELETE' request to '/organizations/{organization_name}'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::OrganizationDeleteError>> {
         let url = format!(
             "{}/organizations/{}",
             self.baseurl,
@@ -15326,6 +21381,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -15345,10 +21401,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationDeleteError>::from_response::<
+                    types::OrganizationDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationDeleteError>::from_response::<
+                    types::OrganizationDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15358,14 +21420,19 @@ impl Client {
     ///
     ///Use `GET /v1/organizations/{organization}/policy` instead
     ///
-    ///Sends a `GET` request to `/organizations/{organization_name}/policy`
+    ///Sends a 'GET' request to '/organizations/{organization_name}/policy'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_policy_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::OrganizationRolePolicy>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyViewError>,
+    > {
         let url = format!(
             "{}/organizations/{}/policy",
             self.baseurl,
@@ -15377,6 +21444,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -15396,10 +21464,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyViewError>::from_response::<
+                    types::OrganizationPolicyViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyViewError>::from_response::<
+                    types::OrganizationPolicyViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15409,16 +21483,21 @@ impl Client {
     ///
     ///Use `PUT /v1/organizations/{organization}/policy` instead
     ///
-    ///Sends a `PUT` request to `/organizations/{organization_name}/policy`
+    ///Sends a 'PUT' request to '/organizations/{organization_name}/policy'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_policy_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
         body: &'a types::OrganizationRolePolicy,
-    ) -> Result<ResponseValue<types::OrganizationRolePolicy>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyUpdateError>,
+    > {
         let url = format!(
             "{}/organizations/{}/policy",
             self.baseurl,
@@ -15430,6 +21509,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -15450,10 +21530,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyUpdateError>::from_response::<
+                    types::OrganizationPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyUpdateError>::from_response::<
+                    types::OrganizationPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15463,7 +21549,7 @@ impl Client {
     ///
     ///Use `GET /v1/projects` instead
     ///
-    ///Sends a `GET` request to `/organizations/{organization_name}/projects`
+    ///Sends a 'GET' request to '/organizations/{organization_name}/projects'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
@@ -15471,13 +21557,15 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::ProjectListError>> {
         let url = format!(
             "{}/organizations/{}/projects",
             self.baseurl,
@@ -15489,6 +21577,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -15514,10 +21603,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectListError>::from_response::<types::ProjectListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectListError>::from_response::<types::ProjectListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15535,12 +21630,15 @@ impl Client {
     /// - `organization_name`: The organization's unique name.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn project_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Project, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Project, Error<types::ProjectListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -15571,16 +21669,18 @@ impl Client {
     ///
     ///Use `POST /v1/projects` instead
     ///
-    ///Sends a `POST` request to `/organizations/{organization_name}/projects`
+    ///Sends a 'POST' request to '/organizations/{organization_name}/projects'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         body: &'a types::ProjectCreate,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects",
             self.baseurl,
@@ -15592,6 +21692,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -15612,10 +21713,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectCreateError>::from_response::<
+                    types::ProjectCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectCreateError>::from_response::<
+                    types::ProjectCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15625,17 +21732,19 @@ impl Client {
     ///
     ///Use `GET /v1/projects/{project}` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}",
             self.baseurl,
@@ -15648,6 +21757,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -15667,10 +21777,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectViewError>::from_response::<types::ProjectViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectViewError>::from_response::<types::ProjectViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15680,19 +21796,21 @@ impl Client {
     ///
     ///Use `PUT /v1/projects/{project}` instead
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::ProjectUpdate,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}",
             self.baseurl,
@@ -15705,6 +21823,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -15725,10 +21844,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectUpdateError>::from_response::<
+                    types::ProjectUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectUpdateError>::from_response::<
+                    types::ProjectUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15738,17 +21863,19 @@ impl Client {
     ///
     ///Use `DELETE /v1/projects/{project}` instead
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::ProjectDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}",
             self.baseurl,
@@ -15761,6 +21888,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -15780,10 +21908,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectDeleteError>::from_response::<
+                    types::ProjectDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectDeleteError>::from_response::<
+                    types::ProjectDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15793,8 +21927,8 @@ impl Client {
     ///
     ///Use `GET /v1/disks` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/disks`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
@@ -15803,6 +21937,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -15810,7 +21946,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::DiskListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks",
             self.baseurl,
@@ -15823,6 +21959,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -15848,10 +21985,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskListError>::from_response::<types::DiskListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskListError>::from_response::<types::DiskListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15870,13 +22013,16 @@ impl Client {
     /// - `project_name`: The project's unique name within the organization.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn disk_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::DiskListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -15911,19 +22057,21 @@ impl Client {
 
     ///Use `POST /v1/disks` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/disks`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::DiskCreate,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks",
             self.baseurl,
@@ -15936,6 +22084,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -15956,10 +22105,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskCreateError>::from_response::<types::DiskCreateError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskCreateError>::from_response::<types::DiskCreateError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -15969,15 +22124,17 @@ impl Client {
     ///
     ///Use `GET /v1/disks/{disk}` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/disks/
-    /// {disk_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         disk_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks/{}",
             self.baseurl,
@@ -15991,6 +22148,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16010,10 +22168,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskViewError>::from_response::<types::DiskViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskViewError>::from_response::<types::DiskViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16021,15 +22185,17 @@ impl Client {
 
     ///Use `DELETE /v1/disks/{disk}` instead
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/disks/
-    /// {disk_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         disk_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::DiskDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks/{}",
             self.baseurl,
@@ -16043,6 +22209,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -16062,10 +22229,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskDeleteError>::from_response::<types::DiskDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskDeleteError>::from_response::<types::DiskDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16073,9 +22246,9 @@ impl Client {
 
     ///Fetch disk metrics
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/disks/
-    /// {disk_name}/metrics/{metric_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/disks/
+    /// {disk_name}/metrics/{metric_name}'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -16087,6 +22260,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `start_time`: An inclusive start time of metrics.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_metrics_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -16097,7 +22272,8 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         start_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
-    ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::DiskMetricsListError>>
+    {
         let url = format!(
             "{}/organizations/{}/projects/{}/disks/{}/metrics/{}",
             self.baseurl,
@@ -16112,6 +22288,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16141,10 +22318,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskMetricsListError>::from_response::<
+                    types::DiskMetricsListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskMetricsListError>::from_response::<
+                    types::DiskMetricsListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16164,6 +22347,8 @@ impl Client {
     /// - `end_time`: An exclusive end time of metrics.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `start_time`: An inclusive start time of metrics.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn disk_metrics_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -16173,8 +22358,9 @@ impl Client {
         end_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
         limit: Option<::std::num::NonZeroU32>,
         start_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
-    ) -> impl futures::Stream<Item = Result<types::Measurement, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::Measurement, Error<types::DiskMetricsListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -16224,8 +22410,8 @@ impl Client {
     ///List images in a project. The images are returned sorted by creation
     /// date, with the most recent images appearing first.
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/images`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
@@ -16234,6 +22420,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn image_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -16241,7 +22429,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::ImageResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ImageResultsPage>, Error<types::ImageListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images",
             self.baseurl,
@@ -16254,6 +22442,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16279,10 +22468,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageListError>::from_response::<types::ImageListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageListError>::from_response::<types::ImageListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16302,13 +22497,16 @@ impl Client {
     /// - `project_name`: The project's unique name within the organization.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn image_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Image, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Image, Error<types::ImageListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -16345,19 +22543,21 @@ impl Client {
     ///
     ///Create a new image in a project.
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/images`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn image_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::ImageCreate,
-    ) -> Result<ResponseValue<types::Image>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Image>, Error<types::ImageCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images",
             self.baseurl,
@@ -16370,6 +22570,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -16390,10 +22591,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageCreateError>::from_response::<types::ImageCreateError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageCreateError>::from_response::<types::ImageCreateError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16403,15 +22610,17 @@ impl Client {
     ///
     ///Fetch the details for a specific image in a project.
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/images/
-    /// {image_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images/
+    /// {image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn image_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         image_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Image>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Image>, Error<types::ImageViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images/{}",
             self.baseurl,
@@ -16425,6 +22634,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16444,10 +22654,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageViewError>::from_response::<types::ImageViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageViewError>::from_response::<types::ImageViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16459,15 +22675,17 @@ impl Client {
     /// undone. Any instances in the project using the image will continue to
     /// run, however new instances can not be created with this image.
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/images/
-    /// {image_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/images/
+    /// {image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn image_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         image_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::ImageDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/images/{}",
             self.baseurl,
@@ -16481,6 +22699,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -16500,10 +22719,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageDeleteError>::from_response::<types::ImageDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ImageDeleteError>::from_response::<types::ImageDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16511,8 +22736,8 @@ impl Client {
 
     ///List instances
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
@@ -16521,6 +22746,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -16528,7 +22755,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::InstanceListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances",
             self.baseurl,
@@ -16541,6 +22768,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16565,12 +22793,22 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceListError>::from_response::<
+                        types::InstanceListError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceListError>::from_response::<
+                        types::InstanceListError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
@@ -16586,13 +22824,15 @@ impl Client {
     /// - `project_name`: The project's unique name within the organization.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn instance_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Instance, Error<types::Error>>> + Unpin + '_
+    ) -> impl futures::Stream<Item = Result<types::Instance, Error<types::InstanceListError>>> + Unpin + '_
     {
         use futures::StreamExt;
         use futures::TryFutureExt;
@@ -16630,19 +22870,21 @@ impl Client {
     ///
     ///Use `POST /v1/instances` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::InstanceCreate,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances",
             self.baseurl,
@@ -16655,6 +22897,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -16675,10 +22918,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceCreateError>::from_response::<
+                    types::InstanceCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceCreateError>::from_response::<
+                    types::InstanceCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16688,15 +22937,17 @@ impl Client {
     ///
     ///Use `GET /v1/instances/{instance}` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}",
             self.baseurl,
@@ -16710,6 +22961,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16728,27 +22980,39 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceViewError>::from_response::<
+                        types::InstanceViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceViewError>::from_response::<
+                        types::InstanceViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Delete an instance
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::InstanceDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}",
             self.baseurl,
@@ -16762,6 +23026,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -16781,10 +23046,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDeleteError>::from_response::<
+                    types::InstanceDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDeleteError>::from_response::<
+                    types::InstanceDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16794,9 +23065,9 @@ impl Client {
     ///
     ///Use `GET /v1/instances/{instance}/disks` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/disks`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -16806,6 +23077,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_disk_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -16814,7 +23087,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::InstanceDiskListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/disks",
             self.baseurl,
@@ -16828,6 +23101,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -16853,10 +23127,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskListError>::from_response::<
+                    types::InstanceDiskListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskListError>::from_response::<
+                    types::InstanceDiskListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16876,6 +23156,8 @@ impl Client {
     /// - `instance_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn instance_disk_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -16883,7 +23165,8 @@ impl Client {
         instance_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::InstanceDiskListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -16928,16 +23211,18 @@ impl Client {
     ///
     ///Use `POST /v1/instances/{instance}/disks/attach` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/disks/attach`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks/attach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_disk_attach<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
         body: &'a types::DiskIdentifier,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskAttachError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/disks/attach",
             self.baseurl,
@@ -16951,6 +23236,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -16971,10 +23257,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskAttachError>::from_response::<
+                    types::InstanceDiskAttachError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskAttachError>::from_response::<
+                    types::InstanceDiskAttachError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -16984,16 +23276,18 @@ impl Client {
     ///
     ///Use `POST /v1/disks/{disk}/detach` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/disks/detach`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/disks/detach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_disk_detach<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
         body: &'a types::DiskIdentifier,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskDetachError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/disks/detach",
             self.baseurl,
@@ -17007,6 +23301,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -17027,10 +23322,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskDetachError>::from_response::<
+                    types::InstanceDiskDetachError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskDetachError>::from_response::<
+                    types::InstanceDiskDetachError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17038,15 +23339,20 @@ impl Client {
 
     ///List external IP addresses
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/external-ips`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/external-ips'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_external_ip_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::ExternalIpResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::ExternalIpResultsPage>,
+        Error<types::InstanceExternalIpListError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/external-ips",
             self.baseurl,
@@ -17060,6 +23366,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17079,10 +23386,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceExternalIpListError>::from_response::<
+                    types::InstanceExternalIpListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceExternalIpListError>::from_response::<
+                    types::InstanceExternalIpListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17092,16 +23405,18 @@ impl Client {
     ///
     ///Use `POST /v1/instances/{instance}/migrate` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/migrate`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/migrate'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_migrate<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
         body: &'a types::InstanceMigrate,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceMigrateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/migrate",
             self.baseurl,
@@ -17115,6 +23430,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -17135,10 +23451,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceMigrateError>::from_response::<
+                    types::InstanceMigrateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceMigrateError>::from_response::<
+                    types::InstanceMigrateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17146,9 +23468,9 @@ impl Client {
 
     ///List network interfaces
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/network-interfaces`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -17158,6 +23480,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_network_interface_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -17166,7 +23490,10 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::NetworkInterfaceResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::NetworkInterfaceResultsPage>,
+        Error<types::InstanceNetworkInterfaceListError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces",
             self.baseurl,
@@ -17180,6 +23507,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17205,10 +23533,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceListError>::from_response::<
+                    types::InstanceNetworkInterfaceListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceListError>::from_response::<
+                    types::InstanceNetworkInterfaceListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17226,6 +23560,8 @@ impl Client {
     /// - `instance_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn instance_network_interface_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -17233,8 +23569,10 @@ impl Client {
         instance_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::NetworkInterface, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::NetworkInterface, Error<types::InstanceNetworkInterfaceListError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -17277,16 +23615,21 @@ impl Client {
 
     ///Create a network interface
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/network-interfaces`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_network_interface_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
         body: &'a types::NetworkInterfaceCreate,
-    ) -> Result<ResponseValue<types::NetworkInterface>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceCreateError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces",
             self.baseurl,
@@ -17300,6 +23643,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -17320,10 +23664,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceCreateError>::from_response::<
+                    types::InstanceNetworkInterfaceCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceCreateError>::from_response::<
+                    types::InstanceNetworkInterfaceCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17331,16 +23681,21 @@ impl Client {
 
     ///Fetch a network interface
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/network-interfaces/{interface_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces/{interface_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_network_interface_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
         interface_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::NetworkInterface>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceViewError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
             self.baseurl,
@@ -17355,6 +23710,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17374,10 +23730,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceViewError>::from_response::<
+                    types::InstanceNetworkInterfaceViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceViewError>::from_response::<
+                    types::InstanceNetworkInterfaceViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17385,9 +23747,11 @@ impl Client {
 
     ///Update a network interface
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/network-interfaces/{interface_name}`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces/{interface_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_network_interface_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -17395,7 +23759,10 @@ impl Client {
         instance_name: &'a types::Name,
         interface_name: &'a types::Name,
         body: &'a types::NetworkInterfaceUpdate,
-    ) -> Result<ResponseValue<types::NetworkInterface>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::NetworkInterface>,
+        Error<types::InstanceNetworkInterfaceUpdateError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
             self.baseurl,
@@ -17410,6 +23777,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -17430,10 +23798,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceUpdateError>::from_response::<
+                    types::InstanceNetworkInterfaceUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceUpdateError>::from_response::<
+                    types::InstanceNetworkInterfaceUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17446,16 +23820,18 @@ impl Client {
     /// designated first. The primary interface can be deleted if there are no
     /// secondary interfaces.
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/network-interfaces/{interface_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/network-interfaces/{interface_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_network_interface_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
         interface_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::InstanceNetworkInterfaceDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/network-interfaces/{}",
             self.baseurl,
@@ -17470,6 +23846,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -17489,10 +23866,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceDeleteError>::from_response::<
+                    types::InstanceNetworkInterfaceDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceNetworkInterfaceDeleteError>::from_response::<
+                    types::InstanceNetworkInterfaceDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17502,15 +23885,17 @@ impl Client {
     ///
     ///Use `POST /v1/instances/{instance}/reboot` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/reboot`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/reboot'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_reboot<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceRebootError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/reboot",
             self.baseurl,
@@ -17524,6 +23909,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -17543,10 +23929,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceRebootError>::from_response::<
+                    types::InstanceRebootError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceRebootError>::from_response::<
+                    types::InstanceRebootError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17556,9 +23948,9 @@ impl Client {
     ///
     ///Use `GET /v1/instances/{instance}/serial-console` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/serial-console`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/serial-console'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -17575,6 +23967,8 @@ impl Client {
     ///   read, counting *backward* from the most recently buffered data
     ///   retrieved from the instance. (See note on `from_start` about mutual
     ///   exclusivity)
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_serial_console<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -17583,7 +23977,10 @@ impl Client {
         from_start: Option<u64>,
         max_bytes: Option<u64>,
         most_recent: Option<u64>,
-    ) -> Result<ResponseValue<types::InstanceSerialConsoleData>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::InstanceSerialConsoleData>,
+        Error<types::InstanceSerialConsoleError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/serial-console",
             self.baseurl,
@@ -17597,6 +23994,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17625,10 +24023,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceSerialConsoleError>::from_response::<
+                    types::InstanceSerialConsoleError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceSerialConsoleError>::from_response::<
+                    types::InstanceSerialConsoleError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17638,15 +24042,17 @@ impl Client {
     ///
     ///Use `GET /v1/instances/{instance}/serial-console/stream` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/serial-console/stream`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/serial-console/stream'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_serial_console_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<reqwest::Upgraded>> {
+    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/serial-console/stream",
             self.baseurl,
@@ -17660,6 +24066,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17685,7 +24092,7 @@ impl Client {
         match response.status().as_u16() {
             101u16 => ResponseValue::upgrade(response).await,
             200..=299 => ResponseValue::upgrade(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
@@ -17693,15 +24100,17 @@ impl Client {
     ///
     ///Use `POST /v1/instances/{instance}/start` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/start`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/start'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_start<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStartError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/start",
             self.baseurl,
@@ -17715,6 +24124,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -17734,10 +24144,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceStartError>::from_response::<
+                    types::InstanceStartError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceStartError>::from_response::<
+                    types::InstanceStartError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17747,15 +24163,17 @@ impl Client {
     ///
     ///Use `POST /v1/instances/{instance}/stop` instead
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/instances/
-    /// {instance_name}/stop`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/instances/
+    /// {instance_name}/stop'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_stop<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         instance_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStopError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/instances/{}/stop",
             self.baseurl,
@@ -17769,6 +24187,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -17787,12 +24206,22 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceStopError>::from_response::<
+                        types::InstanceStopError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::InstanceStopError>::from_response::<
+                        types::InstanceStopError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
@@ -17801,17 +24230,19 @@ impl Client {
     ///
     ///Use `GET /v1/projects/{project}/policy` instead
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/policy`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/policy'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_policy_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/policy",
             self.baseurl,
@@ -17824,6 +24255,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17843,10 +24275,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyViewError>::from_response::<
+                    types::ProjectPolicyViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyViewError>::from_response::<
+                    types::ProjectPolicyViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17854,19 +24292,22 @@ impl Client {
 
     ///Update a project's IAM policy
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/policy`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/policy'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_policy_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::ProjectRolePolicy,
-    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyUpdateError>>
+    {
         let url = format!(
             "{}/organizations/{}/projects/{}/policy",
             self.baseurl,
@@ -17879,6 +24320,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -17899,10 +24341,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyUpdateError>::from_response::<
+                    types::ProjectPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyUpdateError>::from_response::<
+                    types::ProjectPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -17910,8 +24358,8 @@ impl Client {
 
     ///List snapshots
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/snapshots`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
@@ -17920,6 +24368,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn snapshot_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -17927,7 +24377,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::SnapshotResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SnapshotResultsPage>, Error<types::SnapshotListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots",
             self.baseurl,
@@ -17940,6 +24390,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -17964,12 +24415,22 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotListError>::from_response::<
+                        types::SnapshotListError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotListError>::from_response::<
+                        types::SnapshotListError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
@@ -17985,13 +24446,15 @@ impl Client {
     /// - `project_name`: The project's unique name within the organization.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn snapshot_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Snapshot, Error<types::Error>>> + Unpin + '_
+    ) -> impl futures::Stream<Item = Result<types::Snapshot, Error<types::SnapshotListError>>> + Unpin + '_
     {
         use futures::StreamExt;
         use futures::TryFutureExt;
@@ -18029,19 +24492,21 @@ impl Client {
     ///
     ///Creates a point-in-time snapshot from a disk.
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/snapshots`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn snapshot_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::SnapshotCreate,
-    ) -> Result<ResponseValue<types::Snapshot>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots",
             self.baseurl,
@@ -18054,6 +24519,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -18074,10 +24540,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SnapshotCreateError>::from_response::<
+                    types::SnapshotCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SnapshotCreateError>::from_response::<
+                    types::SnapshotCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18085,15 +24557,17 @@ impl Client {
 
     ///Fetch a snapshot
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/snapshots/
-    /// {snapshot_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots/
+    /// {snapshot_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn snapshot_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         snapshot_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Snapshot>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Snapshot>, Error<types::SnapshotViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots/{}",
             self.baseurl,
@@ -18107,6 +24581,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -18125,27 +24600,39 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotViewError>::from_response::<
+                        types::SnapshotViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SnapshotViewError>::from_response::<
+                        types::SnapshotViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Delete a snapshot
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/snapshots/
-    /// {snapshot_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/snapshots/
+    /// {snapshot_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn snapshot_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         snapshot_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::SnapshotDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/snapshots/{}",
             self.baseurl,
@@ -18159,6 +24646,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -18178,10 +24666,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SnapshotDeleteError>::from_response::<
+                    types::SnapshotDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SnapshotDeleteError>::from_response::<
+                    types::SnapshotDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18189,8 +24683,8 @@ impl Client {
 
     ///List VPCs
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
@@ -18199,6 +24693,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -18206,7 +24702,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::VpcResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcResultsPage>, Error<types::VpcListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs",
             self.baseurl,
@@ -18219,6 +24715,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -18244,10 +24741,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcListError>::from_response::<types::VpcListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcListError>::from_response::<types::VpcListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18264,13 +24767,16 @@ impl Client {
     /// - `project_name`: The project's unique name within the organization.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn vpc_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Vpc, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Vpc, Error<types::VpcListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -18305,19 +24811,21 @@ impl Client {
 
     ///Create a VPC
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs'
     ///
     ///Arguments:
     /// - `organization_name`: The organization's unique name.
     /// - `project_name`: The project's unique name within the organization.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         body: &'a types::VpcCreate,
-    ) -> Result<ResponseValue<types::Vpc>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs",
             self.baseurl,
@@ -18330,6 +24838,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -18350,10 +24859,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcCreateError>::from_response::<types::VpcCreateError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcCreateError>::from_response::<types::VpcCreateError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18361,15 +24876,17 @@ impl Client {
 
     ///Fetch a VPC
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Vpc>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}",
             self.baseurl,
@@ -18383,6 +24900,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -18402,10 +24920,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcViewError>::from_response::<types::VpcViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcViewError>::from_response::<types::VpcViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18413,16 +24937,18 @@ impl Client {
 
     ///Update a VPC
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         body: &'a types::VpcUpdate,
-    ) -> Result<ResponseValue<types::Vpc>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Vpc>, Error<types::VpcUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}",
             self.baseurl,
@@ -18436,6 +24962,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -18456,10 +24983,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcUpdateError>::from_response::<types::VpcUpdateError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcUpdateError>::from_response::<types::VpcUpdateError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18467,15 +25000,17 @@ impl Client {
 
     ///Delete a VPC
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::VpcDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}",
             self.baseurl,
@@ -18489,6 +25024,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -18508,10 +25044,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcDeleteError>::from_response::<types::VpcDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcDeleteError>::from_response::<types::VpcDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18519,15 +25061,18 @@ impl Client {
 
     ///List firewall rules
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/firewall/rules`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/firewall/rules'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_firewall_rules_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::VpcFirewallRules>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcFirewallRules>, Error<types::VpcFirewallRulesViewError>>
+    {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/firewall/rules",
             self.baseurl,
@@ -18541,6 +25086,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -18560,10 +25106,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcFirewallRulesViewError>::from_response::<
+                    types::VpcFirewallRulesViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcFirewallRulesViewError>::from_response::<
+                    types::VpcFirewallRulesViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18571,16 +25123,19 @@ impl Client {
 
     ///Replace firewall rules
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/firewall/rules`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/firewall/rules'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_firewall_rules_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         body: &'a types::VpcFirewallRuleUpdateParams,
-    ) -> Result<ResponseValue<types::VpcFirewallRules>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcFirewallRules>, Error<types::VpcFirewallRulesUpdateError>>
+    {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/firewall/rules",
             self.baseurl,
@@ -18594,6 +25149,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -18614,10 +25170,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcFirewallRulesUpdateError>::from_response::<
+                    types::VpcFirewallRulesUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcFirewallRulesUpdateError>::from_response::<
+                    types::VpcFirewallRulesUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18625,9 +25187,9 @@ impl Client {
 
     ///List routers
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -18637,6 +25199,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -18645,7 +25209,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::VpcRouterResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcRouterResultsPage>, Error<types::VpcRouterListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers",
             self.baseurl,
@@ -18659,6 +25223,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -18684,10 +25249,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterListError>::from_response::<
+                    types::VpcRouterListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterListError>::from_response::<
+                    types::VpcRouterListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18705,6 +25276,8 @@ impl Client {
     /// - `vpc_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn vpc_router_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -18712,8 +25285,9 @@ impl Client {
         vpc_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::VpcRouter, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::VpcRouter, Error<types::VpcRouterListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -18756,16 +25330,18 @@ impl Client {
 
     ///Create a router
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         body: &'a types::VpcRouterCreate,
-    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers",
             self.baseurl,
@@ -18779,6 +25355,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -18799,10 +25376,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterCreateError>::from_response::<
+                    types::VpcRouterCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterCreateError>::from_response::<
+                    types::VpcRouterCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18810,16 +25393,18 @@ impl Client {
 
     ///Get a router
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         router_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
             self.baseurl,
@@ -18834,6 +25419,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -18853,10 +25439,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterViewError>::from_response::<
+                    types::VpcRouterViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterViewError>::from_response::<
+                    types::VpcRouterViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18864,9 +25456,11 @@ impl Client {
 
     ///Update a router
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -18874,7 +25468,7 @@ impl Client {
         vpc_name: &'a types::Name,
         router_name: &'a types::Name,
         body: &'a types::VpcRouterUpdate,
-    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcRouter>, Error<types::VpcRouterUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
             self.baseurl,
@@ -18889,6 +25483,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -18909,10 +25504,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterUpdateError>::from_response::<
+                    types::VpcRouterUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterUpdateError>::from_response::<
+                    types::VpcRouterUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18920,16 +25521,18 @@ impl Client {
 
     ///Delete a router
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         router_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::VpcRouterDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}",
             self.baseurl,
@@ -18944,6 +25547,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -18963,10 +25567,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterDeleteError>::from_response::<
+                    types::VpcRouterDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterDeleteError>::from_response::<
+                    types::VpcRouterDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -18976,9 +25586,9 @@ impl Client {
     ///
     ///List the routes associated with a router in a particular VPC.
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}/routes`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -18989,6 +25599,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_route_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -18998,7 +25610,8 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::RouterRouteResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RouterRouteResultsPage>, Error<types::VpcRouterRouteListError>>
+    {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes",
             self.baseurl,
@@ -19013,6 +25626,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19038,10 +25652,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteListError>::from_response::<
+                    types::VpcRouterRouteListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteListError>::from_response::<
+                    types::VpcRouterRouteListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19063,6 +25683,8 @@ impl Client {
     /// - `router_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn vpc_router_route_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19071,8 +25693,9 @@ impl Client {
         router_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::RouterRoute, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::RouterRoute, Error<types::VpcRouterRouteListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -19117,9 +25740,11 @@ impl Client {
 
     ///Create a router
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}/routes`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_route_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19127,7 +25752,7 @@ impl Client {
         vpc_name: &'a types::Name,
         router_name: &'a types::Name,
         body: &'a types::RouterRouteCreateParams,
-    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes",
             self.baseurl,
@@ -19142,6 +25767,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -19162,10 +25788,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteCreateError>::from_response::<
+                    types::VpcRouterRouteCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteCreateError>::from_response::<
+                    types::VpcRouterRouteCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19173,9 +25805,11 @@ impl Client {
 
     ///Fetch a route
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}/routes/{route_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes/{route_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_route_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19183,7 +25817,7 @@ impl Client {
         vpc_name: &'a types::Name,
         router_name: &'a types::Name,
         route_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
             self.baseurl,
@@ -19199,6 +25833,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19218,10 +25853,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteViewError>::from_response::<
+                    types::VpcRouterRouteViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteViewError>::from_response::<
+                    types::VpcRouterRouteViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19229,9 +25870,11 @@ impl Client {
 
     ///Update a route
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}/routes/{route_name}`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes/{route_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_route_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19240,7 +25883,7 @@ impl Client {
         router_name: &'a types::Name,
         route_name: &'a types::Name,
         body: &'a types::RouterRouteUpdateParams,
-    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RouterRoute>, Error<types::VpcRouterRouteUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
             self.baseurl,
@@ -19256,6 +25899,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -19276,10 +25920,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteUpdateError>::from_response::<
+                    types::VpcRouterRouteUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteUpdateError>::from_response::<
+                    types::VpcRouterRouteUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19287,9 +25937,11 @@ impl Client {
 
     ///Delete a route
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/routers/{router_name}/routes/{route_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/routers/{router_name}/routes/{route_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_router_route_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19297,7 +25949,7 @@ impl Client {
         vpc_name: &'a types::Name,
         router_name: &'a types::Name,
         route_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::VpcRouterRouteDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/routers/{}/routes/{}",
             self.baseurl,
@@ -19313,6 +25965,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -19332,10 +25985,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteDeleteError>::from_response::<
+                    types::VpcRouterRouteDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcRouterRouteDeleteError>::from_response::<
+                    types::VpcRouterRouteDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19343,9 +26002,9 @@ impl Client {
 
     ///List subnets
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/subnets`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -19355,6 +26014,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_list<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19363,7 +26024,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::VpcSubnetResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcSubnetResultsPage>, Error<types::VpcSubnetListError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets",
             self.baseurl,
@@ -19377,6 +26038,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19402,10 +26064,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetListError>::from_response::<
+                    types::VpcSubnetListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetListError>::from_response::<
+                    types::VpcSubnetListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19423,6 +26091,8 @@ impl Client {
     /// - `vpc_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn vpc_subnet_list_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19430,8 +26100,9 @@ impl Client {
         vpc_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::VpcSubnet, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::VpcSubnet, Error<types::VpcSubnetListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -19474,16 +26145,18 @@ impl Client {
 
     ///Create a subnet
     ///
-    ///Sends a `POST` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/subnets`
+    ///Sends a 'POST' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_create<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         body: &'a types::VpcSubnetCreate,
-    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetCreateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets",
             self.baseurl,
@@ -19497,6 +26170,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -19517,10 +26191,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetCreateError>::from_response::<
+                    types::VpcSubnetCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetCreateError>::from_response::<
+                    types::VpcSubnetCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19528,16 +26208,18 @@ impl Client {
 
     ///Fetch a subnet
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/subnets/{subnet_name}`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_view<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         subnet_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetViewError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
             self.baseurl,
@@ -19552,6 +26234,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19571,10 +26254,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetViewError>::from_response::<
+                    types::VpcSubnetViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetViewError>::from_response::<
+                    types::VpcSubnetViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19582,9 +26271,11 @@ impl Client {
 
     ///Update a subnet
     ///
-    ///Sends a `PUT` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/subnets/{subnet_name}`
+    ///Sends a 'PUT' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_update<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19592,7 +26283,7 @@ impl Client {
         vpc_name: &'a types::Name,
         subnet_name: &'a types::Name,
         body: &'a types::VpcSubnetUpdate,
-    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::VpcSubnet>, Error<types::VpcSubnetUpdateError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
             self.baseurl,
@@ -19607,6 +26298,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -19627,10 +26319,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetUpdateError>::from_response::<
+                    types::VpcSubnetUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetUpdateError>::from_response::<
+                    types::VpcSubnetUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19638,16 +26336,18 @@ impl Client {
 
     ///Delete a subnet
     ///
-    ///Sends a `DELETE` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/subnets/{subnet_name}`
+    ///Sends a 'DELETE' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_delete<'a>(
         &'a self,
         organization_name: &'a types::Name,
         project_name: &'a types::Name,
         vpc_name: &'a types::Name,
         subnet_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::VpcSubnetDeleteError>> {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}",
             self.baseurl,
@@ -19662,6 +26362,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -19681,10 +26382,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetDeleteError>::from_response::<
+                    types::VpcSubnetDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetDeleteError>::from_response::<
+                    types::VpcSubnetDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19692,9 +26399,9 @@ impl Client {
 
     ///List network interfaces
     ///
-    ///Sends a `GET` request to
-    /// `/organizations/{organization_name}/projects/{project_name}/vpcs/
-    /// {vpc_name}/subnets/{subnet_name}/network-interfaces`
+    ///Sends a 'GET' request to
+    /// '/organizations/{organization_name}/projects/{project_name}/vpcs/
+    /// {vpc_name}/subnets/{subnet_name}/network-interfaces'
     ///
     ///Arguments:
     /// - `organization_name`
@@ -19705,6 +26412,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn vpc_subnet_list_network_interfaces<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19714,7 +26423,10 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::NetworkInterfaceResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::NetworkInterfaceResultsPage>,
+        Error<types::VpcSubnetListNetworkInterfacesError>,
+    > {
         let url = format!(
             "{}/organizations/{}/projects/{}/vpcs/{}/subnets/{}/network-interfaces",
             self.baseurl,
@@ -19729,6 +26441,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19754,10 +26467,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetListNetworkInterfacesError>::from_response::<
+                    types::VpcSubnetListNetworkInterfacesError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::VpcSubnetListNetworkInterfacesError>::from_response::<
+                    types::VpcSubnetListNetworkInterfacesError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19777,6 +26496,8 @@ impl Client {
     /// - `subnet_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn vpc_subnet_list_network_interfaces_stream<'a>(
         &'a self,
         organization_name: &'a types::Name,
@@ -19785,8 +26506,10 @@ impl Client {
         subnet_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::NetworkInterface, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::NetworkInterface, Error<types::VpcSubnetListNetworkInterfacesError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -19831,10 +26554,12 @@ impl Client {
 
     ///Fetch the current silo's IAM policy
     ///
-    ///Sends a `GET` request to `/policy`
+    ///Sends a 'GET' request to '/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn policy_view<'a>(
         &'a self,
-    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::PolicyViewError>> {
         let url = format!("{}/policy", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -19842,6 +26567,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19861,10 +26587,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::PolicyViewError>::from_response::<types::PolicyViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::PolicyViewError>::from_response::<types::PolicyViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19872,11 +26604,13 @@ impl Client {
 
     ///Update the current silo's IAM policy
     ///
-    ///Sends a `PUT` request to `/policy`
+    ///Sends a 'PUT' request to '/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn policy_update<'a>(
         &'a self,
         body: &'a types::SiloRolePolicy,
-    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::PolicyUpdateError>> {
         let url = format!("{}/policy", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -19884,6 +26618,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -19903,29 +26638,41 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::PolicyUpdateError>::from_response::<
+                        types::PolicyUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::PolicyUpdateError>::from_response::<
+                        types::PolicyUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///List built-in roles
     ///
-    ///Sends a `GET` request to `/roles`
+    ///Sends a 'GET' request to '/roles'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn role_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
-    ) -> Result<ResponseValue<types::RoleResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RoleResultsPage>, Error<types::RoleListError>> {
         let url = format!("{}/roles", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -19933,6 +26680,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -19957,10 +26705,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RoleListError>::from_response::<types::RoleListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RoleListError>::from_response::<types::RoleListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -19973,10 +26727,13 @@ impl Client {
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn role_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
-    ) -> impl futures::Stream<Item = Result<types::Role, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Role, Error<types::RoleListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -20005,14 +26762,16 @@ impl Client {
 
     ///Fetch a built-in role
     ///
-    ///Sends a `GET` request to `/roles/{role_name}`
+    ///Sends a 'GET' request to '/roles/{role_name}'
     ///
     ///Arguments:
     /// - `role_name`: The built-in role's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn role_view<'a>(
         &'a self,
         role_name: &'a str,
-    ) -> Result<ResponseValue<types::Role>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Role>, Error<types::RoleViewError>> {
         let url = format!(
             "{}/roles/{}",
             self.baseurl,
@@ -20024,6 +26783,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20043,10 +26803,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RoleViewError>::from_response::<types::RoleViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RoleViewError>::from_response::<types::RoleViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20054,10 +26820,12 @@ impl Client {
 
     ///Fetch the user associated with the current session
     ///
-    ///Sends a `GET` request to `/session/me`
+    ///Sends a 'GET' request to '/session/me'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn session_me<'a>(
         &'a self,
-    ) -> Result<ResponseValue<types::User>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::User>, Error<types::SessionMeError>> {
         let url = format!("{}/session/me", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20065,6 +26833,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20084,10 +26853,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionMeError>::from_response::<types::SessionMeError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionMeError>::from_response::<types::SessionMeError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20095,19 +26870,21 @@ impl Client {
 
     ///Fetch the silo groups the current user belongs to
     ///
-    ///Sends a `GET` request to `/session/me/groups`
+    ///Sends a 'GET' request to '/session/me/groups'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn session_me_groups<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::GroupResultsPage>, Error<types::SessionMeGroupsError>> {
         let url = format!("{}/session/me/groups", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20115,6 +26892,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20140,10 +26918,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionMeGroupsError>::from_response::<
+                    types::SessionMeGroupsError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionMeGroupsError>::from_response::<
+                    types::SessionMeGroupsError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20157,11 +26941,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn session_me_groups_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Group, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Group, Error<types::SessionMeGroupsError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -20192,19 +26979,21 @@ impl Client {
     ///
     ///Lists SSH public keys for the currently authenticated user.
     ///
-    ///Sends a `GET` request to `/session/me/sshkeys`
+    ///Sends a 'GET' request to '/session/me/sshkeys'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn session_sshkey_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::SshKeyResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SshKeyResultsPage>, Error<types::SessionSshkeyListError>> {
         let url = format!("{}/session/me/sshkeys", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20212,6 +27001,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20237,10 +27027,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyListError>::from_response::<
+                    types::SessionSshkeyListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyListError>::from_response::<
+                    types::SessionSshkeyListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20256,11 +27052,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn session_sshkey_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::SshKey, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::SshKey, Error<types::SessionSshkeyListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -20291,11 +27091,13 @@ impl Client {
     ///
     ///Create an SSH public key for the currently authenticated user.
     ///
-    ///Sends a `POST` request to `/session/me/sshkeys`
+    ///Sends a 'POST' request to '/session/me/sshkeys'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn session_sshkey_create<'a>(
         &'a self,
         body: &'a types::SshKeyCreate,
-    ) -> Result<ResponseValue<types::SshKey>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SshKey>, Error<types::SessionSshkeyCreateError>> {
         let url = format!("{}/session/me/sshkeys", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20303,6 +27105,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -20323,10 +27126,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyCreateError>::from_response::<
+                    types::SessionSshkeyCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyCreateError>::from_response::<
+                    types::SessionSshkeyCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20337,11 +27146,13 @@ impl Client {
     ///Fetch an SSH public key associated with the currently authenticated
     /// user.
     ///
-    ///Sends a `GET` request to `/session/me/sshkeys/{ssh_key_name}`
+    ///Sends a 'GET' request to '/session/me/sshkeys/{ssh_key_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn session_sshkey_view<'a>(
         &'a self,
         ssh_key_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::SshKey>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SshKey>, Error<types::SessionSshkeyViewError>> {
         let url = format!(
             "{}/session/me/sshkeys/{}",
             self.baseurl,
@@ -20353,6 +27164,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20372,10 +27184,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyViewError>::from_response::<
+                    types::SessionSshkeyViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyViewError>::from_response::<
+                    types::SessionSshkeyViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20386,11 +27204,13 @@ impl Client {
     ///Delete an SSH public key associated with the currently authenticated
     /// user.
     ///
-    ///Sends a `DELETE` request to `/session/me/sshkeys/{ssh_key_name}`
+    ///Sends a 'DELETE' request to '/session/me/sshkeys/{ssh_key_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn session_sshkey_delete<'a>(
         &'a self,
         ssh_key_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::SessionSshkeyDeleteError>> {
         let url = format!(
             "{}/session/me/sshkeys/{}",
             self.baseurl,
@@ -20402,6 +27222,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -20421,10 +27242,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyDeleteError>::from_response::<
+                    types::SessionSshkeyDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SessionSshkeyDeleteError>::from_response::<
+                    types::SessionSshkeyDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20432,11 +27259,13 @@ impl Client {
 
     ///Fetch a system-wide image by id
     ///
-    ///Sends a `GET` request to `/system/by-id/images/{id}`
+    ///Sends a 'GET' request to '/system/by-id/images/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_image_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageViewByIdError>> {
         let url = format!(
             "{}/system/by-id/images/{}",
             self.baseurl,
@@ -20448,6 +27277,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20467,10 +27297,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageViewByIdError>::from_response::<
+                    types::SystemImageViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageViewByIdError>::from_response::<
+                    types::SystemImageViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20478,11 +27314,13 @@ impl Client {
 
     ///Fetch an IP pool by id
     ///
-    ///Sends a `GET` request to `/system/by-id/ip-pools/{id}`
+    ///Sends a 'GET' request to '/system/by-id/ip-pools/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::IpPool>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolViewByIdError>> {
         let url = format!(
             "{}/system/by-id/ip-pools/{}",
             self.baseurl,
@@ -20494,6 +27332,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20513,10 +27352,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolViewByIdError>::from_response::<
+                    types::IpPoolViewByIdError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolViewByIdError>::from_response::<
+                    types::IpPoolViewByIdError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20524,11 +27369,13 @@ impl Client {
 
     ///Fetch a silo by id
     ///
-    ///Sends a `GET` request to `/system/by-id/silos/{id}`
+    ///Sends a 'GET' request to '/system/by-id/silos/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_view_by_id<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Silo>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Silo>, Error<types::SiloViewByIdError>> {
         let url = format!(
             "{}/system/by-id/silos/{}",
             self.baseurl,
@@ -20540,6 +27387,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20558,12 +27406,22 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloViewByIdError>::from_response::<
+                        types::SiloViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloViewByIdError>::from_response::<
+                        types::SiloViewByIdError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
@@ -20574,19 +27432,22 @@ impl Client {
     /// certificates are returned sorted by creation date, with the most recent
     /// certificates appearing first.
     ///
-    ///Sends a `GET` request to `/system/certificates`
+    ///Sends a 'GET' request to '/system/certificates'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn certificate_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::CertificateResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::CertificateResultsPage>, Error<types::CertificateListError>>
+    {
         let url = format!("{}/system/certificates", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20594,6 +27455,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20619,10 +27481,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateListError>::from_response::<
+                    types::CertificateListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateListError>::from_response::<
+                    types::CertificateListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20640,12 +27508,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn certificate_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Certificate, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::Certificate, Error<types::CertificateListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -20677,11 +27548,13 @@ impl Client {
     ///This certificate is automatically used by the Oxide Control plane to
     /// serve external connections.
     ///
-    ///Sends a `POST` request to `/system/certificates`
+    ///Sends a 'POST' request to '/system/certificates'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn certificate_create<'a>(
         &'a self,
         body: &'a types::CertificateCreate,
-    ) -> Result<ResponseValue<types::Certificate>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Certificate>, Error<types::CertificateCreateError>> {
         let url = format!("{}/system/certificates", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20689,6 +27562,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -20709,10 +27583,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateCreateError>::from_response::<
+                    types::CertificateCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateCreateError>::from_response::<
+                    types::CertificateCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20722,11 +27602,13 @@ impl Client {
     ///
     ///Returns the details of a specific certificate
     ///
-    ///Sends a `GET` request to `/system/certificates/{certificate}`
+    ///Sends a 'GET' request to '/system/certificates/{certificate}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn certificate_view<'a>(
         &'a self,
         certificate: &'a types::NameOrId,
-    ) -> Result<ResponseValue<types::Certificate>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Certificate>, Error<types::CertificateViewError>> {
         let url = format!(
             "{}/system/certificates/{}",
             self.baseurl,
@@ -20738,6 +27620,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20757,10 +27640,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateViewError>::from_response::<
+                    types::CertificateViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateViewError>::from_response::<
+                    types::CertificateViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20770,11 +27659,13 @@ impl Client {
     ///
     ///Permanently delete a certificate. This operation cannot be undone.
     ///
-    ///Sends a `DELETE` request to `/system/certificates/{certificate}`
+    ///Sends a 'DELETE' request to '/system/certificates/{certificate}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn certificate_delete<'a>(
         &'a self,
         certificate: &'a types::NameOrId,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::CertificateDeleteError>> {
         let url = format!(
             "{}/system/certificates/{}",
             self.baseurl,
@@ -20786,6 +27677,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -20805,10 +27697,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateDeleteError>::from_response::<
+                    types::CertificateDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::CertificateDeleteError>::from_response::<
+                    types::CertificateDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20816,19 +27714,22 @@ impl Client {
 
     ///List physical disks
     ///
-    ///Sends a `GET` request to `/system/hardware/disks`
+    ///Sends a 'GET' request to '/system/hardware/disks'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn physical_disk_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::PhysicalDiskResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::PhysicalDiskResultsPage>, Error<types::PhysicalDiskListError>>
+    {
         let url = format!("{}/system/hardware/disks", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20836,6 +27737,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20861,10 +27763,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::PhysicalDiskListError>::from_response::<
+                    types::PhysicalDiskListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::PhysicalDiskListError>::from_response::<
+                    types::PhysicalDiskListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20878,12 +27786,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn physical_disk_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::PhysicalDisk, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::PhysicalDisk, Error<types::PhysicalDiskListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -20912,19 +27823,21 @@ impl Client {
 
     ///List racks
     ///
-    ///Sends a `GET` request to `/system/hardware/racks`
+    ///Sends a 'GET' request to '/system/hardware/racks'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn rack_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::RackResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::RackResultsPage>, Error<types::RackListError>> {
         let url = format!("{}/system/hardware/racks", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -20932,6 +27845,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -20957,10 +27871,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RackListError>::from_response::<types::RackListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RackListError>::from_response::<types::RackListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -20974,11 +27894,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn rack_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Rack, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Rack, Error<types::RackListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -21007,14 +27930,16 @@ impl Client {
 
     ///Fetch a rack
     ///
-    ///Sends a `GET` request to `/system/hardware/racks/{rack_id}`
+    ///Sends a 'GET' request to '/system/hardware/racks/{rack_id}'
     ///
     ///Arguments:
     /// - `rack_id`: The rack's unique ID.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn rack_view<'a>(
         &'a self,
         rack_id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Rack>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Rack>, Error<types::RackViewError>> {
         let url = format!(
             "{}/system/hardware/racks/{}",
             self.baseurl,
@@ -21026,6 +27951,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21045,10 +27971,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RackViewError>::from_response::<types::RackViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::RackViewError>::from_response::<types::RackViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21056,19 +27988,21 @@ impl Client {
 
     ///List sleds
     ///
-    ///Sends a `GET` request to `/system/hardware/sleds`
+    ///Sends a 'GET' request to '/system/hardware/sleds'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn sled_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::SledResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SledResultsPage>, Error<types::SledListError>> {
         let url = format!("{}/system/hardware/sleds", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -21076,6 +28010,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21101,10 +28036,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SledListError>::from_response::<types::SledListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SledListError>::from_response::<types::SledListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21118,11 +28059,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn sled_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Sled, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Sled, Error<types::SledListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -21151,14 +28095,16 @@ impl Client {
 
     ///Fetch a sled
     ///
-    ///Sends a `GET` request to `/system/hardware/sleds/{sled_id}`
+    ///Sends a 'GET' request to '/system/hardware/sleds/{sled_id}'
     ///
     ///Arguments:
     /// - `sled_id`: The sled's unique ID.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn sled_view<'a>(
         &'a self,
         sled_id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Sled>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Sled>, Error<types::SledViewError>> {
         let url = format!(
             "{}/system/hardware/sleds/{}",
             self.baseurl,
@@ -21170,6 +28116,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21189,10 +28136,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SledViewError>::from_response::<types::SledViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SledViewError>::from_response::<types::SledViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21200,7 +28153,7 @@ impl Client {
 
     ///List physical disks attached to sleds
     ///
-    ///Sends a `GET` request to `/system/hardware/sleds/{sled_id}/disks`
+    ///Sends a 'GET' request to '/system/hardware/sleds/{sled_id}/disks'
     ///
     ///Arguments:
     /// - `sled_id`: The sled's unique ID.
@@ -21208,13 +28161,18 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn sled_physical_disk_list<'a>(
         &'a self,
         sled_id: &'a ::uuid::Uuid,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::PhysicalDiskResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::PhysicalDiskResultsPage>,
+        Error<types::SledPhysicalDiskListError>,
+    > {
         let url = format!(
             "{}/system/hardware/sleds/{}/disks",
             self.baseurl,
@@ -21226,6 +28184,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21251,10 +28210,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SledPhysicalDiskListError>::from_response::<
+                    types::SledPhysicalDiskListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SledPhysicalDiskListError>::from_response::<
+                    types::SledPhysicalDiskListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21270,13 +28235,17 @@ impl Client {
     /// - `sled_id`: The sled's unique ID.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn sled_physical_disk_list_stream<'a>(
         &'a self,
         sled_id: &'a ::uuid::Uuid,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::PhysicalDisk, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::PhysicalDisk, Error<types::SledPhysicalDiskListError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -21309,19 +28278,22 @@ impl Client {
     /// returned sorted by creation date, with the most recent images appearing
     /// first.
     ///
-    ///Sends a `GET` request to `/system/images`
+    ///Sends a 'GET' request to '/system/images'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_image_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::GlobalImageResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::GlobalImageResultsPage>, Error<types::SystemImageListError>>
+    {
         let url = format!("{}/system/images", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -21329,6 +28301,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21354,10 +28327,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageListError>::from_response::<
+                    types::SystemImageListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageListError>::from_response::<
+                    types::SystemImageListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21375,12 +28354,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn system_image_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::GlobalImage, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::GlobalImage, Error<types::SystemImageListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -21412,11 +28394,13 @@ impl Client {
     ///Create a new system-wide image. This image can then be used by any user
     /// in any silo as a base for instances.
     ///
-    ///Sends a `POST` request to `/system/images`
+    ///Sends a 'POST' request to '/system/images'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_image_create<'a>(
         &'a self,
         body: &'a types::GlobalImageCreate,
-    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageCreateError>> {
         let url = format!("{}/system/images", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -21424,6 +28408,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -21444,10 +28429,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageCreateError>::from_response::<
+                    types::SystemImageCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageCreateError>::from_response::<
+                    types::SystemImageCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21457,11 +28448,13 @@ impl Client {
     ///
     ///Returns the details of a specific system-wide image.
     ///
-    ///Sends a `GET` request to `/system/images/{image_name}`
+    ///Sends a 'GET' request to '/system/images/{image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_image_view<'a>(
         &'a self,
         image_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::GlobalImage>, Error<types::SystemImageViewError>> {
         let url = format!(
             "{}/system/images/{}",
             self.baseurl,
@@ -21473,6 +28466,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21492,10 +28486,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageViewError>::from_response::<
+                    types::SystemImageViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageViewError>::from_response::<
+                    types::SystemImageViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21507,11 +28507,13 @@ impl Client {
     /// Any instances using the system-wide image will continue to run, however
     /// new instances can not be created with this image.
     ///
-    ///Sends a `DELETE` request to `/system/images/{image_name}`
+    ///Sends a 'DELETE' request to '/system/images/{image_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_image_delete<'a>(
         &'a self,
         image_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::SystemImageDeleteError>> {
         let url = format!(
             "{}/system/images/{}",
             self.baseurl,
@@ -21523,6 +28525,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -21542,10 +28545,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageDeleteError>::from_response::<
+                    types::SystemImageDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemImageDeleteError>::from_response::<
+                    types::SystemImageDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21553,19 +28562,21 @@ impl Client {
 
     ///List IP pools
     ///
-    ///Sends a `GET` request to `/system/ip-pools`
+    ///Sends a 'GET' request to '/system/ip-pools'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::IpPoolResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPoolResultsPage>, Error<types::IpPoolListError>> {
         let url = format!("{}/system/ip-pools", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -21573,6 +28584,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21598,10 +28610,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolListError>::from_response::<types::IpPoolListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolListError>::from_response::<types::IpPoolListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21615,11 +28633,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn ip_pool_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::IpPool, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::IpPool, Error<types::IpPoolListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -21648,11 +28669,13 @@ impl Client {
 
     ///Create an IP pool
     ///
-    ///Sends a `POST` request to `/system/ip-pools`
+    ///Sends a 'POST' request to '/system/ip-pools'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_create<'a>(
         &'a self,
         body: &'a types::IpPoolCreate,
-    ) -> Result<ResponseValue<types::IpPool>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolCreateError>> {
         let url = format!("{}/system/ip-pools", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -21660,6 +28683,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -21679,23 +28703,35 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolCreateError>::from_response::<
+                        types::IpPoolCreateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolCreateError>::from_response::<
+                        types::IpPoolCreateError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Fetch an IP pool
     ///
-    ///Sends a `GET` request to `/system/ip-pools/{pool_name}`
+    ///Sends a 'GET' request to '/system/ip-pools/{pool_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_view<'a>(
         &'a self,
         pool_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::IpPool>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolViewError>> {
         let url = format!(
             "{}/system/ip-pools/{}",
             self.baseurl,
@@ -21707,6 +28743,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21726,10 +28763,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolViewError>::from_response::<types::IpPoolViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolViewError>::from_response::<types::IpPoolViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21737,12 +28780,14 @@ impl Client {
 
     ///Update an IP Pool
     ///
-    ///Sends a `PUT` request to `/system/ip-pools/{pool_name}`
+    ///Sends a 'PUT' request to '/system/ip-pools/{pool_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_update<'a>(
         &'a self,
         pool_name: &'a types::Name,
         body: &'a types::IpPoolUpdate,
-    ) -> Result<ResponseValue<types::IpPool>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolUpdateError>> {
         let url = format!(
             "{}/system/ip-pools/{}",
             self.baseurl,
@@ -21754,6 +28799,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -21773,23 +28819,35 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolUpdateError>::from_response::<
+                        types::IpPoolUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolUpdateError>::from_response::<
+                        types::IpPoolUpdateError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Delete an IP Pool
     ///
-    ///Sends a `DELETE` request to `/system/ip-pools/{pool_name}`
+    ///Sends a 'DELETE' request to '/system/ip-pools/{pool_name}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_delete<'a>(
         &'a self,
         pool_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::IpPoolDeleteError>> {
         let url = format!(
             "{}/system/ip-pools/{}",
             self.baseurl,
@@ -21801,6 +28859,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -21819,12 +28878,22 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolDeleteError>::from_response::<
+                        types::IpPoolDeleteError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::IpPoolDeleteError>::from_response::<
+                        types::IpPoolDeleteError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
@@ -21833,19 +28902,22 @@ impl Client {
     ///
     ///Ranges are ordered by their first address.
     ///
-    ///Sends a `GET` request to `/system/ip-pools/{pool_name}/ranges`
+    ///Sends a 'GET' request to '/system/ip-pools/{pool_name}/ranges'
     ///
     ///Arguments:
     /// - `pool_name`
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_range_list<'a>(
         &'a self,
         pool_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
-    ) -> Result<ResponseValue<types::IpPoolRangeResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPoolRangeResultsPage>, Error<types::IpPoolRangeListError>>
+    {
         let url = format!(
             "{}/system/ip-pools/{}/ranges",
             self.baseurl,
@@ -21857,6 +28929,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -21881,10 +28954,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolRangeListError>::from_response::<
+                    types::IpPoolRangeListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolRangeListError>::from_response::<
+                    types::IpPoolRangeListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21900,12 +28979,15 @@ impl Client {
     ///Arguments:
     /// - `pool_name`
     /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn ip_pool_range_list_stream<'a>(
         &'a self,
         pool_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
-    ) -> impl futures::Stream<Item = Result<types::IpPoolRange, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::IpPoolRange, Error<types::IpPoolRangeListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -21934,12 +29016,14 @@ impl Client {
 
     ///Add a range to an IP pool
     ///
-    ///Sends a `POST` request to `/system/ip-pools/{pool_name}/ranges/add`
+    ///Sends a 'POST' request to '/system/ip-pools/{pool_name}/ranges/add'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_range_add<'a>(
         &'a self,
         pool_name: &'a types::Name,
         body: &'a types::IpRange,
-    ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::IpPoolRangeAddError>> {
         let url = format!(
             "{}/system/ip-pools/{}/ranges/add",
             self.baseurl,
@@ -21951,6 +29035,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -21971,10 +29056,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolRangeAddError>::from_response::<
+                    types::IpPoolRangeAddError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolRangeAddError>::from_response::<
+                    types::IpPoolRangeAddError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -21982,12 +29073,14 @@ impl Client {
 
     ///Remove a range from an IP pool
     ///
-    ///Sends a `POST` request to `/system/ip-pools/{pool_name}/ranges/remove`
+    ///Sends a 'POST' request to '/system/ip-pools/{pool_name}/ranges/remove'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_range_remove<'a>(
         &'a self,
         pool_name: &'a types::Name,
         body: &'a types::IpRange,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::IpPoolRangeRemoveError>> {
         let url = format!(
             "{}/system/ip-pools/{}/ranges/remove",
             self.baseurl,
@@ -21999,6 +29092,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -22019,10 +29113,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolRangeRemoveError>::from_response::<
+                    types::IpPoolRangeRemoveError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolRangeRemoveError>::from_response::<
+                    types::IpPoolRangeRemoveError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22030,10 +29130,12 @@ impl Client {
 
     ///Fetch the IP pool used for Oxide services
     ///
-    ///Sends a `GET` request to `/system/ip-pools-service`
+    ///Sends a 'GET' request to '/system/ip-pools-service'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_service_view<'a>(
         &'a self,
-    ) -> Result<ResponseValue<types::IpPool>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPool>, Error<types::IpPoolServiceViewError>> {
         let url = format!("{}/system/ip-pools-service", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22041,6 +29143,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22060,10 +29163,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceViewError>::from_response::<
+                    types::IpPoolServiceViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceViewError>::from_response::<
+                    types::IpPoolServiceViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22073,17 +29182,22 @@ impl Client {
     ///
     ///Ranges are ordered by their first address.
     ///
-    ///Sends a `GET` request to `/system/ip-pools-service/ranges`
+    ///Sends a 'GET' request to '/system/ip-pools-service/ranges'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_service_range_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
-    ) -> Result<ResponseValue<types::IpPoolRangeResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::IpPoolRangeResultsPage>,
+        Error<types::IpPoolServiceRangeListError>,
+    > {
         let url = format!("{}/system/ip-pools-service/ranges", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22091,6 +29205,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22115,10 +29230,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceRangeListError>::from_response::<
+                    types::IpPoolServiceRangeListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceRangeListError>::from_response::<
+                    types::IpPoolServiceRangeListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22133,11 +29254,15 @@ impl Client {
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn ip_pool_service_range_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
-    ) -> impl futures::Stream<Item = Result<types::IpPoolRange, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::IpPoolRange, Error<types::IpPoolServiceRangeListError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -22166,11 +29291,13 @@ impl Client {
 
     ///Add a range to an IP pool used for Oxide services
     ///
-    ///Sends a `POST` request to `/system/ip-pools-service/ranges/add`
+    ///Sends a 'POST' request to '/system/ip-pools-service/ranges/add'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_service_range_add<'a>(
         &'a self,
         body: &'a types::IpRange,
-    ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::IpPoolRange>, Error<types::IpPoolServiceRangeAddError>> {
         let url = format!("{}/system/ip-pools-service/ranges/add", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22178,6 +29305,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -22198,10 +29326,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceRangeAddError>::from_response::<
+                    types::IpPoolServiceRangeAddError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceRangeAddError>::from_response::<
+                    types::IpPoolServiceRangeAddError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22209,11 +29343,13 @@ impl Client {
 
     ///Remove a range from an IP pool used for Oxide services
     ///
-    ///Sends a `POST` request to `/system/ip-pools-service/ranges/remove`
+    ///Sends a 'POST' request to '/system/ip-pools-service/ranges/remove'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ip_pool_service_range_remove<'a>(
         &'a self,
         body: &'a types::IpRange,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::IpPoolServiceRangeRemoveError>> {
         let url = format!("{}/system/ip-pools-service/ranges/remove", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22221,6 +29357,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -22241,10 +29378,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceRangeRemoveError>::from_response::<
+                    types::IpPoolServiceRangeRemoveError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::IpPoolServiceRangeRemoveError>::from_response::<
+                    types::IpPoolServiceRangeRemoveError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22252,7 +29395,7 @@ impl Client {
 
     ///Access metrics data
     ///
-    ///Sends a `GET` request to `/system/metrics/{metric_name}`
+    ///Sends a 'GET' request to '/system/metrics/{metric_name}'
     ///
     ///Arguments:
     /// - `metric_name`
@@ -22262,6 +29405,8 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `start_time`: An inclusive start time of metrics.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_metric<'a>(
         &'a self,
         metric_name: types::SystemMetricName,
@@ -22270,7 +29415,7 @@ impl Client {
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         start_time: Option<&'a ::chrono::DateTime<::chrono::offset::Utc>>,
-    ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::MeasurementResultsPage>, Error<types::SystemMetricError>> {
         let url = format!(
             "{}/system/metrics/{}",
             self.baseurl,
@@ -22282,6 +29427,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22311,22 +29457,34 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SystemMetricError>::from_response::<
+                        types::SystemMetricError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SystemMetricError>::from_response::<
+                        types::SystemMetricError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Fetch the top-level IAM policy
     ///
-    ///Sends a `GET` request to `/system/policy`
+    ///Sends a 'GET' request to '/system/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_policy_view<'a>(
         &'a self,
-    ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::SystemPolicyViewError>> {
         let url = format!("{}/system/policy", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22334,6 +29492,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22353,10 +29512,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemPolicyViewError>::from_response::<
+                    types::SystemPolicyViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemPolicyViewError>::from_response::<
+                    types::SystemPolicyViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22364,11 +29529,13 @@ impl Client {
 
     ///Update the top-level IAM policy
     ///
-    ///Sends a `PUT` request to `/system/policy`
+    ///Sends a 'PUT' request to '/system/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_policy_update<'a>(
         &'a self,
         body: &'a types::FleetRolePolicy,
-    ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::FleetRolePolicy>, Error<types::SystemPolicyUpdateError>> {
         let url = format!("{}/system/policy", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22376,6 +29543,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -22396,10 +29564,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemPolicyUpdateError>::from_response::<
+                    types::SystemPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemPolicyUpdateError>::from_response::<
+                    types::SystemPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22407,19 +29581,21 @@ impl Client {
 
     ///List sagas
     ///
-    ///Sends a `GET` request to `/system/sagas`
+    ///Sends a 'GET' request to '/system/sagas'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn saga_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::SagaResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SagaResultsPage>, Error<types::SagaListError>> {
         let url = format!("{}/system/sagas", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22427,6 +29603,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22452,10 +29629,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SagaListError>::from_response::<types::SagaListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SagaListError>::from_response::<types::SagaListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22469,11 +29652,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn saga_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Saga, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Saga, Error<types::SagaListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -22502,11 +29688,13 @@ impl Client {
 
     ///Fetch a saga
     ///
-    ///Sends a `GET` request to `/system/sagas/{saga_id}`
+    ///Sends a 'GET' request to '/system/sagas/{saga_id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn saga_view<'a>(
         &'a self,
         saga_id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::Saga>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Saga>, Error<types::SagaViewError>> {
         let url = format!(
             "{}/system/sagas/{}",
             self.baseurl,
@@ -22518,6 +29706,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22537,10 +29726,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SagaViewError>::from_response::<types::SagaViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SagaViewError>::from_response::<types::SagaViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22550,19 +29745,21 @@ impl Client {
     ///
     ///Lists silos that are discoverable based on the current permissions.
     ///
-    ///Sends a `GET` request to `/system/silos`
+    ///Sends a 'GET' request to '/system/silos'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::SiloResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SiloResultsPage>, Error<types::SiloListError>> {
         let url = format!("{}/system/silos", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22570,6 +29767,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22595,10 +29793,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloListError>::from_response::<types::SiloListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloListError>::from_response::<types::SiloListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22614,11 +29818,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn silo_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Silo, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Silo, Error<types::SiloListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -22647,11 +29854,13 @@ impl Client {
 
     ///Create a silo
     ///
-    ///Sends a `POST` request to `/system/silos`
+    ///Sends a 'POST' request to '/system/silos'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_create<'a>(
         &'a self,
         body: &'a types::SiloCreate,
-    ) -> Result<ResponseValue<types::Silo>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Silo>, Error<types::SiloCreateError>> {
         let url = format!("{}/system/silos", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -22659,6 +29868,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -22679,10 +29889,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloCreateError>::from_response::<types::SiloCreateError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloCreateError>::from_response::<types::SiloCreateError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22692,14 +29908,16 @@ impl Client {
     ///
     ///Fetch a silo by name.
     ///
-    ///Sends a `GET` request to `/system/silos/{silo_name}`
+    ///Sends a 'GET' request to '/system/silos/{silo_name}'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_view<'a>(
         &'a self,
         silo_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::Silo>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Silo>, Error<types::SiloViewError>> {
         let url = format!(
             "{}/system/silos/{}",
             self.baseurl,
@@ -22711,6 +29929,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22730,10 +29949,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloViewError>::from_response::<types::SiloViewError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloViewError>::from_response::<types::SiloViewError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22743,14 +29968,16 @@ impl Client {
     ///
     ///Delete a silo by name.
     ///
-    ///Sends a `DELETE` request to `/system/silos/{silo_name}`
+    ///Sends a 'DELETE' request to '/system/silos/{silo_name}'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_delete<'a>(
         &'a self,
         silo_name: &'a types::Name,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::SiloDeleteError>> {
         let url = format!(
             "{}/system/silos/{}",
             self.baseurl,
@@ -22762,6 +29989,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -22781,10 +30009,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloDeleteError>::from_response::<types::SiloDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloDeleteError>::from_response::<types::SiloDeleteError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22792,7 +30026,7 @@ impl Client {
 
     ///List a silo's IDPs
     ///
-    ///Sends a `GET` request to `/system/silos/{silo_name}/identity-providers`
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/identity-providers'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
@@ -22800,13 +30034,18 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_identity_provider_list<'a>(
         &'a self,
         silo_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::IdentityProviderResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::IdentityProviderResultsPage>,
+        Error<types::SiloIdentityProviderListError>,
+    > {
         let url = format!(
             "{}/system/silos/{}/identity-providers",
             self.baseurl,
@@ -22818,6 +30057,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -22843,10 +30083,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloIdentityProviderListError>::from_response::<
+                    types::SiloIdentityProviderListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloIdentityProviderListError>::from_response::<
+                    types::SiloIdentityProviderListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22862,13 +30108,17 @@ impl Client {
     /// - `silo_name`: The silo's unique name.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn silo_identity_provider_list_stream<'a>(
         &'a self,
         silo_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::IdentityProvider, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::IdentityProvider, Error<types::SiloIdentityProviderListError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -22901,17 +30151,19 @@ impl Client {
     /// Otherwise, Silo users are just-in-time (JIT) provisioned when a user
     /// first logs in using an external Identity Provider.
     ///
-    ///Sends a `POST` request to
-    /// `/system/silos/{silo_name}/identity-providers/local/users`
+    ///Sends a 'POST' request to
+    /// '/system/silos/{silo_name}/identity-providers/local/users'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn local_idp_user_create<'a>(
         &'a self,
         silo_name: &'a types::Name,
         body: &'a types::UserCreate,
-    ) -> Result<ResponseValue<types::User>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::User>, Error<types::LocalIdpUserCreateError>> {
         let url = format!(
             "{}/system/silos/{}/identity-providers/local/users",
             self.baseurl,
@@ -22923,6 +30175,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -22943,10 +30196,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LocalIdpUserCreateError>::from_response::<
+                    types::LocalIdpUserCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LocalIdpUserCreateError>::from_response::<
+                    types::LocalIdpUserCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -22954,17 +30213,19 @@ impl Client {
 
     ///Delete a user
     ///
-    ///Sends a `DELETE` request to
-    /// `/system/silos/{silo_name}/identity-providers/local/users/{user_id}`
+    ///Sends a 'DELETE' request to
+    /// '/system/silos/{silo_name}/identity-providers/local/users/{user_id}'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `user_id`: The user's internal id
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn local_idp_user_delete<'a>(
         &'a self,
         silo_name: &'a types::Name,
         user_id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::LocalIdpUserDeleteError>> {
         let url = format!(
             "{}/system/silos/{}/identity-providers/local/users/{}",
             self.baseurl,
@@ -22977,6 +30238,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -22996,10 +30258,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LocalIdpUserDeleteError>::from_response::<
+                    types::LocalIdpUserDeleteError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LocalIdpUserDeleteError>::from_response::<
+                    types::LocalIdpUserDeleteError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23010,20 +30278,22 @@ impl Client {
     ///Passwords can only be updated for users in Silos with identity mode
     /// `LocalOnly`.
     ///
-    ///Sends a `POST` request to
-    /// `/system/silos/{silo_name}/identity-providers/local/users/{user_id}/
-    /// set-password`
+    ///Sends a 'POST' request to
+    /// '/system/silos/{silo_name}/identity-providers/local/users/{user_id}/
+    /// set-password'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `user_id`: The user's internal id
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn local_idp_user_set_password<'a>(
         &'a self,
         silo_name: &'a types::Name,
         user_id: &'a ::uuid::Uuid,
         body: &'a types::UserPassword,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::LocalIdpUserSetPasswordError>> {
         let url = format!(
             "{}/system/silos/{}/identity-providers/local/users/{}/set-password",
             self.baseurl,
@@ -23036,6 +30306,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -23056,10 +30327,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LocalIdpUserSetPasswordError>::from_response::<
+                    types::LocalIdpUserSetPasswordError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::LocalIdpUserSetPasswordError>::from_response::<
+                    types::LocalIdpUserSetPasswordError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23067,17 +30344,22 @@ impl Client {
 
     ///Create a SAML IDP
     ///
-    ///Sends a `POST` request to
-    /// `/system/silos/{silo_name}/identity-providers/saml`
+    ///Sends a 'POST' request to
+    /// '/system/silos/{silo_name}/identity-providers/saml'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn saml_identity_provider_create<'a>(
         &'a self,
         silo_name: &'a types::Name,
         body: &'a types::SamlIdentityProviderCreate,
-    ) -> Result<ResponseValue<types::SamlIdentityProvider>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::SamlIdentityProvider>,
+        Error<types::SamlIdentityProviderCreateError>,
+    > {
         let url = format!(
             "{}/system/silos/{}/identity-providers/saml",
             self.baseurl,
@@ -23089,6 +30371,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -23109,10 +30392,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SamlIdentityProviderCreateError>::from_response::<
+                    types::SamlIdentityProviderCreateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SamlIdentityProviderCreateError>::from_response::<
+                    types::SamlIdentityProviderCreateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23120,17 +30409,22 @@ impl Client {
 
     ///Fetch a SAML IDP
     ///
-    ///Sends a `GET` request to
-    /// `/system/silos/{silo_name}/identity-providers/saml/{provider_name}`
+    ///Sends a 'GET' request to
+    /// '/system/silos/{silo_name}/identity-providers/saml/{provider_name}'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `provider_name`: The SAML identity provider's name
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn saml_identity_provider_view<'a>(
         &'a self,
         silo_name: &'a types::Name,
         provider_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::SamlIdentityProvider>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::SamlIdentityProvider>,
+        Error<types::SamlIdentityProviderViewError>,
+    > {
         let url = format!(
             "{}/system/silos/{}/identity-providers/saml/{}",
             self.baseurl,
@@ -23143,6 +30437,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23162,10 +30457,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SamlIdentityProviderViewError>::from_response::<
+                    types::SamlIdentityProviderViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SamlIdentityProviderViewError>::from_response::<
+                    types::SamlIdentityProviderViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23173,14 +30474,16 @@ impl Client {
 
     ///Fetch a silo's IAM policy
     ///
-    ///Sends a `GET` request to `/system/silos/{silo_name}/policy`
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/policy'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_policy_view<'a>(
         &'a self,
         silo_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::SiloPolicyViewError>> {
         let url = format!(
             "{}/system/silos/{}/policy",
             self.baseurl,
@@ -23192,6 +30495,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23211,10 +30515,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloPolicyViewError>::from_response::<
+                    types::SiloPolicyViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloPolicyViewError>::from_response::<
+                    types::SiloPolicyViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23222,16 +30532,18 @@ impl Client {
 
     ///Update a silo's IAM policy
     ///
-    ///Sends a `PUT` request to `/system/silos/{silo_name}/policy`
+    ///Sends a 'PUT' request to '/system/silos/{silo_name}/policy'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_policy_update<'a>(
         &'a self,
         silo_name: &'a types::Name,
         body: &'a types::SiloRolePolicy,
-    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SiloRolePolicy>, Error<types::SiloPolicyUpdateError>> {
         let url = format!(
             "{}/system/silos/{}/policy",
             self.baseurl,
@@ -23243,6 +30555,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -23263,10 +30576,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloPolicyUpdateError>::from_response::<
+                    types::SiloPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloPolicyUpdateError>::from_response::<
+                    types::SiloPolicyUpdateError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23274,7 +30593,7 @@ impl Client {
 
     ///List users in a silo
     ///
-    ///Sends a `GET` request to `/system/silos/{silo_name}/users/all`
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/users/all'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
@@ -23282,13 +30601,15 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_users_list<'a>(
         &'a self,
         silo_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::SiloUsersListError>> {
         let url = format!(
             "{}/system/silos/{}/users/all",
             self.baseurl,
@@ -23300,6 +30621,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23325,10 +30647,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloUsersListError>::from_response::<
+                    types::SiloUsersListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SiloUsersListError>::from_response::<
+                    types::SiloUsersListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23343,12 +30671,15 @@ impl Client {
     /// - `silo_name`: The silo's unique name.
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn silo_users_list_stream<'a>(
         &'a self,
         silo_name: &'a types::Name,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::User, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::User, Error<types::SiloUsersListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -23377,16 +30708,18 @@ impl Client {
 
     ///Fetch a user
     ///
-    ///Sends a `GET` request to `/system/silos/{silo_name}/users/id/{user_id}`
+    ///Sends a 'GET' request to '/system/silos/{silo_name}/users/id/{user_id}'
     ///
     ///Arguments:
     /// - `silo_name`: The silo's unique name.
     /// - `user_id`: The user's internal id
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn silo_user_view<'a>(
         &'a self,
         silo_name: &'a types::Name,
         user_id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::User>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::User>, Error<types::SiloUserViewError>> {
         let url = format!(
             "{}/system/silos/{}/users/id/{}",
             self.baseurl,
@@ -23399,6 +30732,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23417,31 +30751,44 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloUserViewError>::from_response::<
+                        types::SiloUserViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::SiloUserViewError>::from_response::<
+                        types::SiloUserViewError,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///List built-in users
     ///
-    ///Sends a `GET` request to `/system/user`
+    ///Sends a 'GET' request to '/system/user'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_user_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameSortMode>,
-    ) -> Result<ResponseValue<types::UserBuiltinResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::UserBuiltinResultsPage>, Error<types::SystemUserListError>>
+    {
         let url = format!("{}/system/user", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -23449,6 +30796,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23474,10 +30822,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUserListError>::from_response::<
+                    types::SystemUserListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUserListError>::from_response::<
+                    types::SystemUserListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23491,12 +30845,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn system_user_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::UserBuiltin, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::UserBuiltin, Error<types::SystemUserListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -23525,14 +30882,16 @@ impl Client {
 
     ///Fetch a built-in user
     ///
-    ///Sends a `GET` request to `/system/user/{user_name}`
+    ///Sends a 'GET' request to '/system/user/{user_name}'
     ///
     ///Arguments:
     /// - `user_name`: The built-in user's unique name.
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_user_view<'a>(
         &'a self,
         user_name: &'a types::Name,
-    ) -> Result<ResponseValue<types::UserBuiltin>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::UserBuiltin>, Error<types::SystemUserViewError>> {
         let url = format!(
             "{}/system/user/{}",
             self.baseurl,
@@ -23544,6 +30903,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23563,10 +30923,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUserViewError>::from_response::<
+                    types::SystemUserViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUserViewError>::from_response::<
+                    types::SystemUserViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23574,17 +30940,22 @@ impl Client {
 
     ///List timeseries schema
     ///
-    ///Sends a `GET` request to `/timeseries/schema`
+    ///Sends a 'GET' request to '/timeseries/schema'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn timeseries_schema_get<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
-    ) -> Result<ResponseValue<types::TimeseriesSchemaResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::TimeseriesSchemaResultsPage>,
+        Error<types::TimeseriesSchemaGetError>,
+    > {
         let url = format!("{}/timeseries/schema", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -23592,6 +30963,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23616,10 +30988,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::TimeseriesSchemaGetError>::from_response::<
+                    types::TimeseriesSchemaGetError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::TimeseriesSchemaGetError>::from_response::<
+                    types::TimeseriesSchemaGetError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23632,11 +31010,15 @@ impl Client {
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn timeseries_schema_get_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
-    ) -> impl futures::Stream<Item = Result<types::TimeseriesSchema, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::TimeseriesSchema, Error<types::TimeseriesSchemaGetError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -23665,19 +31047,21 @@ impl Client {
 
     ///List users
     ///
-    ///Sends a `GET` request to `/users`
+    ///Sends a 'GET' request to '/users'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn user_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::UserResultsPage>, Error<types::UserListError>> {
         let url = format!("{}/users", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -23685,6 +31069,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23710,10 +31095,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::UserListError>::from_response::<types::UserListError>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::UserListError>::from_response::<types::UserListError>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23727,11 +31118,14 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn user_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::User, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::User, Error<types::UserListError>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -23760,7 +31154,7 @@ impl Client {
 
     ///List disks
     ///
-    ///Sends a `GET` request to `/v1/disks`
+    ///Sends a 'GET' request to '/v1/disks'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
@@ -23769,6 +31163,8 @@ impl Client {
     ///   subsequent page
     /// - `project`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_list_v1<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
@@ -23776,7 +31172,7 @@ impl Client {
         page_token: Option<&'a str>,
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::DiskListV1Error>> {
         let url = format!("{}/v1/disks", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -23784,6 +31180,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23814,10 +31211,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskListV1Error>::from_response::<types::DiskListV1Error>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskListV1Error>::from_response::<types::DiskListV1Error>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23833,13 +31236,16 @@ impl Client {
     /// - `organization`
     /// - `project`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn disk_list_v1_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::DiskListV1Error>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -23868,13 +31274,15 @@ impl Client {
 
     ///Create a disk
     ///
-    ///Sends a `POST` request to `/v1/disks`
+    ///Sends a 'POST' request to '/v1/disks'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_create_v1<'a>(
         &'a self,
         organization: Option<&'a types::NameOrId>,
         project: &'a types::NameOrId,
         body: &'a types::DiskCreate,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskCreateV1Error>> {
         let url = format!("{}/v1/disks", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -23882,6 +31290,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -23906,25 +31315,37 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskCreateV1Error>::from_response::<
+                        types::DiskCreateV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskCreateV1Error>::from_response::<
+                        types::DiskCreateV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///Fetch a disk
     ///
-    ///Sends a `GET` request to `/v1/disks/{disk}`
+    ///Sends a 'GET' request to '/v1/disks/{disk}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_view_v1<'a>(
         &'a self,
         disk: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::DiskViewV1Error>> {
         let url = format!(
             "{}/v1/disks/{}",
             self.baseurl,
@@ -23936,6 +31357,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -23960,10 +31382,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskViewV1Error>::from_response::<types::DiskViewV1Error>(
+                    response,
+                )
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::DiskViewV1Error>::from_response::<types::DiskViewV1Error>(
+                    response,
+                )
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -23971,13 +31399,15 @@ impl Client {
 
     ///Delete a disk
     ///
-    ///Sends a `DELETE` request to `/v1/disks/{disk}`
+    ///Sends a 'DELETE' request to '/v1/disks/{disk}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn disk_delete_v1<'a>(
         &'a self,
         disk: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::DiskDeleteV1Error>> {
         let url = format!(
             "{}/v1/disks/{}",
             self.baseurl,
@@ -23989,6 +31419,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -24012,19 +31443,29 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
-            400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
-            500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
-            )),
+            400u16..=499u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskDeleteV1Error>::from_response::<
+                        types::DiskDeleteV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
+            500u16..=599u16 => {
+                Err(Error::ErrorResponse(
+                    ResponseValue::<types::DiskDeleteV1Error>::from_response::<
+                        types::DiskDeleteV1Error,
+                    >(response)
+                    .await?,
+                ))
+            }
             _ => Err(Error::UnexpectedResponse(response)),
         }
     }
 
     ///List instances
     ///
-    ///Sends a `GET` request to `/v1/instances`
+    ///Sends a 'GET' request to '/v1/instances'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
@@ -24033,6 +31474,8 @@ impl Client {
     ///   subsequent page
     /// - `project`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_list_v1<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
@@ -24040,7 +31483,7 @@ impl Client {
         page_token: Option<&'a str>,
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::InstanceResultsPage>, Error<types::InstanceListV1Error>> {
         let url = format!("{}/v1/instances", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -24048,6 +31491,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -24078,10 +31522,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceListV1Error>::from_response::<
+                    types::InstanceListV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceListV1Error>::from_response::<
+                    types::InstanceListV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24097,14 +31547,17 @@ impl Client {
     /// - `organization`
     /// - `project`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn instance_list_v1_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Instance, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::Instance, Error<types::InstanceListV1Error>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -24133,13 +31586,15 @@ impl Client {
 
     ///Create an instance
     ///
-    ///Sends a `POST` request to `/v1/instances`
+    ///Sends a 'POST' request to '/v1/instances'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_create_v1<'a>(
         &'a self,
         organization: Option<&'a types::NameOrId>,
         project: &'a types::NameOrId,
         body: &'a types::InstanceCreate,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceCreateV1Error>> {
         let url = format!("{}/v1/instances", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -24147,6 +31602,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24172,10 +31628,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceCreateV1Error>::from_response::<
+                    types::InstanceCreateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceCreateV1Error>::from_response::<
+                    types::InstanceCreateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24183,13 +31645,15 @@ impl Client {
 
     ///Fetch an instance
     ///
-    ///Sends a `GET` request to `/v1/instances/{instance}`
+    ///Sends a 'GET' request to '/v1/instances/{instance}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_view_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceViewV1Error>> {
         let url = format!(
             "{}/v1/instances/{}",
             self.baseurl,
@@ -24201,6 +31665,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -24225,10 +31690,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceViewV1Error>::from_response::<
+                    types::InstanceViewV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceViewV1Error>::from_response::<
+                    types::InstanceViewV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24236,13 +31707,15 @@ impl Client {
 
     ///Delete an instance
     ///
-    ///Sends a `DELETE` request to `/v1/instances/{instance}`
+    ///Sends a 'DELETE' request to '/v1/instances/{instance}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_delete_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::InstanceDeleteV1Error>> {
         let url = format!(
             "{}/v1/instances/{}",
             self.baseurl,
@@ -24254,6 +31727,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -24278,10 +31752,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDeleteV1Error>::from_response::<
+                    types::InstanceDeleteV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDeleteV1Error>::from_response::<
+                    types::InstanceDeleteV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24289,7 +31769,7 @@ impl Client {
 
     ///List an instance's disks
     ///
-    ///Sends a `GET` request to `/v1/instances/{instance}/disks`
+    ///Sends a 'GET' request to '/v1/instances/{instance}/disks'
     ///
     ///Arguments:
     /// - `instance`
@@ -24299,6 +31779,8 @@ impl Client {
     ///   subsequent page
     /// - `project`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_disk_list_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
@@ -24307,7 +31789,7 @@ impl Client {
         page_token: Option<&'a str>,
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::DiskResultsPage>, Error<types::InstanceDiskListV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/disks",
             self.baseurl,
@@ -24319,6 +31801,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -24349,10 +31832,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskListV1Error>::from_response::<
+                    types::InstanceDiskListV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskListV1Error>::from_response::<
+                    types::InstanceDiskListV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24369,6 +31858,8 @@ impl Client {
     /// - `organization`
     /// - `project`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn instance_disk_list_v1_stream<'a>(
         &'a self,
         instance: &'a types::NameOrId,
@@ -24376,7 +31867,9 @@ impl Client {
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Disk, Error<types::InstanceDiskListV1Error>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -24412,14 +31905,16 @@ impl Client {
 
     ///Attach a disk to an instance
     ///
-    ///Sends a `POST` request to `/v1/instances/{instance}/disks/attach`
+    ///Sends a 'POST' request to '/v1/instances/{instance}/disks/attach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_disk_attach_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
         body: &'a types::DiskPath,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskAttachV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/disks/attach",
             self.baseurl,
@@ -24431,6 +31926,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24456,10 +31952,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskAttachV1Error>::from_response::<
+                    types::InstanceDiskAttachV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskAttachV1Error>::from_response::<
+                    types::InstanceDiskAttachV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24467,14 +31969,16 @@ impl Client {
 
     ///Detach a disk from an instance
     ///
-    ///Sends a `POST` request to `/v1/instances/{instance}/disks/detach`
+    ///Sends a 'POST' request to '/v1/instances/{instance}/disks/detach'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_disk_detach_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
         body: &'a types::DiskPath,
-    ) -> Result<ResponseValue<types::Disk>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Disk>, Error<types::InstanceDiskDetachV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/disks/detach",
             self.baseurl,
@@ -24486,6 +31990,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24511,10 +32016,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskDetachV1Error>::from_response::<
+                    types::InstanceDiskDetachV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceDiskDetachV1Error>::from_response::<
+                    types::InstanceDiskDetachV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24522,14 +32033,16 @@ impl Client {
 
     ///Migrate an instance
     ///
-    ///Sends a `POST` request to `/v1/instances/{instance}/migrate`
+    ///Sends a 'POST' request to '/v1/instances/{instance}/migrate'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_migrate_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
         body: &'a types::InstanceMigrate,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceMigrateV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/migrate",
             self.baseurl,
@@ -24541,6 +32054,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24566,10 +32080,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceMigrateV1Error>::from_response::<
+                    types::InstanceMigrateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceMigrateV1Error>::from_response::<
+                    types::InstanceMigrateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24577,13 +32097,15 @@ impl Client {
 
     ///Reboot an instance
     ///
-    ///Sends a `POST` request to `/v1/instances/{instance}/reboot`
+    ///Sends a 'POST' request to '/v1/instances/{instance}/reboot'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_reboot_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceRebootV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/reboot",
             self.baseurl,
@@ -24595,6 +32117,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24619,10 +32142,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceRebootV1Error>::from_response::<
+                    types::InstanceRebootV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceRebootV1Error>::from_response::<
+                    types::InstanceRebootV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24630,7 +32159,7 @@ impl Client {
 
     ///Fetch an instance's serial console
     ///
-    ///Sends a `GET` request to `/v1/instances/{instance}/serial-console`
+    ///Sends a 'GET' request to '/v1/instances/{instance}/serial-console'
     ///
     ///Arguments:
     /// - `instance`
@@ -24647,6 +32176,8 @@ impl Client {
     ///   exclusivity)
     /// - `organization`
     /// - `project`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_serial_console_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
@@ -24655,7 +32186,10 @@ impl Client {
         most_recent: Option<u64>,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::InstanceSerialConsoleData>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::InstanceSerialConsoleData>,
+        Error<types::InstanceSerialConsoleV1Error>,
+    > {
         let url = format!(
             "{}/v1/instances/{}/serial-console",
             self.baseurl,
@@ -24667,6 +32201,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -24700,10 +32235,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceSerialConsoleV1Error>::from_response::<
+                    types::InstanceSerialConsoleV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceSerialConsoleV1Error>::from_response::<
+                    types::InstanceSerialConsoleV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24711,14 +32252,16 @@ impl Client {
 
     ///Stream an instance's serial console
     ///
-    ///Sends a `GET` request to
-    /// `/v1/instances/{instance}/serial-console/stream`
+    ///Sends a 'GET' request to
+    /// '/v1/instances/{instance}/serial-console/stream'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_serial_console_stream_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<reqwest::Upgraded>> {
+    ) -> Result<ResponseValue<reqwest::Upgraded>, Error<()>> {
         let url = format!(
             "{}/v1/instances/{}/serial-console/stream",
             self.baseurl,
@@ -24730,6 +32273,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -24760,19 +32304,21 @@ impl Client {
         match response.status().as_u16() {
             101u16 => ResponseValue::upgrade(response).await,
             200..=299 => ResponseValue::upgrade(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
     ///Boot an instance
     ///
-    ///Sends a `POST` request to `/v1/instances/{instance}/start`
+    ///Sends a 'POST' request to '/v1/instances/{instance}/start'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_start_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStartV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/start",
             self.baseurl,
@@ -24784,6 +32330,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24808,10 +32355,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceStartV1Error>::from_response::<
+                    types::InstanceStartV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceStartV1Error>::from_response::<
+                    types::InstanceStartV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24819,13 +32372,15 @@ impl Client {
 
     ///Stop an instance
     ///
-    ///Sends a `POST` request to `/v1/instances/{instance}/stop`
+    ///Sends a 'POST' request to '/v1/instances/{instance}/stop'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn instance_stop_v1<'a>(
         &'a self,
         instance: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         project: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::Instance>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Instance>, Error<types::InstanceStopV1Error>> {
         let url = format!(
             "{}/v1/instances/{}/stop",
             self.baseurl,
@@ -24837,6 +32392,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -24861,10 +32417,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceStopV1Error>::from_response::<
+                    types::InstanceStopV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::InstanceStopV1Error>::from_response::<
+                    types::InstanceStopV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24872,19 +32434,22 @@ impl Client {
 
     ///List organizations
     ///
-    ///Sends a `GET` request to `/v1/organizations`
+    ///Sends a 'GET' request to '/v1/organizations'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_list_v1<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::OrganizationResultsPage>, Error<types::OrganizationListV1Error>>
+    {
         let url = format!("{}/v1/organizations", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -24892,6 +32457,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -24917,10 +32483,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationListV1Error>::from_response::<
+                    types::OrganizationListV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationListV1Error>::from_response::<
+                    types::OrganizationListV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -24934,12 +32506,16 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn organization_list_v1_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Organization, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::Organization, Error<types::OrganizationListV1Error>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -24968,11 +32544,13 @@ impl Client {
 
     ///Create an organization
     ///
-    ///Sends a `POST` request to `/v1/organizations`
+    ///Sends a 'POST' request to '/v1/organizations'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_create_v1<'a>(
         &'a self,
         body: &'a types::OrganizationCreate,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationCreateV1Error>> {
         let url = format!("{}/v1/organizations", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -24980,6 +32558,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -25000,10 +32579,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationCreateV1Error>::from_response::<
+                    types::OrganizationCreateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationCreateV1Error>::from_response::<
+                    types::OrganizationCreateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25011,11 +32596,13 @@ impl Client {
 
     ///Fetch an organization
     ///
-    ///Sends a `GET` request to `/v1/organizations/{organization}`
+    ///Sends a 'GET' request to '/v1/organizations/{organization}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_view_v1<'a>(
         &'a self,
         organization: &'a types::NameOrId,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationViewV1Error>> {
         let url = format!(
             "{}/v1/organizations/{}",
             self.baseurl,
@@ -25027,6 +32614,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25046,10 +32634,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationViewV1Error>::from_response::<
+                    types::OrganizationViewV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationViewV1Error>::from_response::<
+                    types::OrganizationViewV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25057,12 +32651,14 @@ impl Client {
 
     ///Update an organization
     ///
-    ///Sends a `PUT` request to `/v1/organizations/{organization}`
+    ///Sends a 'PUT' request to '/v1/organizations/{organization}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_update_v1<'a>(
         &'a self,
         organization: &'a types::NameOrId,
         body: &'a types::OrganizationUpdate,
-    ) -> Result<ResponseValue<types::Organization>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Organization>, Error<types::OrganizationUpdateV1Error>> {
         let url = format!(
             "{}/v1/organizations/{}",
             self.baseurl,
@@ -25074,6 +32670,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -25094,10 +32691,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationUpdateV1Error>::from_response::<
+                    types::OrganizationUpdateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationUpdateV1Error>::from_response::<
+                    types::OrganizationUpdateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25105,11 +32708,13 @@ impl Client {
 
     ///Delete an organization
     ///
-    ///Sends a `DELETE` request to `/v1/organizations/{organization}`
+    ///Sends a 'DELETE' request to '/v1/organizations/{organization}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_delete_v1<'a>(
         &'a self,
         organization: &'a types::NameOrId,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::OrganizationDeleteV1Error>> {
         let url = format!(
             "{}/v1/organizations/{}",
             self.baseurl,
@@ -25121,6 +32726,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -25140,10 +32746,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationDeleteV1Error>::from_response::<
+                    types::OrganizationDeleteV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationDeleteV1Error>::from_response::<
+                    types::OrganizationDeleteV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25151,11 +32763,16 @@ impl Client {
 
     ///Fetch an organization's IAM policy
     ///
-    ///Sends a `GET` request to `/v1/organizations/{organization}/policy`
+    ///Sends a 'GET' request to '/v1/organizations/{organization}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_policy_view_v1<'a>(
         &'a self,
         organization: &'a types::NameOrId,
-    ) -> Result<ResponseValue<types::OrganizationRolePolicy>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyViewV1Error>,
+    > {
         let url = format!(
             "{}/v1/organizations/{}/policy",
             self.baseurl,
@@ -25167,6 +32784,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25186,10 +32804,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyViewV1Error>::from_response::<
+                    types::OrganizationPolicyViewV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyViewV1Error>::from_response::<
+                    types::OrganizationPolicyViewV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25197,12 +32821,17 @@ impl Client {
 
     ///Update an organization's IAM policy
     ///
-    ///Sends a `PUT` request to `/v1/organizations/{organization}/policy`
+    ///Sends a 'PUT' request to '/v1/organizations/{organization}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn organization_policy_update_v1<'a>(
         &'a self,
         organization: &'a types::NameOrId,
         body: &'a types::OrganizationRolePolicy,
-    ) -> Result<ResponseValue<types::OrganizationRolePolicy>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::OrganizationRolePolicy>,
+        Error<types::OrganizationPolicyUpdateV1Error>,
+    > {
         let url = format!(
             "{}/v1/organizations/{}/policy",
             self.baseurl,
@@ -25214,6 +32843,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -25234,10 +32864,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyUpdateV1Error>::from_response::<
+                    types::OrganizationPolicyUpdateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::OrganizationPolicyUpdateV1Error>::from_response::<
+                    types::OrganizationPolicyUpdateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25245,7 +32881,7 @@ impl Client {
 
     ///List projects
     ///
-    ///Sends a `GET` request to `/v1/projects`
+    ///Sends a 'GET' request to '/v1/projects'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
@@ -25253,13 +32889,15 @@ impl Client {
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_list_v1<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         organization: Option<&'a types::NameOrId>,
         page_token: Option<&'a str>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ProjectResultsPage>, Error<types::ProjectListV1Error>> {
         let url = format!("{}/v1/projects", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25267,6 +32905,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25296,10 +32935,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectListV1Error>::from_response::<
+                    types::ProjectListV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectListV1Error>::from_response::<
+                    types::ProjectListV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25314,12 +32959,15 @@ impl Client {
     /// - `limit`: Maximum number of items returned by a single call
     /// - `organization`
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn project_list_v1_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         organization: Option<&'a types::NameOrId>,
         sort_by: Option<types::NameOrIdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::Project, Error<types::Error>>> + Unpin + '_ {
+    ) -> impl futures::Stream<Item = Result<types::Project, Error<types::ProjectListV1Error>>> + Unpin + '_
+    {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -25348,12 +32996,14 @@ impl Client {
 
     ///Create a project
     ///
-    ///Sends a `POST` request to `/v1/projects`
+    ///Sends a 'POST' request to '/v1/projects'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_create_v1<'a>(
         &'a self,
         organization: &'a types::NameOrId,
         body: &'a types::ProjectCreate,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectCreateV1Error>> {
         let url = format!("{}/v1/projects", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25361,6 +33011,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -25385,10 +33036,16 @@ impl Client {
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectCreateV1Error>::from_response::<
+                    types::ProjectCreateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectCreateV1Error>::from_response::<
+                    types::ProjectCreateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25396,12 +33053,14 @@ impl Client {
 
     ///Fetch a project
     ///
-    ///Sends a `GET` request to `/v1/projects/{project}`
+    ///Sends a 'GET' request to '/v1/projects/{project}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_view_v1<'a>(
         &'a self,
         project: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectViewV1Error>> {
         let url = format!(
             "{}/v1/projects/{}",
             self.baseurl,
@@ -25413,6 +33072,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25436,10 +33096,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectViewV1Error>::from_response::<
+                    types::ProjectViewV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectViewV1Error>::from_response::<
+                    types::ProjectViewV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25447,13 +33113,15 @@ impl Client {
 
     ///Update a project
     ///
-    ///Sends a `PUT` request to `/v1/projects/{project}`
+    ///Sends a 'PUT' request to '/v1/projects/{project}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_update_v1<'a>(
         &'a self,
         project: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         body: &'a types::ProjectUpdate,
-    ) -> Result<ResponseValue<types::Project>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::Project>, Error<types::ProjectUpdateV1Error>> {
         let url = format!(
             "{}/v1/projects/{}",
             self.baseurl,
@@ -25465,6 +33133,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -25489,10 +33158,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectUpdateV1Error>::from_response::<
+                    types::ProjectUpdateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectUpdateV1Error>::from_response::<
+                    types::ProjectUpdateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25500,12 +33175,14 @@ impl Client {
 
     ///Delete a project
     ///
-    ///Sends a `DELETE` request to `/v1/projects/{project}`
+    ///Sends a 'DELETE' request to '/v1/projects/{project}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_delete_v1<'a>(
         &'a self,
         project: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::ProjectDeleteV1Error>> {
         let url = format!(
             "{}/v1/projects/{}",
             self.baseurl,
@@ -25517,6 +33194,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .delete(url)
@@ -25540,10 +33218,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectDeleteV1Error>::from_response::<
+                    types::ProjectDeleteV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectDeleteV1Error>::from_response::<
+                    types::ProjectDeleteV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25551,12 +33235,15 @@ impl Client {
 
     ///Fetch a project's IAM policy
     ///
-    ///Sends a `GET` request to `/v1/projects/{project}/policy`
+    ///Sends a 'GET' request to '/v1/projects/{project}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_policy_view_v1<'a>(
         &'a self,
         project: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
-    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyViewV1Error>>
+    {
         let url = format!(
             "{}/v1/projects/{}/policy",
             self.baseurl,
@@ -25568,6 +33255,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25591,10 +33279,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyViewV1Error>::from_response::<
+                    types::ProjectPolicyViewV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyViewV1Error>::from_response::<
+                    types::ProjectPolicyViewV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25602,13 +33296,16 @@ impl Client {
 
     ///Update a project's IAM policy
     ///
-    ///Sends a `PUT` request to `/v1/projects/{project}/policy`
+    ///Sends a 'PUT' request to '/v1/projects/{project}/policy'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn project_policy_update_v1<'a>(
         &'a self,
         project: &'a types::NameOrId,
         organization: Option<&'a types::NameOrId>,
         body: &'a types::ProjectRolePolicy,
-    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::ProjectRolePolicy>, Error<types::ProjectPolicyUpdateV1Error>>
+    {
         let url = format!(
             "{}/v1/projects/{}/policy",
             self.baseurl,
@@ -25620,6 +33317,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .put(url)
@@ -25644,10 +33342,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyUpdateV1Error>::from_response::<
+                    types::ProjectPolicyUpdateV1Error,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::ProjectPolicyUpdateV1Error>::from_response::<
+                    types::ProjectPolicyUpdateV1Error,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25655,19 +33359,24 @@ impl Client {
 
     ///View version and update status of component tree
     ///
-    ///Sends a `GET` request to `/v1/system/update/components`
+    ///Sends a 'GET' request to '/v1/system/update/components'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_component_version_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::UpdateableComponentResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::UpdateableComponentResultsPage>,
+        Error<types::SystemComponentVersionListError>,
+    > {
         let url = format!("{}/v1/system/update/components", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25675,6 +33384,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25700,10 +33410,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemComponentVersionListError>::from_response::<
+                    types::SystemComponentVersionListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemComponentVersionListError>::from_response::<
+                    types::SystemComponentVersionListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25717,12 +33433,16 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn system_component_version_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::UpdateableComponent, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::UpdateableComponent, Error<types::SystemComponentVersionListError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -25751,19 +33471,24 @@ impl Client {
 
     ///List all update deployments
     ///
-    ///Sends a `GET` request to `/v1/system/update/deployments`
+    ///Sends a 'GET' request to '/v1/system/update/deployments'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn update_deployments_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::UpdateDeploymentResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::UpdateDeploymentResultsPage>,
+        Error<types::UpdateDeploymentsListError>,
+    > {
         let url = format!("{}/v1/system/update/deployments", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25771,6 +33496,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25796,10 +33522,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::UpdateDeploymentsListError>::from_response::<
+                    types::UpdateDeploymentsListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::UpdateDeploymentsListError>::from_response::<
+                    types::UpdateDeploymentsListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25813,12 +33545,16 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn update_deployments_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::UpdateDeployment, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<
+        Item = Result<types::UpdateDeployment, Error<types::UpdateDeploymentsListError>>,
+    > + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -25847,11 +33583,14 @@ impl Client {
 
     ///Fetch a system update deployment
     ///
-    ///Sends a `GET` request to `/v1/system/update/deployments/{id}`
+    ///Sends a 'GET' request to '/v1/system/update/deployments/{id}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn update_deployment_view<'a>(
         &'a self,
         id: &'a ::uuid::Uuid,
-    ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::UpdateDeploymentViewError>>
+    {
         let url = format!(
             "{}/v1/system/update/deployments/{}",
             self.baseurl,
@@ -25863,6 +33602,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -25882,10 +33622,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::UpdateDeploymentViewError>::from_response::<
+                    types::UpdateDeploymentViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::UpdateDeploymentViewError>::from_response::<
+                    types::UpdateDeploymentViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25893,10 +33639,12 @@ impl Client {
 
     ///Refresh update data
     ///
-    ///Sends a `POST` request to `/v1/system/update/refresh`
+    ///Sends a 'POST' request to '/v1/system/update/refresh'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_update_refresh<'a>(
         &'a self,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::SystemUpdateRefreshError>> {
         let url = format!("{}/v1/system/update/refresh", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25904,6 +33652,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -25923,10 +33672,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateRefreshError>::from_response::<
+                    types::SystemUpdateRefreshError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateRefreshError>::from_response::<
+                    types::SystemUpdateRefreshError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25934,11 +33689,13 @@ impl Client {
 
     ///Start system update
     ///
-    ///Sends a `POST` request to `/v1/system/update/start`
+    ///Sends a 'POST' request to '/v1/system/update/start'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_update_start<'a>(
         &'a self,
         body: &'a types::SystemUpdateStart,
-    ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::UpdateDeployment>, Error<types::SystemUpdateStartError>> {
         let url = format!("{}/v1/system/update/start", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25946,6 +33703,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -25966,10 +33724,16 @@ impl Client {
         match response.status().as_u16() {
             202u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateStartError>::from_response::<
+                    types::SystemUpdateStartError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateStartError>::from_response::<
+                    types::SystemUpdateStartError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -25979,10 +33743,12 @@ impl Client {
     ///
     ///If there is no update in progress, do nothing.
     ///
-    ///Sends a `POST` request to `/v1/system/update/stop`
+    ///Sends a 'POST' request to '/v1/system/update/stop'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_update_stop<'a>(
         &'a self,
-    ) -> Result<ResponseValue<()>, Error<types::Error>> {
+    ) -> Result<ResponseValue<()>, Error<types::SystemUpdateStopError>> {
         let url = format!("{}/v1/system/update/stop", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -25990,6 +33756,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -26009,10 +33776,16 @@ impl Client {
         match response.status().as_u16() {
             204u16 => Ok(ResponseValue::empty(response)),
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateStopError>::from_response::<
+                    types::SystemUpdateStopError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateStopError>::from_response::<
+                    types::SystemUpdateStopError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -26020,19 +33793,22 @@ impl Client {
 
     ///List all updates
     ///
-    ///Sends a `GET` request to `/v1/system/update/updates`
+    ///Sends a 'GET' request to '/v1/system/update/updates'
     ///
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `page_token`: Token returned by previous call to retrieve the
     ///   subsequent page
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_update_list<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         page_token: Option<&'a str>,
         sort_by: Option<types::IdSortMode>,
-    ) -> Result<ResponseValue<types::SystemUpdateResultsPage>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SystemUpdateResultsPage>, Error<types::SystemUpdateListError>>
+    {
         let url = format!("{}/v1/system/update/updates", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -26040,6 +33816,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -26065,10 +33842,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateListError>::from_response::<
+                    types::SystemUpdateListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateListError>::from_response::<
+                    types::SystemUpdateListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -26082,12 +33865,15 @@ impl Client {
     ///Arguments:
     /// - `limit`: Maximum number of items returned by a single call
     /// - `sort_by`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub fn system_update_list_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
         sort_by: Option<types::IdSortMode>,
-    ) -> impl futures::Stream<Item = Result<types::SystemUpdate, Error<types::Error>>> + Unpin + '_
-    {
+    ) -> impl futures::Stream<Item = Result<types::SystemUpdate, Error<types::SystemUpdateListError>>>
+           + Unpin
+           + '_ {
         use futures::StreamExt;
         use futures::TryFutureExt;
         use futures::TryStreamExt;
@@ -26116,11 +33902,13 @@ impl Client {
 
     ///View system update
     ///
-    ///Sends a `GET` request to `/v1/system/update/updates/{version}`
+    ///Sends a 'GET' request to '/v1/system/update/updates/{version}'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_update_view<'a>(
         &'a self,
         version: &'a types::SemverVersion,
-    ) -> Result<ResponseValue<types::SystemUpdate>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SystemUpdate>, Error<types::SystemUpdateViewError>> {
         let url = format!(
             "{}/v1/system/update/updates/{}",
             self.baseurl,
@@ -26132,6 +33920,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -26151,10 +33940,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateViewError>::from_response::<
+                    types::SystemUpdateViewError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateViewError>::from_response::<
+                    types::SystemUpdateViewError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -26162,12 +33957,17 @@ impl Client {
 
     ///View system update component tree
     ///
-    ///Sends a `GET` request to
-    /// `/v1/system/update/updates/{version}/components`
+    ///Sends a 'GET' request to
+    /// '/v1/system/update/updates/{version}/components'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_update_components_list<'a>(
         &'a self,
         version: &'a types::SemverVersion,
-    ) -> Result<ResponseValue<types::ComponentUpdateResultsPage>, Error<types::Error>> {
+    ) -> Result<
+        ResponseValue<types::ComponentUpdateResultsPage>,
+        Error<types::SystemUpdateComponentsListError>,
+    > {
         let url = format!(
             "{}/v1/system/update/updates/{}/components",
             self.baseurl,
@@ -26179,6 +33979,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -26198,10 +33999,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateComponentsListError>::from_response::<
+                    types::SystemUpdateComponentsListError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemUpdateComponentsListError>::from_response::<
+                    types::SystemUpdateComponentsListError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }
@@ -26209,10 +34016,12 @@ impl Client {
 
     ///View system version and update status
     ///
-    ///Sends a `GET` request to `/v1/system/update/version`
+    ///Sends a 'GET' request to '/v1/system/update/version'
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn system_version<'a>(
         &'a self,
-    ) -> Result<ResponseValue<types::SystemVersion>, Error<types::Error>> {
+    ) -> Result<ResponseValue<types::SystemVersion>, Error<types::SystemVersionError>> {
         let url = format!("{}/v1/system/update/version", self.baseurl,);
         let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
         header_map.append(
@@ -26220,6 +34029,7 @@ impl Client {
             ::reqwest::header::HeaderValue::from_static(Self::api_version()),
         );
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -26239,10 +34049,16 @@ impl Client {
         match response.status().as_u16() {
             200u16 => ResponseValue::from_response(response).await,
             400u16..=499u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemVersionError>::from_response::<
+                    types::SystemVersionError,
+                >(response)
+                .await?,
             )),
             500u16..=599u16 => Err(Error::ErrorResponse(
-                ResponseValue::from_response(response).await?,
+                ResponseValue::<types::SystemVersionError>::from_response::<
+                    types::SystemVersionError,
+                >(response)
+                .await?,
             )),
             _ => Err(Error::UnexpectedResponse(response)),
         }

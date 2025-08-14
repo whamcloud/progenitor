@@ -10,7 +10,7 @@ pub mod operations {
             Self(
                 inner
                     .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/uno$").unwrap()),
+                    .path_matches(regex::Regex::new("^/uno$").expect("Invalid path regex pattern")),
             )
         }
 
@@ -20,10 +20,6 @@ pub mod operations {
 
         pub fn gateway(self, value: &str) -> Self {
             Self(self.0.query_param("gateway", value.to_string()))
-        }
-
-        pub fn body(self, value: &types::UnoBody) -> Self {
-            Self(self.0.json_body_obj(value))
         }
     }
 

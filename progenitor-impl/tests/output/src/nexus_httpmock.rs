@@ -7,11 +7,9 @@ pub mod operations {
     pub struct DiskViewByIdWhen(::httpmock::When);
     impl DiskViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/disks/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/by-id/disks/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -19,7 +17,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re = regex::Regex::new(&format!("^/by-id/disks/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/disks/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -67,11 +66,9 @@ pub mod operations {
     pub struct ImageViewByIdWhen(::httpmock::When);
     impl ImageViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/images/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/by-id/images/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -79,7 +76,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re = regex::Regex::new(&format!("^/by-id/images/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/images/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -127,11 +125,9 @@ pub mod operations {
     pub struct InstanceViewByIdWhen(::httpmock::When);
     impl InstanceViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/instances/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/by-id/instances/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -139,8 +135,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/by-id/instances/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/instances/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -189,9 +185,10 @@ pub mod operations {
     impl InstanceNetworkInterfaceViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/network-interfaces/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/by-id/network-interfaces/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -204,7 +201,7 @@ pub mod operations {
                 "^/by-id/network-interfaces/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -253,9 +250,10 @@ pub mod operations {
     impl OrganizationViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/organizations/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/by-id/organizations/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -265,7 +263,7 @@ pub mod operations {
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
             let re = regex::Regex::new(&format!("^/by-id/organizations/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -313,11 +311,9 @@ pub mod operations {
     pub struct ProjectViewByIdWhen(::httpmock::When);
     impl ProjectViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/projects/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/by-id/projects/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -325,8 +321,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/by-id/projects/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/projects/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -374,11 +370,9 @@ pub mod operations {
     pub struct SnapshotViewByIdWhen(::httpmock::When);
     impl SnapshotViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/snapshots/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/by-id/snapshots/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -386,8 +380,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/by-id/snapshots/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/snapshots/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -436,9 +430,10 @@ pub mod operations {
     impl VpcRouterRouteViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/vpc-router-routes/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/by-id/vpc-router-routes/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -449,7 +444,7 @@ pub mod operations {
         pub fn id(self, value: &::uuid::Uuid) -> Self {
             let re =
                 regex::Regex::new(&format!("^/by-id/vpc-router-routes/{}$", value.to_string()))
-                    .unwrap();
+                    .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -498,9 +493,10 @@ pub mod operations {
     impl VpcRouterViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/vpc-routers/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/by-id/vpc-routers/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -509,8 +505,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/by-id/vpc-routers/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/vpc-routers/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -559,9 +555,10 @@ pub mod operations {
     impl VpcSubnetViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/vpc-subnets/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/by-id/vpc-subnets/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -570,8 +567,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/by-id/vpc-subnets/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/vpc-subnets/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -619,11 +616,9 @@ pub mod operations {
     pub struct VpcViewByIdWhen(::httpmock::When);
     impl VpcViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/by-id/vpcs/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/by-id/vpcs/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -631,7 +626,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re = regex::Regex::new(&format!("^/by-id/vpcs/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/by-id/vpcs/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -679,11 +675,9 @@ pub mod operations {
     pub struct DeviceAuthRequestWhen(::httpmock::When);
     impl DeviceAuthRequestWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/device/auth$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/device/auth$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -718,11 +712,9 @@ pub mod operations {
     pub struct DeviceAuthConfirmWhen(::httpmock::When);
     impl DeviceAuthConfirmWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/device/confirm$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/device/confirm$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -772,11 +764,9 @@ pub mod operations {
     pub struct DeviceAccessTokenWhen(::httpmock::When);
     impl DeviceAccessTokenWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/device/token$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/device/token$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -812,9 +802,9 @@ pub mod operations {
     impl GroupListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/groups$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/groups$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -915,9 +905,9 @@ pub mod operations {
     impl LoginSpoofWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/login$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/login$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -968,11 +958,9 @@ pub mod operations {
     pub struct LoginLocalWhen(::httpmock::When);
     impl LoginLocalWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/login/[^/]*/local$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/login/[^/]*/local$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -980,7 +968,8 @@ pub mod operations {
         }
 
         pub fn silo_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/login/{}/local$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/login/{}/local$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1037,11 +1026,9 @@ pub mod operations {
     pub struct LoginSamlBeginWhen(::httpmock::When);
     impl LoginSamlBeginWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/login/[^/]*/saml/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/login/[^/]*/saml/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1049,12 +1036,14 @@ pub mod operations {
         }
 
         pub fn silo_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/login/{}/saml/.*$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/login/{}/saml/.*$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
         pub fn provider_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/login/.*/saml/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/login/.*/saml/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -1107,11 +1096,9 @@ pub mod operations {
     pub struct LoginSamlWhen(::httpmock::When);
     impl LoginSamlWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/login/[^/]*/saml/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/login/[^/]*/saml/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1119,12 +1106,14 @@ pub mod operations {
         }
 
         pub fn silo_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/login/{}/saml/.*$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/login/{}/saml/.*$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
         pub fn provider_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/login/.*/saml/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/login/.*/saml/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1182,9 +1171,9 @@ pub mod operations {
     impl LogoutWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/logout$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/logout$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -1231,11 +1220,9 @@ pub mod operations {
     pub struct OrganizationListWhen(::httpmock::When);
     impl OrganizationListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/organizations$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/organizations$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1334,11 +1321,9 @@ pub mod operations {
     pub struct OrganizationCreateWhen(::httpmock::When);
     impl OrganizationCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/organizations$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/organizations$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1393,11 +1378,9 @@ pub mod operations {
     pub struct OrganizationViewWhen(::httpmock::When);
     impl OrganizationViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/organizations/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1405,7 +1388,8 @@ pub mod operations {
         }
 
         pub fn organization_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/organizations/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/organizations/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -1453,11 +1437,9 @@ pub mod operations {
     pub struct OrganizationUpdateWhen(::httpmock::When);
     impl OrganizationUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/organizations/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1465,7 +1447,8 @@ pub mod operations {
         }
 
         pub fn organization_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/organizations/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/organizations/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1517,11 +1500,9 @@ pub mod operations {
     pub struct OrganizationDeleteWhen(::httpmock::When);
     impl OrganizationDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/organizations/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -1529,7 +1510,8 @@ pub mod operations {
         }
 
         pub fn organization_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/organizations/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/organizations/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -1573,9 +1555,10 @@ pub mod operations {
     impl OrganizationPolicyViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -1585,7 +1568,7 @@ pub mod operations {
 
         pub fn organization_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/organizations/{}/policy$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -1634,9 +1617,10 @@ pub mod operations {
     impl OrganizationPolicyUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -1646,7 +1630,7 @@ pub mod operations {
 
         pub fn organization_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/organizations/{}/policy$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1699,9 +1683,10 @@ pub mod operations {
     impl ProjectListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*/projects$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -1711,7 +1696,7 @@ pub mod operations {
 
         pub fn organization_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/organizations/{}/projects$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1808,9 +1793,10 @@ pub mod operations {
     impl ProjectCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/organizations/[^/]*/projects$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -1820,7 +1806,7 @@ pub mod operations {
 
         pub fn organization_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/organizations/{}/projects$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1874,7 +1860,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
-                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*$").unwrap(),
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -1888,7 +1875,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1897,7 +1884,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -1947,7 +1934,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::PUT).path_matches(
-                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*$").unwrap(),
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -1961,7 +1949,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -1970,7 +1958,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2024,7 +2012,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::DELETE).path_matches(
-                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*$").unwrap(),
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -2038,7 +2027,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2047,7 +2036,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -2090,9 +2079,12 @@ pub mod operations {
     pub struct DiskListWhen(::httpmock::When);
     impl DiskListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2104,7 +2096,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2113,7 +2105,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2209,9 +2201,12 @@ pub mod operations {
     pub struct DiskCreateWhen(::httpmock::When);
     impl DiskCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2223,7 +2218,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2232,7 +2227,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2284,9 +2279,12 @@ pub mod operations {
     pub struct DiskViewWhen(::httpmock::When);
     impl DiskViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2298,7 +2296,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/disks/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2307,7 +2305,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/disks/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2316,7 +2314,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/disks/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -2364,9 +2362,12 @@ pub mod operations {
     pub struct DiskDeleteWhen(::httpmock::When);
     impl DiskDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::DELETE).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/disks/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2378,7 +2379,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/disks/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2387,7 +2388,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/disks/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2396,7 +2397,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/disks/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -2444,7 +2445,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/disks/[^/]*/metrics/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -2458,7 +2459,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/disks/.*/metrics/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2467,7 +2468,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/disks/.*/metrics/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2476,7 +2477,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/disks/{}/metrics/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2485,7 +2486,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/disks/.*/metrics/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2597,9 +2598,12 @@ pub mod operations {
     pub struct ImageListWhen(::httpmock::When);
     impl ImageListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2611,7 +2615,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/images$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2620,7 +2624,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/images$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2716,9 +2720,12 @@ pub mod operations {
     pub struct ImageCreateWhen(::httpmock::When);
     impl ImageCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2730,7 +2737,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/images$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2739,7 +2746,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/images$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2791,9 +2798,12 @@ pub mod operations {
     pub struct ImageViewWhen(::httpmock::When);
     impl ImageViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2805,7 +2815,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/images/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2814,7 +2824,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/images/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2823,7 +2833,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/images/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -2871,9 +2881,12 @@ pub mod operations {
     pub struct ImageDeleteWhen(::httpmock::When);
     impl ImageDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::DELETE).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/images/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2885,7 +2898,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/images/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2894,7 +2907,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/images/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2903,7 +2916,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/images/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -2946,9 +2959,12 @@ pub mod operations {
     pub struct InstanceListWhen(::httpmock::When);
     impl InstanceListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -2960,7 +2976,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -2969,7 +2985,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3065,9 +3081,12 @@ pub mod operations {
     pub struct InstanceCreateWhen(::httpmock::When);
     impl InstanceCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -3079,7 +3098,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3088,7 +3107,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3140,9 +3159,12 @@ pub mod operations {
     pub struct InstanceViewWhen(::httpmock::When);
     impl InstanceViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -3154,7 +3176,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3163,7 +3185,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3172,7 +3194,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -3220,9 +3242,12 @@ pub mod operations {
     pub struct InstanceDeleteWhen(::httpmock::When);
     impl InstanceDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::DELETE).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -3234,7 +3259,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3243,7 +3268,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3252,7 +3277,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -3300,7 +3325,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/disks$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3314,7 +3339,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3323,7 +3348,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3332,7 +3357,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3433,7 +3458,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/disks/attach$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3447,7 +3472,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/disks/attach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3456,7 +3481,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/disks/attach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3465,7 +3490,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/disks/attach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3522,7 +3547,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/disks/detach$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3536,7 +3561,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/disks/detach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3545,7 +3570,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/disks/detach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3554,7 +3579,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/disks/detach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3611,7 +3636,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/external-ips$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3625,7 +3650,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/external-ips$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3634,7 +3659,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/external-ips$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3643,7 +3668,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/external-ips$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -3696,7 +3721,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/migrate$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3710,7 +3735,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/migrate$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3719,7 +3744,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/migrate$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3728,7 +3753,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/migrate$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3785,7 +3810,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/network-interfaces$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3799,7 +3824,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3808,7 +3833,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3817,7 +3842,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3918,7 +3943,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/network-interfaces$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -3932,7 +3957,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3941,7 +3966,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -3950,7 +3975,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4008,7 +4033,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/network-interfaces/\
                          [^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4022,7 +4047,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4031,7 +4056,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4040,7 +4065,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4049,7 +4074,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/.*/network-interfaces/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4103,7 +4128,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/network-interfaces/\
                          [^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4117,7 +4142,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4126,7 +4151,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4135,7 +4160,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4144,7 +4169,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/.*/network-interfaces/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4202,7 +4227,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/network-interfaces/\
                          [^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4216,7 +4241,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4225,7 +4250,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4234,7 +4259,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/network-interfaces/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4243,7 +4268,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/.*/network-interfaces/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4291,7 +4316,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/reboot$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4305,7 +4330,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/reboot$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4314,7 +4339,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/reboot$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4323,7 +4348,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/reboot$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4376,7 +4401,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/serial-console$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4390,7 +4415,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/serial-console$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4399,7 +4424,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/serial-console$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4408,7 +4433,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/serial-console$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4510,7 +4535,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/serial-console/\
                          stream$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4524,7 +4549,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/serial-console/stream$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4533,7 +4558,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/serial-console/stream$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4542,7 +4567,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/serial-console/stream$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4574,7 +4599,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/start$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4588,7 +4613,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/start$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4597,7 +4622,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/start$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4606,7 +4631,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/start$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4657,7 +4682,7 @@ pub mod operations {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
                     regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/instances/[^/]*/stop$")
-                        .unwrap(),
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -4671,7 +4696,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/instances/.*/stop$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4680,7 +4705,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/instances/.*/stop$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4689,7 +4714,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/instances/{}/stop$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4737,9 +4762,12 @@ pub mod operations {
     pub struct ProjectPolicyViewWhen(::httpmock::When);
     impl ProjectPolicyViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/policy$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -4751,7 +4779,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/policy$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4760,7 +4788,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/policy$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -4808,9 +4836,12 @@ pub mod operations {
     pub struct ProjectPolicyUpdateWhen(::httpmock::When);
     impl ProjectPolicyUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::PUT).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/policy$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -4822,7 +4853,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/policy$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4831,7 +4862,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/policy$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4883,9 +4914,12 @@ pub mod operations {
     pub struct SnapshotListWhen(::httpmock::When);
     impl SnapshotListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -4897,7 +4931,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/snapshots$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -4906,7 +4940,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/snapshots$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5002,9 +5036,12 @@ pub mod operations {
     pub struct SnapshotCreateWhen(::httpmock::When);
     impl SnapshotCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5016,7 +5053,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/snapshots$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5025,7 +5062,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/snapshots$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5077,9 +5114,12 @@ pub mod operations {
     pub struct SnapshotViewWhen(::httpmock::When);
     impl SnapshotViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5091,7 +5131,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/snapshots/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5100,7 +5140,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/snapshots/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5109,7 +5149,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/snapshots/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -5157,9 +5197,12 @@ pub mod operations {
     pub struct SnapshotDeleteWhen(::httpmock::When);
     impl SnapshotDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::DELETE).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/snapshots/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5171,7 +5214,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/snapshots/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5180,7 +5223,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/snapshots/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5189,7 +5232,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/snapshots/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -5232,9 +5275,12 @@ pub mod operations {
     pub struct VpcListWhen(::httpmock::When);
     impl VpcListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5246,7 +5292,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5255,7 +5301,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5351,9 +5397,12 @@ pub mod operations {
     pub struct VpcCreateWhen(::httpmock::When);
     impl VpcCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5365,7 +5414,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5374,7 +5423,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5426,9 +5475,12 @@ pub mod operations {
     pub struct VpcViewWhen(::httpmock::When);
     impl VpcViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5440,7 +5492,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5449,7 +5501,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5458,7 +5510,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -5506,9 +5558,12 @@ pub mod operations {
     pub struct VpcUpdateWhen(::httpmock::When);
     impl VpcUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::PUT).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5520,7 +5575,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5529,7 +5584,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5538,7 +5593,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5590,9 +5645,12 @@ pub mod operations {
     pub struct VpcDeleteWhen(::httpmock::When);
     impl VpcDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::DELETE).path_matches(
-                regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -5604,7 +5662,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5613,7 +5671,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5622,7 +5680,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -5670,7 +5728,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/firewall/rules$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -5684,7 +5742,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/firewall/rules$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5693,7 +5751,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/firewall/rules$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5702,7 +5760,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/firewall/rules$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -5755,7 +5813,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/firewall/rules$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -5769,7 +5827,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/firewall/rules$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5778,7 +5836,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/firewall/rules$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5787,7 +5845,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/firewall/rules$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5842,7 +5900,7 @@ pub mod operations {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
                     regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers$")
-                        .unwrap(),
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -5856,7 +5914,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5865,7 +5923,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5874,7 +5932,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5973,7 +6031,7 @@ pub mod operations {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
                     regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers$")
-                        .unwrap(),
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -5987,7 +6045,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -5996,7 +6054,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6005,7 +6063,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6062,7 +6120,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6076,7 +6134,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6085,7 +6143,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6094,7 +6152,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6103,7 +6161,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -6156,7 +6214,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6170,7 +6228,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6179,7 +6237,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6188,7 +6246,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6197,7 +6255,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6254,7 +6312,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6268,7 +6326,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6277,7 +6335,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6286,7 +6344,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6295,7 +6353,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -6343,7 +6401,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*/routes$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6357,7 +6415,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6366,7 +6424,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6375,7 +6433,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6384,7 +6442,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6485,7 +6543,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*/routes$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6499,7 +6557,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6508,7 +6566,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6517,7 +6575,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6526,7 +6584,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}/routes$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6584,7 +6642,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*/routes/[^/\
                          ]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6598,7 +6656,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6607,7 +6665,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6616,7 +6674,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6625,7 +6683,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6634,7 +6692,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/.*/routes/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -6688,7 +6746,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*/routes/[^/\
                          ]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6702,7 +6760,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6711,7 +6769,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6720,7 +6778,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6729,7 +6787,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6738,7 +6796,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/.*/routes/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6796,7 +6854,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/routers/[^/]*/routes/[^/\
                          ]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6810,7 +6868,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6819,7 +6877,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6828,7 +6886,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/routers/.*/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6837,7 +6895,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/{}/routes/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6846,7 +6904,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/routers/.*/routes/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -6892,7 +6950,7 @@ pub mod operations {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
                     regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/subnets$")
-                        .unwrap(),
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -6906,7 +6964,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/subnets$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6915,7 +6973,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/subnets$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -6924,7 +6982,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/subnets$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7023,7 +7081,7 @@ pub mod operations {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
                     regex::Regex::new("^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/subnets$")
-                        .unwrap(),
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -7037,7 +7095,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/subnets$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7046,7 +7104,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/subnets$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7055,7 +7113,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/subnets$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7112,7 +7170,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/subnets/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -7126,7 +7184,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7135,7 +7193,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7144,7 +7202,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7153,7 +7211,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/subnets/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -7206,7 +7264,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/subnets/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -7220,7 +7278,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7229,7 +7287,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7238,7 +7296,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7247,7 +7305,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/subnets/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7304,7 +7362,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/subnets/[^/]*$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -7318,7 +7376,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7327,7 +7385,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7336,7 +7394,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/subnets/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7345,7 +7403,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/subnets/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -7394,7 +7452,7 @@ pub mod operations {
                         "^/organizations/[^/]*/projects/[^/]*/vpcs/[^/]*/subnets/[^/]*/\
                          network-interfaces$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -7408,7 +7466,7 @@ pub mod operations {
                 "^/organizations/{}/projects/.*/vpcs/.*/subnets/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7417,7 +7475,7 @@ pub mod operations {
                 "^/organizations/.*/projects/{}/vpcs/.*/subnets/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7426,7 +7484,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/{}/subnets/.*/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7435,7 +7493,7 @@ pub mod operations {
                 "^/organizations/.*/projects/.*/vpcs/.*/subnets/{}/network-interfaces$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -7532,9 +7590,9 @@ pub mod operations {
     impl PolicyViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/policy$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/policy$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -7587,9 +7645,9 @@ pub mod operations {
     impl PolicyUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/policy$").unwrap()),
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/policy$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -7646,9 +7704,9 @@ pub mod operations {
     impl RoleListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/roles$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/roles$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -7732,11 +7790,9 @@ pub mod operations {
     pub struct RoleViewWhen(::httpmock::When);
     impl RoleViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/roles/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/roles/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -7744,7 +7800,8 @@ pub mod operations {
         }
 
         pub fn role_name(self, value: &str) -> Self {
-            let re = regex::Regex::new(&format!("^/roles/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/roles/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -7792,11 +7849,9 @@ pub mod operations {
     pub struct SessionMeWhen(::httpmock::When);
     impl SessionMeWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/session/me$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/session/me$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -7847,11 +7902,9 @@ pub mod operations {
     pub struct SessionMeGroupsWhen(::httpmock::When);
     impl SessionMeGroupsWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/session/me/groups$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/session/me/groups$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -7950,11 +8003,9 @@ pub mod operations {
     pub struct SessionSshkeyListWhen(::httpmock::When);
     impl SessionSshkeyListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/session/me/sshkeys$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/session/me/sshkeys$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -8053,11 +8104,9 @@ pub mod operations {
     pub struct SessionSshkeyCreateWhen(::httpmock::When);
     impl SessionSshkeyCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/session/me/sshkeys$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/session/me/sshkeys$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -8113,9 +8162,10 @@ pub mod operations {
     impl SessionSshkeyViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/session/me/sshkeys/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/session/me/sshkeys/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8124,8 +8174,8 @@ pub mod operations {
         }
 
         pub fn ssh_key_name(self, value: &types::Name) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/session/me/sshkeys/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/session/me/sshkeys/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8174,9 +8224,10 @@ pub mod operations {
     impl SessionSshkeyDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/session/me/sshkeys/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/session/me/sshkeys/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8185,8 +8236,8 @@ pub mod operations {
         }
 
         pub fn ssh_key_name(self, value: &types::Name) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/session/me/sshkeys/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/session/me/sshkeys/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8230,9 +8281,10 @@ pub mod operations {
     impl SystemImageViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/by-id/images/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/by-id/images/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8242,7 +8294,7 @@ pub mod operations {
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
             let re = regex::Regex::new(&format!("^/system/by-id/images/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8291,9 +8343,10 @@ pub mod operations {
     impl IpPoolViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/by-id/ip-pools/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/by-id/ip-pools/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8303,7 +8356,7 @@ pub mod operations {
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
             let re = regex::Regex::new(&format!("^/system/by-id/ip-pools/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8352,9 +8405,10 @@ pub mod operations {
     impl SiloViewByIdWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/by-id/silos/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/by-id/silos/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8363,8 +8417,8 @@ pub mod operations {
         }
 
         pub fn id(self, value: &::uuid::Uuid) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/system/by-id/silos/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/by-id/silos/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8412,11 +8466,9 @@ pub mod operations {
     pub struct CertificateListWhen(::httpmock::When);
     impl CertificateListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/certificates$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/certificates$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -8515,11 +8567,9 @@ pub mod operations {
     pub struct CertificateCreateWhen(::httpmock::When);
     impl CertificateCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/system/certificates$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/system/certificates$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -8575,9 +8625,10 @@ pub mod operations {
     impl CertificateViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/certificates/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/certificates/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8587,7 +8638,7 @@ pub mod operations {
 
         pub fn certificate(self, value: &types::NameOrId) -> Self {
             let re = regex::Regex::new(&format!("^/system/certificates/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8636,9 +8687,10 @@ pub mod operations {
     impl CertificateDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/system/certificates/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::DELETE).path_matches(
+                    regex::Regex::new("^/system/certificates/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8648,7 +8700,7 @@ pub mod operations {
 
         pub fn certificate(self, value: &types::NameOrId) -> Self {
             let re = regex::Regex::new(&format!("^/system/certificates/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8691,11 +8743,9 @@ pub mod operations {
     pub struct PhysicalDiskListWhen(::httpmock::When);
     impl PhysicalDiskListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/hardware/disks$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/hardware/disks$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -8794,11 +8844,9 @@ pub mod operations {
     pub struct RackListWhen(::httpmock::When);
     impl RackListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/hardware/racks$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/hardware/racks$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -8898,9 +8946,10 @@ pub mod operations {
     impl RackViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/hardware/racks/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/hardware/racks/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -8910,7 +8959,7 @@ pub mod operations {
 
         pub fn rack_id(self, value: &::uuid::Uuid) -> Self {
             let re = regex::Regex::new(&format!("^/system/hardware/racks/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -8958,11 +9007,9 @@ pub mod operations {
     pub struct SledListWhen(::httpmock::When);
     impl SledListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/hardware/sleds$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/hardware/sleds$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9062,9 +9109,10 @@ pub mod operations {
     impl SledViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/hardware/sleds/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/hardware/sleds/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -9074,7 +9122,7 @@ pub mod operations {
 
         pub fn sled_id(self, value: &::uuid::Uuid) -> Self {
             let re = regex::Regex::new(&format!("^/system/hardware/sleds/{}$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -9124,7 +9172,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
-                    regex::Regex::new("^/system/hardware/sleds/[^/]*/disks$").unwrap(),
+                    regex::Regex::new("^/system/hardware/sleds/[^/]*/disks$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -9138,7 +9187,7 @@ pub mod operations {
                 "^/system/hardware/sleds/{}/disks$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -9234,11 +9283,9 @@ pub mod operations {
     pub struct SystemImageListWhen(::httpmock::When);
     impl SystemImageListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/images$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/images$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9337,11 +9384,9 @@ pub mod operations {
     pub struct SystemImageCreateWhen(::httpmock::When);
     impl SystemImageCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/system/images$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/system/images$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9396,11 +9441,9 @@ pub mod operations {
     pub struct SystemImageViewWhen(::httpmock::When);
     impl SystemImageViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/images/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/images/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9408,7 +9451,8 @@ pub mod operations {
         }
 
         pub fn image_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/system/images/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/images/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -9456,11 +9500,9 @@ pub mod operations {
     pub struct SystemImageDeleteWhen(::httpmock::When);
     impl SystemImageDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/system/images/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/system/images/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9468,7 +9510,8 @@ pub mod operations {
         }
 
         pub fn image_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/system/images/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/images/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -9511,11 +9554,9 @@ pub mod operations {
     pub struct IpPoolListWhen(::httpmock::When);
     impl IpPoolListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/ip-pools$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/ip-pools$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9614,11 +9655,9 @@ pub mod operations {
     pub struct IpPoolCreateWhen(::httpmock::When);
     impl IpPoolCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/system/ip-pools$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/system/ip-pools$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9673,11 +9712,9 @@ pub mod operations {
     pub struct IpPoolViewWhen(::httpmock::When);
     impl IpPoolViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/ip-pools/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/ip-pools/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9685,8 +9722,8 @@ pub mod operations {
         }
 
         pub fn pool_name(self, value: &types::Name) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/system/ip-pools/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/ip-pools/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -9734,11 +9771,9 @@ pub mod operations {
     pub struct IpPoolUpdateWhen(::httpmock::When);
     impl IpPoolUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/system/ip-pools/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/system/ip-pools/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9746,8 +9781,8 @@ pub mod operations {
         }
 
         pub fn pool_name(self, value: &types::Name) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/system/ip-pools/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/ip-pools/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -9799,11 +9834,9 @@ pub mod operations {
     pub struct IpPoolDeleteWhen(::httpmock::When);
     impl IpPoolDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/system/ip-pools/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/system/ip-pools/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -9811,8 +9844,8 @@ pub mod operations {
         }
 
         pub fn pool_name(self, value: &types::Name) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/system/ip-pools/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/ip-pools/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -9856,9 +9889,10 @@ pub mod operations {
     impl IpPoolRangeListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/ip-pools/[^/]*/ranges$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/ip-pools/[^/]*/ranges$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -9868,7 +9902,7 @@ pub mod operations {
 
         pub fn pool_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/system/ip-pools/{}/ranges$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -9950,7 +9984,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
-                    regex::Regex::new("^/system/ip-pools/[^/]*/ranges/add$").unwrap(),
+                    regex::Regex::new("^/system/ip-pools/[^/]*/ranges/add$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -9964,7 +9999,7 @@ pub mod operations {
                 "^/system/ip-pools/{}/ranges/add$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -10018,7 +10053,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
-                    regex::Regex::new("^/system/ip-pools/[^/]*/ranges/remove$").unwrap(),
+                    regex::Regex::new("^/system/ip-pools/[^/]*/ranges/remove$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -10032,7 +10068,7 @@ pub mod operations {
                 "^/system/ip-pools/{}/ranges/remove$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -10080,9 +10116,10 @@ pub mod operations {
     impl IpPoolServiceViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/ip-pools-service$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/ip-pools-service$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -10135,9 +10172,10 @@ pub mod operations {
     impl IpPoolServiceRangeListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/ip-pools-service/ranges$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/ip-pools-service/ranges$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -10223,7 +10261,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
-                    regex::Regex::new("^/system/ip-pools-service/ranges/add$").unwrap(),
+                    regex::Regex::new("^/system/ip-pools-service/ranges/add$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -10280,9 +10319,12 @@ pub mod operations {
     pub struct IpPoolServiceRangeRemoveWhen(::httpmock::When);
     impl IpPoolServiceRangeRemoveWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/system/ip-pools-service/ranges/remove$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/system/ip-pools-service/ranges/remove$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10332,11 +10374,9 @@ pub mod operations {
     pub struct SystemMetricWhen(::httpmock::When);
     impl SystemMetricWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/metrics/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/metrics/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10344,8 +10384,8 @@ pub mod operations {
         }
 
         pub fn metric_name(self, value: types::SystemMetricName) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/system/metrics/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/metrics/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -10461,11 +10501,9 @@ pub mod operations {
     pub struct SystemPolicyViewWhen(::httpmock::When);
     impl SystemPolicyViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/policy$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/policy$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10516,11 +10554,9 @@ pub mod operations {
     pub struct SystemPolicyUpdateWhen(::httpmock::When);
     impl SystemPolicyUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/system/policy$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/system/policy$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10575,11 +10611,9 @@ pub mod operations {
     pub struct SagaListWhen(::httpmock::When);
     impl SagaListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/sagas$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/sagas$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10678,11 +10712,9 @@ pub mod operations {
     pub struct SagaViewWhen(::httpmock::When);
     impl SagaViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/sagas/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/sagas/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10690,7 +10722,8 @@ pub mod operations {
         }
 
         pub fn saga_id(self, value: &::uuid::Uuid) -> Self {
-            let re = regex::Regex::new(&format!("^/system/sagas/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/sagas/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -10738,11 +10771,9 @@ pub mod operations {
     pub struct SiloListWhen(::httpmock::When);
     impl SiloListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/silos$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/silos$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10841,11 +10872,9 @@ pub mod operations {
     pub struct SiloCreateWhen(::httpmock::When);
     impl SiloCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/system/silos$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/system/silos$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10900,11 +10929,9 @@ pub mod operations {
     pub struct SiloViewWhen(::httpmock::When);
     impl SiloViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/silos/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/silos/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10912,7 +10939,8 @@ pub mod operations {
         }
 
         pub fn silo_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/system/silos/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/silos/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -10960,11 +10988,9 @@ pub mod operations {
     pub struct SiloDeleteWhen(::httpmock::When);
     impl SiloDeleteWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/system/silos/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/system/silos/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -10972,7 +10998,8 @@ pub mod operations {
         }
 
         pub fn silo_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/system/silos/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/silos/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -11015,9 +11042,12 @@ pub mod operations {
     pub struct SiloIdentityProviderListWhen(::httpmock::When);
     impl SiloIdentityProviderListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/system/silos/[^/]*/identity-providers$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/identity-providers$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -11029,7 +11059,7 @@ pub mod operations {
                 "^/system/silos/{}/identity-providers$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11125,9 +11155,12 @@ pub mod operations {
     pub struct LocalIdpUserCreateWhen(::httpmock::When);
     impl LocalIdpUserCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/system/silos/[^/]*/identity-providers/local/users$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/identity-providers/local/users$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -11139,7 +11172,7 @@ pub mod operations {
                 "^/system/silos/{}/identity-providers/local/users$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11194,7 +11227,7 @@ pub mod operations {
             Self(
                 inner.method(::httpmock::Method::DELETE).path_matches(
                     regex::Regex::new("^/system/silos/[^/]*/identity-providers/local/users/[^/]*$")
-                        .unwrap(),
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -11208,7 +11241,7 @@ pub mod operations {
                 "^/system/silos/{}/identity-providers/local/users/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11217,7 +11250,7 @@ pub mod operations {
                 "^/system/silos/.*/identity-providers/local/users/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -11265,7 +11298,7 @@ pub mod operations {
                     regex::Regex::new(
                         "^/system/silos/[^/]*/identity-providers/local/users/[^/]*/set-password$",
                     )
-                    .unwrap(),
+                    .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -11279,7 +11312,7 @@ pub mod operations {
                 "^/system/silos/{}/identity-providers/local/users/.*/set-password$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11288,7 +11321,7 @@ pub mod operations {
                 "^/system/silos/.*/identity-providers/local/users/{}/set-password$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11335,9 +11368,12 @@ pub mod operations {
     pub struct SamlIdentityProviderCreateWhen(::httpmock::When);
     impl SamlIdentityProviderCreateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::POST).path_matches(
-                regex::Regex::new("^/system/silos/[^/]*/identity-providers/saml$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/identity-providers/saml$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -11349,7 +11385,7 @@ pub mod operations {
                 "^/system/silos/{}/identity-providers/saml$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11401,9 +11437,12 @@ pub mod operations {
     pub struct SamlIdentityProviderViewWhen(::httpmock::When);
     impl SamlIdentityProviderViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/system/silos/[^/]*/identity-providers/saml/[^/]*$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/identity-providers/saml/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -11415,7 +11454,7 @@ pub mod operations {
                 "^/system/silos/{}/identity-providers/saml/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11424,7 +11463,7 @@ pub mod operations {
                 "^/system/silos/.*/identity-providers/saml/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -11473,9 +11512,10 @@ pub mod operations {
     impl SiloPolicyViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/silos/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -11485,7 +11525,7 @@ pub mod operations {
 
         pub fn silo_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/system/silos/{}/policy$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -11534,9 +11574,10 @@ pub mod operations {
     impl SiloPolicyUpdateWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/system/silos/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -11546,7 +11587,7 @@ pub mod operations {
 
         pub fn silo_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/system/silos/{}/policy$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11599,9 +11640,10 @@ pub mod operations {
     impl SiloUsersListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/silos/[^/]*/users/all$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/system/silos/[^/]*/users/all$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -11611,7 +11653,7 @@ pub mod operations {
 
         pub fn silo_name(self, value: &types::Name) -> Self {
             let re = regex::Regex::new(&format!("^/system/silos/{}/users/all$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11709,7 +11751,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
-                    regex::Regex::new("^/system/silos/[^/]*/users/id/[^/]*$").unwrap(),
+                    regex::Regex::new("^/system/silos/[^/]*/users/id/[^/]*$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -11723,7 +11766,7 @@ pub mod operations {
                 "^/system/silos/{}/users/id/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -11732,7 +11775,7 @@ pub mod operations {
                 "^/system/silos/.*/users/id/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -11780,11 +11823,9 @@ pub mod operations {
     pub struct SystemUserListWhen(::httpmock::When);
     impl SystemUserListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/user$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/user$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -11883,11 +11924,9 @@ pub mod operations {
     pub struct SystemUserViewWhen(::httpmock::When);
     impl SystemUserViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/system/user/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/system/user/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -11895,7 +11934,8 @@ pub mod operations {
         }
 
         pub fn user_name(self, value: &types::Name) -> Self {
-            let re = regex::Regex::new(&format!("^/system/user/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/system/user/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -11943,11 +11983,9 @@ pub mod operations {
     pub struct TimeseriesSchemaGetWhen(::httpmock::When);
     impl TimeseriesSchemaGetWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/timeseries/schema$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/timeseries/schema$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12031,9 +12069,9 @@ pub mod operations {
     impl UserListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/users$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/users$").expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -12133,11 +12171,9 @@ pub mod operations {
     pub struct DiskListV1When(::httpmock::When);
     impl DiskListV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/disks$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/disks$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12268,11 +12304,9 @@ pub mod operations {
     pub struct DiskCreateV1When(::httpmock::When);
     impl DiskCreateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/disks$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/v1/disks$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12347,11 +12381,9 @@ pub mod operations {
     pub struct DiskViewV1When(::httpmock::When);
     impl DiskViewV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/disks/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/disks/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12359,7 +12391,8 @@ pub mod operations {
         }
 
         pub fn disk(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/disks/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/disks/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -12439,11 +12472,9 @@ pub mod operations {
     pub struct DiskDeleteV1When(::httpmock::When);
     impl DiskDeleteV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/v1/disks/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/v1/disks/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12451,7 +12482,8 @@ pub mod operations {
         }
 
         pub fn disk(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/disks/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/disks/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -12526,11 +12558,9 @@ pub mod operations {
     pub struct InstanceListV1When(::httpmock::When);
     impl InstanceListV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/instances$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/instances$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12661,11 +12691,9 @@ pub mod operations {
     pub struct InstanceCreateV1When(::httpmock::When);
     impl InstanceCreateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/v1/instances$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12740,11 +12768,9 @@ pub mod operations {
     pub struct InstanceViewV1When(::httpmock::When);
     impl InstanceViewV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/instances/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12752,7 +12778,8 @@ pub mod operations {
         }
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/instances/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/instances/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -12832,11 +12859,9 @@ pub mod operations {
     pub struct InstanceDeleteV1When(::httpmock::When);
     impl InstanceDeleteV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/v1/instances/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -12844,7 +12869,8 @@ pub mod operations {
         }
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/instances/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/instances/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -12920,9 +12946,10 @@ pub mod operations {
     impl InstanceDiskListV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/disks$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/disks$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -12931,8 +12958,8 @@ pub mod operations {
         }
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/instances/{}/disks$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/instances/{}/disks$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13061,9 +13088,10 @@ pub mod operations {
     impl InstanceDiskAttachV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/disks/attach$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/disks/attach$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -13076,7 +13104,7 @@ pub mod operations {
                 "^/v1/instances/{}/disks/attach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13161,9 +13189,10 @@ pub mod operations {
     impl InstanceDiskDetachV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/disks/detach$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/disks/detach$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -13176,7 +13205,7 @@ pub mod operations {
                 "^/v1/instances/{}/disks/detach$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13261,9 +13290,10 @@ pub mod operations {
     impl InstanceMigrateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/migrate$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/migrate$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -13273,7 +13303,7 @@ pub mod operations {
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
             let re = regex::Regex::new(&format!("^/v1/instances/{}/migrate$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13358,9 +13388,10 @@ pub mod operations {
     impl InstanceRebootV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/reboot$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/reboot$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -13370,7 +13401,7 @@ pub mod operations {
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
             let re = regex::Regex::new(&format!("^/v1/instances/{}/reboot$", value.to_string()))
-                .unwrap();
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13452,7 +13483,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
-                    regex::Regex::new("^/v1/instances/[^/]*/serial-console$").unwrap(),
+                    regex::Regex::new("^/v1/instances/[^/]*/serial-console$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -13466,7 +13498,7 @@ pub mod operations {
                 "^/v1/instances/{}/serial-console$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13594,9 +13626,12 @@ pub mod operations {
     pub struct InstanceSerialConsoleStreamV1When(::httpmock::When);
     impl InstanceSerialConsoleStreamV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/v1/instances/[^/]*/serial-console/stream$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/serial-console/stream$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -13608,7 +13643,7 @@ pub mod operations {
                 "^/v1/instances/{}/serial-console/stream$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13668,9 +13703,10 @@ pub mod operations {
     impl InstanceStartV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/start$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/start$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -13679,8 +13715,8 @@ pub mod operations {
         }
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/instances/{}/start$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/instances/{}/start$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13761,9 +13797,10 @@ pub mod operations {
     impl InstanceStopV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/instances/[^/]*/stop$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/instances/[^/]*/stop$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -13772,8 +13809,8 @@ pub mod operations {
         }
 
         pub fn instance(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/instances/{}/stop$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/instances/{}/stop$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -13853,11 +13890,9 @@ pub mod operations {
     pub struct OrganizationListV1When(::httpmock::When);
     impl OrganizationListV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/organizations$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/organizations$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -13956,11 +13991,9 @@ pub mod operations {
     pub struct OrganizationCreateV1When(::httpmock::When);
     impl OrganizationCreateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/organizations$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/v1/organizations$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14015,11 +14048,9 @@ pub mod operations {
     pub struct OrganizationViewV1When(::httpmock::When);
     impl OrganizationViewV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/organizations/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/organizations/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14027,8 +14058,8 @@ pub mod operations {
         }
 
         pub fn organization(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/organizations/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/organizations/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -14076,11 +14107,9 @@ pub mod operations {
     pub struct OrganizationUpdateV1When(::httpmock::When);
     impl OrganizationUpdateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/v1/organizations/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/v1/organizations/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14088,8 +14117,8 @@ pub mod operations {
         }
 
         pub fn organization(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/organizations/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/organizations/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14141,11 +14170,9 @@ pub mod operations {
     pub struct OrganizationDeleteV1When(::httpmock::When);
     impl OrganizationDeleteV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/v1/organizations/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/v1/organizations/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14153,8 +14180,8 @@ pub mod operations {
         }
 
         pub fn organization(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/organizations/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/organizations/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -14198,9 +14225,10 @@ pub mod operations {
     impl OrganizationPolicyViewV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/organizations/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/organizations/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -14211,7 +14239,7 @@ pub mod operations {
         pub fn organization(self, value: &types::NameOrId) -> Self {
             let re =
                 regex::Regex::new(&format!("^/v1/organizations/{}/policy$", value.to_string()))
-                    .unwrap();
+                    .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -14260,9 +14288,10 @@ pub mod operations {
     impl OrganizationPolicyUpdateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/v1/organizations/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/v1/organizations/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -14273,7 +14302,7 @@ pub mod operations {
         pub fn organization(self, value: &types::NameOrId) -> Self {
             let re =
                 regex::Regex::new(&format!("^/v1/organizations/{}/policy$", value.to_string()))
-                    .unwrap();
+                    .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14325,11 +14354,9 @@ pub mod operations {
     pub struct ProjectListV1When(::httpmock::When);
     impl ProjectListV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/projects$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/projects$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14444,11 +14471,9 @@ pub mod operations {
     pub struct ProjectCreateV1When(::httpmock::When);
     impl ProjectCreateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/projects$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/v1/projects$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14507,11 +14532,9 @@ pub mod operations {
     pub struct ProjectViewV1When(::httpmock::When);
     impl ProjectViewV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/projects/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/v1/projects/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14519,7 +14542,8 @@ pub mod operations {
         }
 
         pub fn project(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/projects/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/projects/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14583,11 +14607,9 @@ pub mod operations {
     pub struct ProjectUpdateV1When(::httpmock::When);
     impl ProjectUpdateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/v1/projects/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/v1/projects/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14595,7 +14617,8 @@ pub mod operations {
         }
 
         pub fn project(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/projects/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/projects/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14663,11 +14686,9 @@ pub mod operations {
     pub struct ProjectDeleteV1When(::httpmock::When);
     impl ProjectDeleteV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::DELETE)
-                    .path_matches(regex::Regex::new("^/v1/projects/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::DELETE).path_matches(
+                regex::Regex::new("^/v1/projects/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -14675,7 +14696,8 @@ pub mod operations {
         }
 
         pub fn project(self, value: &types::NameOrId) -> Self {
-            let re = regex::Regex::new(&format!("^/v1/projects/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/projects/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14735,9 +14757,10 @@ pub mod operations {
     impl ProjectPolicyViewV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/projects/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/projects/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -14746,8 +14769,8 @@ pub mod operations {
         }
 
         pub fn project(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/projects/{}/policy$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/projects/{}/policy$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14812,9 +14835,10 @@ pub mod operations {
     impl ProjectPolicyUpdateV1When {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/v1/projects/[^/]*/policy$").unwrap()),
+                inner.method(::httpmock::Method::PUT).path_matches(
+                    regex::Regex::new("^/v1/projects/[^/]*/policy$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -14823,8 +14847,8 @@ pub mod operations {
         }
 
         pub fn project(self, value: &types::NameOrId) -> Self {
-            let re =
-                regex::Regex::new(&format!("^/v1/projects/{}/policy$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/v1/projects/{}/policy$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -14893,9 +14917,10 @@ pub mod operations {
     impl SystemComponentVersionListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/system/update/components$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/system/update/components$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -14996,9 +15021,10 @@ pub mod operations {
     impl UpdateDeploymentsListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/system/update/deployments$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/system/update/deployments$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -15100,7 +15126,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::GET).path_matches(
-                    regex::Regex::new("^/v1/system/update/deployments/[^/]*$").unwrap(),
+                    regex::Regex::new("^/v1/system/update/deployments/[^/]*$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -15114,7 +15141,7 @@ pub mod operations {
                 "^/v1/system/update/deployments/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -15163,9 +15190,10 @@ pub mod operations {
     impl SystemUpdateRefreshWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/system/update/refresh$").unwrap()),
+                inner.method(::httpmock::Method::POST).path_matches(
+                    regex::Regex::new("^/v1/system/update/refresh$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -15212,11 +15240,9 @@ pub mod operations {
     pub struct SystemUpdateStartWhen(::httpmock::When);
     impl SystemUpdateStartWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/system/update/start$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/v1/system/update/start$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -15271,11 +15297,9 @@ pub mod operations {
     pub struct SystemUpdateStopWhen(::httpmock::When);
     impl SystemUpdateStopWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::POST)
-                    .path_matches(regex::Regex::new("^/v1/system/update/stop$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::POST).path_matches(
+                regex::Regex::new("^/v1/system/update/stop$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -15322,9 +15346,10 @@ pub mod operations {
     impl SystemUpdateListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/system/update/updates$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/system/update/updates$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -15425,9 +15450,10 @@ pub mod operations {
     impl SystemUpdateViewWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/system/update/updates/[^/]*$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/system/update/updates/[^/]*$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
@@ -15440,7 +15466,7 @@ pub mod operations {
                 "^/v1/system/update/updates/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -15488,9 +15514,12 @@ pub mod operations {
     pub struct SystemUpdateComponentsListWhen(::httpmock::When);
     impl SystemUpdateComponentsListWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(inner.method(::httpmock::Method::GET).path_matches(
-                regex::Regex::new("^/v1/system/update/updates/[^/]*/components$").unwrap(),
-            ))
+            Self(
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/system/update/updates/[^/]*/components$")
+                        .expect("Invalid path regex pattern"),
+                ),
+            )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -15502,7 +15531,7 @@ pub mod operations {
                 "^/v1/system/update/updates/{}/components$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -15551,9 +15580,10 @@ pub mod operations {
     impl SystemVersionWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/v1/system/update/version$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/v1/system/update/version$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 

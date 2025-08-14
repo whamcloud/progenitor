@@ -2460,7 +2460,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -2497,7 +2500,7 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 impl Client {
-    ///Sends a `POST` request to `/v1/control/hold`
+    ///Sends a 'POST' request to '/v1/control/hold'
     ///
     ///```ignore
     /// let response = client.control_hold()
@@ -2508,7 +2511,7 @@ impl Client {
         builder::ControlHold::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/control/resume`
+    ///Sends a 'POST' request to '/v1/control/resume'
     ///
     ///```ignore
     /// let response = client.control_resume()
@@ -2519,7 +2522,7 @@ impl Client {
         builder::ControlResume::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/task/{Task}`
+    ///Sends a 'GET' request to '/v1/task/{Task}'
     ///
     ///```ignore
     /// let response = client.task_get()
@@ -2531,7 +2534,7 @@ impl Client {
         builder::TaskGet::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/tasks`
+    ///Sends a 'GET' request to '/v1/tasks'
     ///
     ///```ignore
     /// let response = client.tasks_get()
@@ -2542,7 +2545,7 @@ impl Client {
         builder::TasksGet::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/tasks`
+    ///Sends a 'POST' request to '/v1/tasks'
     ///
     ///```ignore
     /// let response = client.task_submit()
@@ -2554,7 +2557,7 @@ impl Client {
         builder::TaskSubmit::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/tasks/{task}/events`
+    ///Sends a 'GET' request to '/v1/tasks/{task}/events'
     ///
     ///```ignore
     /// let response = client.task_events_get()
@@ -2567,7 +2570,7 @@ impl Client {
         builder::TaskEventsGet::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/tasks/{task}/outputs`
+    ///Sends a 'GET' request to '/v1/tasks/{task}/outputs'
     ///
     ///```ignore
     /// let response = client.task_outputs_get()
@@ -2579,7 +2582,7 @@ impl Client {
         builder::TaskOutputsGet::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/tasks/{task}/outputs/{output}`
+    ///Sends a 'GET' request to '/v1/tasks/{task}/outputs/{output}'
     ///
     ///```ignore
     /// let response = client.task_output_download()
@@ -2592,7 +2595,7 @@ impl Client {
         builder::TaskOutputDownload::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/users`
+    ///Sends a 'POST' request to '/v1/users'
     ///
     ///```ignore
     /// let response = client.user_create()
@@ -2604,7 +2607,7 @@ impl Client {
         builder::UserCreate::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/whoami`
+    ///Sends a 'GET' request to '/v1/whoami'
     ///
     ///```ignore
     /// let response = client.whoami()
@@ -2615,7 +2618,7 @@ impl Client {
         builder::Whoami::new(self)
     }
 
-    ///Sends a `PUT` request to `/v1/whoami/name`
+    ///Sends a 'PUT' request to '/v1/whoami/name'
     ///
     ///```ignore
     /// let response = client.whoami_put_name()
@@ -2627,7 +2630,7 @@ impl Client {
         builder::WhoamiPutName::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/worker/bootstrap`
+    ///Sends a 'POST' request to '/v1/worker/bootstrap'
     ///
     ///```ignore
     /// let response = client.worker_bootstrap()
@@ -2639,7 +2642,7 @@ impl Client {
         builder::WorkerBootstrap::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/worker/ping`
+    ///Sends a 'GET' request to '/v1/worker/ping'
     ///
     ///```ignore
     /// let response = client.worker_ping()
@@ -2650,7 +2653,7 @@ impl Client {
         builder::WorkerPing::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/worker/task/{task}/append`
+    ///Sends a 'POST' request to '/v1/worker/task/{task}/append'
     ///
     ///```ignore
     /// let response = client.worker_task_append()
@@ -2663,7 +2666,7 @@ impl Client {
         builder::WorkerTaskAppend::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/worker/task/{task}/chunk`
+    ///Sends a 'POST' request to '/v1/worker/task/{task}/chunk'
     ///
     ///```ignore
     /// let response = client.worker_task_upload_chunk()
@@ -2676,7 +2679,7 @@ impl Client {
         builder::WorkerTaskUploadChunk::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/worker/task/{task}/complete`
+    ///Sends a 'POST' request to '/v1/worker/task/{task}/complete'
     ///
     ///```ignore
     /// let response = client.worker_task_complete()
@@ -2689,7 +2692,7 @@ impl Client {
         builder::WorkerTaskComplete::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/worker/task/{task}/output`
+    ///Sends a 'POST' request to '/v1/worker/task/{task}/output'
     ///
     ///```ignore
     /// let response = client.worker_task_add_output()
@@ -2702,7 +2705,7 @@ impl Client {
         builder::WorkerTaskAddOutput::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/workers`
+    ///Sends a 'GET' request to '/v1/workers'
     ///
     ///```ignore
     /// let response = client.workers_list()
@@ -2713,7 +2716,7 @@ impl Client {
         builder::WorkersList::new(self)
     }
 
-    ///Sends a `POST` request to `/v1/workers/recycle`
+    ///Sends a 'POST' request to '/v1/workers/recycle'
     ///
     ///```ignore
     /// let response = client.workers_recycle()
@@ -2724,7 +2727,7 @@ impl Client {
         builder::WorkersRecycle::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/things`
+    ///Sends a 'GET' request to '/v1/things'
     ///
     ///```ignore
     /// let response = client.get_thing_or_things()
@@ -2736,7 +2739,7 @@ impl Client {
         builder::GetThingOrThings::new(self)
     }
 
-    ///Sends a `GET` request to `/v1/header-arg`
+    ///Sends a 'GET' request to '/v1/header-arg'
     ///
     ///```ignore
     /// let response = client.header_arg()
@@ -2771,8 +2774,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `POST` request to `/v1/control/hold`
+        ///Sends a 'POST' request to '/v1/control/hold'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/control/hold", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -2781,6 +2786,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -2799,7 +2805,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -2817,8 +2823,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `POST` request to `/v1/control/resume`
+        ///Sends a 'POST' request to '/v1/control/resume'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/control/resume", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -2827,6 +2835,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client.client.post(url).headers(header_map).build()?;
             let info = OperationInfo {
                 operation_id: "control_resume",
@@ -2837,7 +2846,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -2869,9 +2878,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/v1/task/{Task}`
+        ///Sends a 'GET' request to '/v1/task/{Task}'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::Task>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, task } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
             let url = format!(
                 "{}/v1/task/{}",
@@ -2884,6 +2896,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -2902,7 +2915,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -2920,8 +2933,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `GET` request to `/v1/tasks`
+        ///Sends a 'GET' request to '/v1/tasks'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<::std::vec::Vec<types::Task>>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/tasks", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -2930,6 +2945,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -2948,7 +2964,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -2990,9 +3006,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/tasks`
+        ///Sends a 'POST' request to '/v1/tasks'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::TaskSubmitResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, body } = self;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::TaskSubmit::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -3003,6 +3022,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3022,7 +3042,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3067,16 +3087,20 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/v1/tasks/{task}/events`
+        ///Sends a 'GET' request to '/v1/tasks/{task}/events'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(
             self,
         ) -> Result<ResponseValue<::std::vec::Vec<types::TaskEvent>>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 task,
                 minseq,
             } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let minseq = minseq.map_err(Error::InvalidRequest)?;
             let url = format!(
                 "{}/v1/tasks/{}/events",
@@ -3089,6 +3113,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -3108,7 +3133,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3140,11 +3165,14 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/v1/tasks/{task}/outputs`
+        ///Sends a 'GET' request to '/v1/tasks/{task}/outputs'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(
             self,
         ) -> Result<ResponseValue<::std::vec::Vec<types::TaskOutput>>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, task } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
             let url = format!(
                 "{}/v1/tasks/{}/outputs",
@@ -3157,6 +3185,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -3175,7 +3204,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3219,14 +3248,18 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/v1/tasks/{task}/outputs/{output}`
+        ///Sends a 'GET' request to '/v1/tasks/{task}/outputs/{output}'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<ByteStream>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 task,
                 output,
             } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let output = output.map_err(Error::InvalidRequest)?;
             let url = format!(
                 "{}/v1/tasks/{}/outputs/{}",
@@ -3240,6 +3273,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client.client.get(url).headers(header_map).build()?;
             let info = OperationInfo {
                 operation_id: "task_output_download",
@@ -3250,7 +3284,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200..=299 => Ok(ResponseValue::stream(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3292,9 +3326,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/users`
+        ///Sends a 'POST' request to '/v1/users'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::UserCreateResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, body } = self;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::UserCreate::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -3305,6 +3342,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3324,7 +3362,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3342,8 +3380,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `GET` request to `/v1/whoami`
+        ///Sends a 'GET' request to '/v1/whoami'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::WhoamiResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/whoami", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3352,6 +3392,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -3370,7 +3411,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3403,9 +3444,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `PUT` request to `/v1/whoami/name`
+        ///Sends a 'PUT' request to '/v1/whoami/name'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, body } = self;
+            #[allow(unused_variables)]
             let body = body.map_err(Error::InvalidRequest)?;
             let url = format!("{}/v1/whoami/name", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3414,6 +3458,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .put(url)
@@ -3433,7 +3478,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3475,9 +3520,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/worker/bootstrap`
+        ///Sends a 'POST' request to '/v1/worker/bootstrap'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::WorkerBootstrapResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, body } = self;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::WorkerBootstrap::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -3488,6 +3536,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3507,7 +3556,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3525,8 +3574,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `GET` request to `/v1/worker/ping`
+        ///Sends a 'GET' request to '/v1/worker/ping'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::WorkerPingResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/worker/ping", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3535,6 +3586,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -3553,7 +3605,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3609,10 +3661,14 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/worker/task/{task}/append`
+        ///Sends a 'POST' request to '/v1/worker/task/{task}/append'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, task, body } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::WorkerAppendTask::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -3627,6 +3683,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3642,7 +3699,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3686,10 +3743,14 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/worker/task/{task}/chunk`
+        ///Sends a 'POST' request to '/v1/worker/task/{task}/chunk'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::UploadedChunk>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, task, body } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body.map_err(Error::InvalidRequest)?;
             let url = format!(
                 "{}/v1/worker/task/{}/chunk",
@@ -3702,6 +3763,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3725,7 +3787,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3781,10 +3843,14 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/worker/task/{task}/complete`
+        ///Sends a 'POST' request to '/v1/worker/task/{task}/complete'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, task, body } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::WorkerCompleteTask::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -3799,6 +3865,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3814,7 +3881,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3868,10 +3935,14 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/v1/worker/task/{task}/output`
+        ///Sends a 'POST' request to '/v1/worker/task/{task}/output'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, task, body } = self;
+            #[allow(unused_variables)]
             let task = task.map_err(Error::InvalidRequest)?;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::WorkerAddOutput::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -3886,6 +3957,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -3901,7 +3973,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 201u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3919,8 +3991,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `GET` request to `/v1/workers`
+        ///Sends a 'GET' request to '/v1/workers'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<types::WorkersResult>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/workers", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3929,6 +4003,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -3947,7 +4022,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -3965,8 +4040,10 @@ pub mod builder {
             Self { client: client }
         }
 
-        ///Sends a `POST` request to `/v1/workers/recycle`
+        ///Sends a 'POST' request to '/v1/workers/recycle'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client } = self;
             let url = format!("{}/v1/workers/recycle", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -3975,6 +4052,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client.client.post(url).headers(header_map).build()?;
             let info = OperationInfo {
                 operation_id: "workers_recycle",
@@ -3985,7 +4063,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => Ok(ResponseValue::empty(response)),
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -4018,9 +4096,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/v1/things`
+        ///Sends a 'GET' request to '/v1/things'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<::std::string::String>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, id } = self;
+            #[allow(unused_variables)]
             let id = id.map_err(Error::InvalidRequest)?;
             let url = format!("{}/v1/things", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(1usize);
@@ -4029,6 +4110,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .get(url)
@@ -4048,7 +4130,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200u16 => ResponseValue::from_response(response).await,
-                _ => Err(Error::UnexpectedResponse(response)),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }
@@ -4080,12 +4162,15 @@ pub mod builder {
             self
         }
 
-        ///Sends a `GET` request to `/v1/header-arg`
+        ///Sends a 'GET' request to '/v1/header-arg'
+        #[allow(irrefutable_let_patterns)]
         pub async fn send(self) -> Result<ResponseValue<()>, Error<()>> {
+            #[allow(unused_variables)]
             let Self {
                 client,
                 accept_language,
             } = self;
+            #[allow(unused_variables)]
             let accept_language = accept_language.map_err(Error::InvalidRequest)?;
             let url = format!("{}/v1/header-arg", client.baseurl,);
             let mut header_map = ::reqwest::header::HeaderMap::with_capacity(2usize);
@@ -4097,6 +4182,7 @@ pub mod builder {
                 header_map.append("accept-language", value.to_string().try_into()?);
             }
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client.client.get(url).headers(header_map).build()?;
             let info = OperationInfo {
                 operation_id: "header_arg",

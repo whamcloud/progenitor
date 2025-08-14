@@ -7,11 +7,9 @@ pub mod operations {
     pub struct InstanceGetWhen(::httpmock::When);
     impl InstanceGetWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/instance$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/instance$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -62,11 +60,9 @@ pub mod operations {
     pub struct InstanceEnsureWhen(::httpmock::When);
     impl InstanceEnsureWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/instance$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/instance$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -123,7 +119,8 @@ pub mod operations {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
                 inner.method(::httpmock::Method::POST).path_matches(
-                    regex::Regex::new("^/instance/disk/[^/]*/snapshot/[^/]*$").unwrap(),
+                    regex::Regex::new("^/instance/disk/[^/]*/snapshot/[^/]*$")
+                        .expect("Invalid path regex pattern"),
                 ),
             )
         }
@@ -137,7 +134,7 @@ pub mod operations {
                 "^/instance/disk/{}/snapshot/.*$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 
@@ -146,7 +143,7 @@ pub mod operations {
                 "^/instance/disk/.*/snapshot/{}$",
                 value.to_string()
             ))
-            .unwrap();
+            .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
     }
@@ -195,18 +192,15 @@ pub mod operations {
     impl InstanceMigrateStatusWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
             Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/instance/migrate/status$").unwrap()),
+                inner.method(::httpmock::Method::GET).path_matches(
+                    regex::Regex::new("^/instance/migrate/status$")
+                        .expect("Invalid path regex pattern"),
+                ),
             )
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
             self.0
-        }
-
-        pub fn body(self, value: &types::InstanceMigrateStatusRequest) -> Self {
-            Self(self.0.json_body_obj(value))
         }
     }
 
@@ -253,11 +247,9 @@ pub mod operations {
     pub struct InstanceSerialWhen(::httpmock::When);
     impl InstanceSerialWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/instance/serial$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/instance/serial$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -287,11 +279,9 @@ pub mod operations {
     pub struct InstanceStatePutWhen(::httpmock::When);
     impl InstanceStatePutWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::PUT)
-                    .path_matches(regex::Regex::new("^/instance/state$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::PUT).path_matches(
+                regex::Regex::new("^/instance/state$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -341,19 +331,13 @@ pub mod operations {
     pub struct InstanceStateMonitorWhen(::httpmock::When);
     impl InstanceStateMonitorWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/instance/state-monitor$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/instance/state-monitor$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
             self.0
-        }
-
-        pub fn body(self, value: &types::InstanceStateMonitorRequest) -> Self {
-            Self(self.0.json_body_obj(value))
         }
     }
 

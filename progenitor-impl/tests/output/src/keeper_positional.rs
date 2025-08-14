@@ -471,7 +471,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -510,11 +513,13 @@ impl ClientHooks<()> for &Client {}
 #[allow(clippy::all)]
 #[allow(elided_named_lifetimes)]
 impl Client {
-    ///Sends a `POST` request to `/enrol`
+    ///Sends a 'POST' request to '/enrol'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn enrol<'a>(
         &'a self,
         authorization: &'a str,
@@ -528,6 +533,7 @@ impl Client {
         );
         header_map.append("Authorization", authorization.to_string().try_into()?);
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -543,14 +549,16 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => Ok(ResponseValue::empty(response)),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
-    ///Sends a `GET` request to `/global/jobs`
+    ///Sends a 'GET' request to '/global/jobs'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn global_jobs<'a>(
         &'a self,
         authorization: &'a str,
@@ -563,6 +571,7 @@ impl Client {
         );
         header_map.append("Authorization", authorization.to_string().try_into()?);
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -581,14 +590,16 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
-    ///Sends a `GET` request to `/ping`
+    ///Sends a 'GET' request to '/ping'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn ping<'a>(
         &'a self,
         authorization: &'a str,
@@ -601,6 +612,7 @@ impl Client {
         );
         header_map.append("Authorization", authorization.to_string().try_into()?);
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .get(url)
@@ -619,15 +631,17 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
-    ///Sends a `POST` request to `/report/finish`
+    ///Sends a 'POST' request to '/report/finish'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn report_finish<'a>(
         &'a self,
         authorization: &'a str,
@@ -641,6 +655,7 @@ impl Client {
         );
         header_map.append("Authorization", authorization.to_string().try_into()?);
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -660,15 +675,17 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
-    ///Sends a `POST` request to `/report/output`
+    ///Sends a 'POST' request to '/report/output'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn report_output<'a>(
         &'a self,
         authorization: &'a str,
@@ -682,6 +699,7 @@ impl Client {
         );
         header_map.append("Authorization", authorization.to_string().try_into()?);
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -701,15 +719,17 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 
-    ///Sends a `POST` request to `/report/start`
+    ///Sends a 'POST' request to '/report/start'
     ///
     ///Arguments:
     /// - `authorization`: Authorization header (bearer token)
     /// - `body`
+    #[allow(unused_variables)]
+    #[allow(irrefutable_let_patterns)]
     pub async fn report_start<'a>(
         &'a self,
         authorization: &'a str,
@@ -723,6 +743,7 @@ impl Client {
         );
         header_map.append("Authorization", authorization.to_string().try_into()?);
         #[allow(unused_mut)]
+        #[allow(unused_variables)]
         let mut request = self
             .client
             .post(url)
@@ -742,7 +763,7 @@ impl Client {
         let response = result?;
         match response.status().as_u16() {
             201u16 => ResponseValue::from_response(response).await,
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
         }
     }
 }

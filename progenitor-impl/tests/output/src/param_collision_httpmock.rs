@@ -7,11 +7,9 @@ pub mod operations {
     pub struct KeyGetWhen(::httpmock::When);
     impl KeyGetWhen {
         pub fn new(inner: ::httpmock::When) -> Self {
-            Self(
-                inner
-                    .method(::httpmock::Method::GET)
-                    .path_matches(regex::Regex::new("^/key/[^/]*$").unwrap()),
-            )
+            Self(inner.method(::httpmock::Method::GET).path_matches(
+                regex::Regex::new("^/key/[^/]*$").expect("Invalid path regex pattern"),
+            ))
         }
 
         pub fn into_inner(self) -> ::httpmock::When {
@@ -19,7 +17,8 @@ pub mod operations {
         }
 
         pub fn query(self, value: bool) -> Self {
-            let re = regex::Regex::new(&format!("^/key/{}$", value.to_string())).unwrap();
+            let re = regex::Regex::new(&format!("^/key/{}$", value.to_string()))
+                .expect("Invalid path parameter regex pattern");
             Self(self.0.path_matches(re))
         }
 

@@ -346,7 +346,10 @@ impl Client {
         };
         #[cfg(target_arch = "wasm32")]
         let client = reqwest::ClientBuilder::new();
-        Self::new_with_client(baseurl, client.build().unwrap())
+        Self::new_with_client(
+            baseurl,
+            client.build().expect("Failed to build HTTP client"),
+        )
     }
 
     /// Construct a new client with an existing `reqwest::Client`,
@@ -383,7 +386,7 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 impl Client {
-    ///Sends a `POST` request to `/`
+    ///Sends a 'POST' request to '/'
     ///
     ///```ignore
     /// let response = client.default_params()
@@ -444,9 +447,12 @@ pub mod builder {
             self
         }
 
-        ///Sends a `POST` request to `/`
-        pub async fn send(self) -> Result<ResponseValue<ByteStream>, Error<ByteStream>> {
+        ///Sends a 'POST' request to '/'
+        #[allow(irrefutable_let_patterns)]
+        pub async fn send(self) -> Result<ResponseValue<ByteStream>, Error<()>> {
+            #[allow(unused_variables)]
             let Self { client, body } = self;
+            #[allow(unused_variables)]
             let body = body
                 .and_then(|v| types::BodyWithDefaults::try_from(v).map_err(|e| e.to_string()))
                 .map_err(Error::InvalidRequest)?;
@@ -457,6 +463,7 @@ pub mod builder {
                 ::reqwest::header::HeaderValue::from_static(super::Client::api_version()),
             );
             #[allow(unused_mut)]
+            #[allow(unused_variables)]
             let mut request = client
                 .client
                 .post(url)
@@ -472,7 +479,7 @@ pub mod builder {
             let response = result?;
             match response.status().as_u16() {
                 200..=299 => Ok(ResponseValue::stream(response)),
-                _ => Err(Error::ErrorResponse(ResponseValue::stream(response))),
+                _ => Err(Error::ErrorResponse(ResponseValue::empty(response))),
             }
         }
     }

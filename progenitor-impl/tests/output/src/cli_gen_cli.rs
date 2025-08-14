@@ -16,27 +16,12 @@ impl<T: CliConfig> Cli<T> {
     }
 
     pub fn cli_uno() -> ::clap::Command {
-        ::clap::Command::new("")
-            .arg(
-                ::clap::Arg::new("gateway")
-                    .long("gateway")
-                    .value_parser(::clap::value_parser!(::std::string::String))
-                    .required(true),
-            )
-            .arg(
-                ::clap::Arg::new("json-body")
-                    .long("json-body")
-                    .value_name("JSON-FILE")
-                    .required(true)
-                    .value_parser(::clap::value_parser!(std::path::PathBuf))
-                    .help("Path to a file that contains the full json body."),
-            )
-            .arg(
-                ::clap::Arg::new("json-body-template")
-                    .long("json-body-template")
-                    .action(::clap::ArgAction::SetTrue)
-                    .help("XXX"),
-            )
+        ::clap::Command::new("").arg(
+            ::clap::Arg::new("gateway")
+                .long("gateway")
+                .value_parser(::clap::value_parser!(::std::string::String))
+                .required(true),
+        )
     }
 
     pub async fn execute(
@@ -53,12 +38,6 @@ impl<T: CliConfig> Cli<T> {
         let mut request = self.client.uno();
         if let Some(value) = matches.get_one::<::std::string::String>("gateway") {
             request = request.gateway(value.clone());
-        }
-
-        if let Some(value) = matches.get_one::<std::path::PathBuf>("json-body") {
-            let body_txt = std::fs::read_to_string(value).unwrap();
-            let body_value = serde_json::from_str::<types::UnoBody>(&body_txt).unwrap();
-            request = request.body(body_value);
         }
 
         self.config.execute_uno(matches, &mut request)?;
