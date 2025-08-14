@@ -394,8 +394,6 @@ impl Generator {
             }
         };
 
-
-
         let inner_property = self.settings.inner_type.as_ref().map(|inner| {
             quote! {
                 pub (crate) inner: #inner,

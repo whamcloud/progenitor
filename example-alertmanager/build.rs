@@ -162,9 +162,7 @@ fn resolve_internal_reference(ref_path: &str, root: &Value) -> Result<Value, Str
         match current {
             Value::Mapping(map) => {
                 current = map.get(Value::String(unescaped.clone())).ok_or_else(|| {
-                    format!(
-                        "Reference path not found: {ref_path} at component {unescaped}"
-                    )
+                    format!("Reference path not found: {ref_path} at component {unescaped}")
                 })?;
             }
             _ => {

@@ -1168,12 +1168,12 @@ impl Generator {
                 }
             }
         });
-        let post_hook = self.settings.post_hook.as_ref().map(|hook| {
+        let _post_hook = self.settings.post_hook.as_ref().map(|hook| {
             quote! {
                 (#hook)(#inner &#result_ident);
             }
         });
-        let post_hook_async = self.settings.post_hook_async.as_ref().map(|hook| {
+        let _post_hook_async = self.settings.post_hook_async.as_ref().map(|hook| {
             quote! {
                 match (#hook)(#inner &#result_ident).await {
                     Ok(_) => (),
@@ -1184,8 +1184,6 @@ impl Generator {
 
         let operation_id = &method.operation_id;
         let method_func = format_ident!("{}", method.method.as_str());
-
-
 
         let body_impl = quote! {
             #url_path
@@ -2429,8 +2427,6 @@ impl Generator {
                 if let Some(code) = status_code {
                     let variant_name = format_ident!("Status{}", code);
 
-                    
-
                     match &response.typ {
                         OperationResponseKind::Type(_) => Some(quote! {
                             #code => Ok(Self::#variant_name(value.to_string())),
@@ -2534,7 +2530,9 @@ impl Generator {
                     // Since error enums are generated inside the types module,
                     // we should use just the type name without the types:: prefix
                     let type_ident_str = type_ident.to_string();
-                    if type_ident_str.starts_with("types ::") || type_ident_str.starts_with("types::") {
+                    if type_ident_str.starts_with("types ::")
+                        || type_ident_str.starts_with("types::")
+                    {
                         let simple_name = if type_ident_str.starts_with("types ::") {
                             type_ident_str.strip_prefix("types ::").unwrap().trim()
                         } else {
@@ -2586,8 +2584,6 @@ impl Generator {
 
                 if let Some(code) = status_code {
                     let variant_name = format_ident!("Status{}", code);
-
-                    
 
                     match &response.typ {
                         OperationResponseKind::Type(_) => Some(quote! {

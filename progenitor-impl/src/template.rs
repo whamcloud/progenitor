@@ -133,9 +133,7 @@ pub fn parse(t: &str) -> Result<PathTemplate> {
             State::Parameter => {
                 if c == '}' {
                     if a.contains('/') || a.contains('{') {
-                        return Err(Error::InvalidPath(format!(
-                            "invalid parameter name {a:?}",
-                        )));
+                        return Err(Error::InvalidPath(format!("invalid parameter name {a:?}",)));
                     }
                     components.push(Component::Parameter(a));
                     a = String::new();
