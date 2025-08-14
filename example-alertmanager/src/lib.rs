@@ -478,9 +478,9 @@ pub mod types {
     impl ::std::fmt::Display for AlertStatusState {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Unprocessed => write!(f, "unprocessed"),
-                Self::Active => write!(f, "active"),
-                Self::Suppressed => write!(f, "suppressed"),
+                Self::Unprocessed => f.write_str("unprocessed"),
+                Self::Active => f.write_str("active"),
+                Self::Suppressed => f.write_str("suppressed"),
             }
         }
     }
@@ -738,9 +738,9 @@ pub mod types {
     impl ::std::fmt::Display for AlertmanagerStatusClusterStatus {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Ready => write!(f, "ready"),
-                Self::Settling => write!(f, "settling"),
-                Self::Disabled => write!(f, "disabled"),
+                Self::Ready => f.write_str("ready"),
+                Self::Settling => f.write_str("settling"),
+                Self::Disabled => f.write_str("disabled"),
             }
         }
     }
@@ -998,9 +998,9 @@ pub mod types {
     impl ::std::fmt::Display for ClusterStatusStatus {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Ready => write!(f, "ready"),
-                Self::Settling => write!(f, "settling"),
-                Self::Disabled => write!(f, "disabled"),
+                Self::Ready => f.write_str("ready"),
+                Self::Settling => f.write_str("settling"),
+                Self::Disabled => f.write_str("disabled"),
             }
         }
     }
@@ -1420,9 +1420,9 @@ pub mod types {
     impl ::std::fmt::Display for GettableAlertStatusState {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Unprocessed => write!(f, "unprocessed"),
-                Self::Active => write!(f, "active"),
-                Self::Suppressed => write!(f, "suppressed"),
+                Self::Unprocessed => f.write_str("unprocessed"),
+                Self::Active => f.write_str("active"),
+                Self::Suppressed => f.write_str("suppressed"),
             }
         }
     }
@@ -1796,9 +1796,9 @@ pub mod types {
     impl ::std::fmt::Display for GettableSilenceStatusState {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Expired => write!(f, "expired"),
-                Self::Active => write!(f, "active"),
-                Self::Pending => write!(f, "pending"),
+                Self::Expired => f.write_str("expired"),
+                Self::Active => f.write_str("active"),
+                Self::Pending => f.write_str("pending"),
             }
         }
     }
@@ -2754,9 +2754,9 @@ pub mod types {
     impl ::std::fmt::Display for SilenceStatusState {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match *self {
-                Self::Expired => write!(f, "expired"),
-                Self::Active => write!(f, "active"),
-                Self::Pending => write!(f, "pending"),
+                Self::Expired => f.write_str("expired"),
+                Self::Active => f.write_str("active"),
+                Self::Pending => f.write_str("pending"),
             }
         }
     }
@@ -3148,7 +3148,6 @@ impl ClientInfo<()> for Client {
 }
 impl ClientHooks<()> for &Client {}
 #[allow(clippy::all)]
-#[allow(elided_named_lifetimes)]
 impl Client {
     /**Get current status of an Alertmanager instance and its cluster
 
