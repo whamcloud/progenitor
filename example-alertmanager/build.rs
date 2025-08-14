@@ -14,17 +14,17 @@ use std::{
 fn dereference_openapi_spec(spec: &str, base_path: Option<&Path>) -> Result<String, String> {
     // Parse the YAML into a Value
     let mut yaml_value: Value =
-        serde_yaml::from_str(spec).map_err(|e| format!("Failed to parse YAML: {}", e))?;
+        serde_yaml::from_str(spec).map_err(|e| format!("Failed to parse YAML: {e}"))?;
 
     // Create a reference to the full document for resolving references
     let root = yaml_value.clone();
 
     // Recursively resolve references
     dereference_value(&mut yaml_value, &root, base_path)
-        .map_err(|e| format!("Failed to dereference: {}", e))?;
+        .map_err(|e| format!("Failed to dereference: {e}"))?;
 
     // Convert back to string
-    serde_yaml::to_string(&yaml_value).map_err(|e| format!("Failed to serialize YAML: {}", e))
+    serde_yaml::to_string(&yaml_value).map_err(|e| format!("Failed to serialize YAML: {e}"))
 }
 
 /// Recursively resolves $ref references in a YAML value
@@ -37,14 +37,12 @@ fn dereference_value(
         Value::Mapping(map) => {
             // Check if this is a reference object
             if map.len() == 1 {
-                if let Some(ref_value) = map.get(&Value::String("$ref".to_string())) {
-                    if let Value::String(ref_path) = ref_value {
-                        // Resolve the reference
-                        let resolved = resolve_reference(ref_path, root, base_path)?;
-                        // Replace the current value with the resolved reference
-                        *value = resolved;
-                        return Ok(());
-                    }
+                if let Some(Value::String(ref_path)) = map.get(Value::String("$ref".to_string())) {
+                    // Resolve the reference
+                    let resolved = resolve_reference(ref_path, root, base_path)?;
+                    // Replace the current value with the resolved reference
+                    *value = resolved;
+                    return Ok(());
                 }
             }
 
@@ -136,7 +134,7 @@ fn resolve_reference(
         if fragment_path.is_empty() {
             Ok(external_value)
         } else {
-            let fragment_ref = format!("#{}", fragment_path);
+            let fragment_ref = format!("#{fragment_path}");
             resolve_internal_reference(&fragment_ref, &external_value)
         }
     } else {
@@ -148,7 +146,7 @@ fn resolve_reference(
 /// Resolves an internal reference (starting with #/) to its value in the document
 fn resolve_internal_reference(ref_path: &str, root: &Value) -> Result<Value, String> {
     if !ref_path.starts_with("#/") {
-        return Err(format!("Not an internal reference: {}", ref_path));
+        return Err(format!("Not an internal reference: {ref_path}"));
     }
 
     // Split the path into components
@@ -163,17 +161,15 @@ fn resolve_internal_reference(ref_path: &str, root: &Value) -> Result<Value, Str
 
         match current {
             Value::Mapping(map) => {
-                current = map.get(&Value::String(unescaped.clone())).ok_or_else(|| {
+                current = map.get(Value::String(unescaped.clone())).ok_or_else(|| {
                     format!(
-                        "Reference path not found: {} at component {}",
-                        ref_path, unescaped
+                        "Reference path not found: {ref_path} at component {unescaped}"
                     )
                 })?;
             }
             _ => {
                 return Err(format!(
-                    "Invalid reference path: {} at component {}",
-                    ref_path, unescaped
+                    "Invalid reference path: {ref_path} at component {unescaped}"
                 ));
             }
         }
@@ -252,7 +248,7 @@ fn main() {
         match dereference_openapi_spec(spec, Some(&Path::new("src").join(spec_path))) {
             Ok(spec) => spec,
             Err(e) => {
-                eprintln!("Error dereferencing OpenAPI spec: {}", e);
+                eprintln!("Error dereferencing OpenAPI spec: {e}");
                 // Fall back to the original spec if dereferencing fails
                 spec.to_string()
             }
@@ -263,7 +259,7 @@ fn main() {
         match serde_yaml::from_str(&dereferenced_spec) {
             Ok(api) => api,
             Err(e) => {
-                eprintln!("Error parsing OpenAPI spec: {}", e);
+                eprintln!("Error parsing OpenAPI spec: {e}");
                 panic!("Failed to parse OpenAPI spec");
             }
         };
@@ -287,5 +283,5 @@ fn main() {
     out_file.push("lib.rs");
     std::fs::write(out_file, content).unwrap();
 
-    print!("{}", alertmanager_upgraded_string);
+    print!("{alertmanager_upgraded_string}");
 }

@@ -196,7 +196,7 @@ impl ResponseValue<reqwest::Upgraded> {
                 headers,
             })
         } else {
-            Err(Error::UnexpectedResponse(response))
+            Err(Error::UnexpectedResponse(Box::new(response)))
         }
     }
 }
@@ -345,7 +345,7 @@ pub enum Error<E = ()> {
 
     /// A response not listed in the API description. This may represent a
     /// success or failure response; check `status().is_success()`.
-    UnexpectedResponse(reqwest::Response),
+    UnexpectedResponse(Box<reqwest::Response>),
 
     /// A custom error from a consumer-defined hook.
     Custom(String),
@@ -417,29 +417,29 @@ where
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Error::InvalidRequest(s) => {
-                write!(f, "Invalid Request: {}", s)?;
+                write!(f, "Invalid Request: {s}")?;
             }
             Error::CommunicationError(e) => {
-                write!(f, "Communication Error: {}", e)?;
+                write!(f, "Communication Error: {e}")?;
             }
             Error::ErrorResponse(rve) => {
                 write!(f, "Error Response: ")?;
                 rve.fmt_info(f)?;
             }
             Error::InvalidUpgrade(e) => {
-                write!(f, "Invalid Response Upgrade: {}", e)?;
+                write!(f, "Invalid Response Upgrade: {e}")?;
             }
             Error::ResponseBodyError(e) => {
-                write!(f, "Invalid Response Body Bytes: {}", e)?;
+                write!(f, "Invalid Response Body Bytes: {e}")?;
             }
             Error::InvalidResponsePayload(b, e) => {
-                write!(f, "Invalid Response Payload ({:?}): {}", b, e)?;
+                write!(f, "Invalid Response Payload ({b:?}): {e}")?;
             }
             Error::UnexpectedResponse(r) => {
-                write!(f, "Unexpected Response: {:?}", r)?;
+                write!(f, "Unexpected Response: {r:?}")?;
             }
             Error::Custom(s) => {
-                write!(f, "Error: {}", s)?;
+                write!(f, "Error: {s}")?;
             }
         }
 

@@ -1796,7 +1796,7 @@ impl Client {
                 )
                 .await?,
             )),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 
@@ -1847,7 +1847,7 @@ impl Client {
                 >(response)
                 .await?,
             )),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 
@@ -1904,7 +1904,7 @@ impl Client {
                 >(response)
                 .await?,
             )),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 
@@ -1955,7 +1955,7 @@ impl Client {
                 >(response)
                 .await?,
             )),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 
@@ -2048,7 +2048,7 @@ impl Client {
                 >(response)
                 .await?,
             )),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 
@@ -2099,7 +2099,7 @@ impl Client {
                 >(response)
                 .await?,
             )),
-            _ => Err(Error::UnexpectedResponse(response)),
+            _ => Err(Error::UnexpectedResponse(Box::new(response))),
         }
     }
 }
