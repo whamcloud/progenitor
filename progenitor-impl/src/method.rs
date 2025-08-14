@@ -2531,7 +2531,20 @@ impl Generator {
                 OperationResponseKind::Type(type_id) => {
                     let type_name = self.type_space.get_type(type_id).unwrap();
                     let type_ident = type_name.ident();
-                    quote! { #type_ident }
+                    // Since error enums are generated inside the types module,
+                    // we should use just the type name without the types:: prefix
+                    let type_ident_str = type_ident.to_string();
+                    if type_ident_str.starts_with("types ::") || type_ident_str.starts_with("types::") {
+                        let simple_name = if type_ident_str.starts_with("types ::") {
+                            type_ident_str.strip_prefix("types ::").unwrap().trim()
+                        } else {
+                            type_ident_str.strip_prefix("types::").unwrap()
+                        };
+                        let simple_ident = format_ident!("{}", simple_name);
+                        quote! { #simple_ident }
+                    } else {
+                        quote! { #type_ident }
+                    }
                 }
                 OperationResponseKind::None => {
                     quote! { () }
@@ -2593,7 +2606,7 @@ impl Generator {
 
         let enum_def = quote! {
             #[doc = #enum_doc]
-            #[derive(Debug, Clone, PartialEq, ::serde::Serialize, ::serde::Deserialize)]
+            #[derive(Debug, Clone, ::serde::Serialize, ::serde::Deserialize)]
             pub enum #enum_ident {
                 #(#variants_tokens),*
             }
