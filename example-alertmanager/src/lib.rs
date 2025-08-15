@@ -3781,7 +3781,7 @@ Arguments:
 }
 #[cfg(feature = "middleware")]
 #[allow(clippy::all)]
-#[allow(elided_named_lifetimes)]
+#[allow(mismatched_lifetime_syntaxes)]
 impl MiddlewareClient {
     /**Get current status of an Alertmanager instance and its cluster
 
