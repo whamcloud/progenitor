@@ -215,7 +215,7 @@ impl Client {
 
 #[cfg(feature = "middleware")]
 #[allow(clippy::all)]
-#[allow(elided_named_lifetimes)]
+#[allow(mismatched_lifetime_syntaxes)]
 impl MiddlewareClient {
     ///Gets a key
     ///
