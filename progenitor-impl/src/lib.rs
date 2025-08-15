@@ -548,6 +548,7 @@ impl Generator {
 
         let out = quote! {
             #[allow(clippy::all)]
+            #[allow(mismatched_lifetime_syntaxes)]
             impl Client {
                 #(#methods)*
             }

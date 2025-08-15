@@ -103,6 +103,7 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 #[allow(clippy::all)]
+#[allow(mismatched_lifetime_syntaxes)]
 impl Client {
     ///Sends a 'GET' request to '/uno'
     #[allow(unused_variables)]
