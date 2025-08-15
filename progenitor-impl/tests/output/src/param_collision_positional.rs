@@ -104,7 +104,7 @@ impl ClientInfo<()> for Client {
 
 impl ClientHooks<()> for &Client {}
 #[allow(clippy::all)]
-#[allow(elided_named_lifetimes)]
+#[allow(mismatched_lifetime_syntaxes)]
 impl Client {
     ///Gets a key
     ///
