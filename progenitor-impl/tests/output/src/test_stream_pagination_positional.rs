@@ -348,7 +348,7 @@ impl Client {
     pub fn paginated_u32s_stream<'a>(
         &'a self,
         limit: Option<::std::num::NonZeroU32>,
-    ) -> impl futures::Stream<Item = Result<u32, Error<types::PaginatedU32sError>>> + Unpin + '_
+    ) -> impl futures::Stream<Item = Result<u32, Error<types::PaginatedU32sError>>> + Unpin + 'a
     {
         use futures::StreamExt;
         use futures::TryFutureExt;
