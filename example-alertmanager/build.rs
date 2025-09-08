@@ -36,14 +36,14 @@ fn dereference_value(
     match value {
         Value::Mapping(map) => {
             // Check if this is a reference object
-            if map.len() == 1 {
-                if let Some(Value::String(ref_path)) = map.get(Value::String("$ref".to_string())) {
-                    // Resolve the reference
-                    let resolved = resolve_reference(ref_path, root, base_path)?;
-                    // Replace the current value with the resolved reference
-                    *value = resolved;
-                    return Ok(());
-                }
+            if map.len() == 1
+                && let Some(Value::String(ref_path)) = map.get(Value::String("$ref".to_string()))
+            {
+                // Resolve the reference
+                let resolved = resolve_reference(ref_path, root, base_path)?;
+                // Replace the current value with the resolved reference
+                *value = resolved;
+                return Ok(());
             }
 
             // Process each key-value pair in the mapping
@@ -162,9 +162,7 @@ fn resolve_internal_reference(ref_path: &str, root: &Value) -> Result<Value, Str
         match current {
             Value::Mapping(map) => {
                 current = map.get(Value::String(unescaped.clone())).ok_or_else(|| {
-                    format!(
-                        "Reference path not found: {ref_path} at component {unescaped}"
-                    )
+                    format!("Reference path not found: {ref_path} at component {unescaped}")
                 })?;
             }
             _ => {
@@ -178,66 +176,6 @@ fn resolve_internal_reference(ref_path: &str, root: &Value) -> Result<Value, Str
     // Return a clone of the resolved value
     Ok(current.clone())
 }
-
-/*/// Consolidates multiple response types into a single response type
-///
-/// This function modifies the OpenAPI spec to ensure each operation has at most one response type,
-/// which is required by the progenitor crate.
-fn consolidate_response_types(spec: &mut openapiv3::OpenAPI) {
-    // Process each path
-    for (_, path_item) in &mut spec.paths {
-        // Process each operation in the path
-        for operation in [
-            &mut path_item.delete,
-            &mut path_item.get,
-            &mut path_item.head,
-            &mut path_item.options,
-            &mut path_item.patch,
-            &mut path_item.post,
-            &mut path_item.put,
-            &mut path_item.trace,
-        ]
-        .iter_mut()
-        .filter_map(|op| op.as_mut())
-        {
-            // Get the successful response types (2xx)
-            let success_responses: Vec<(&String, &openapiv3::ReferenceOr<openapiv3::Response>)> =
-                operation.responses.responses.iter()
-                    .filter(|(code, _)| code.starts_with('2'))
-                    .collect();
-
-            // If there are multiple success responses, consolidate them
-            if success_responses.len() > 1 {
-                // Create a new consolidated response
-                let mut consolidated_response = openapiv3::Response {
-                    description: "Consolidated successful response".to_string(),
-                    headers: Default::default(),
-                    content: Default::default(),
-                    extensions: Default::default(),
-                    links: Default::default(),
-                };
-
-                // Merge all content types from all success responses
-                for (_, response_ref) in success_responses {
-                    if let openapiv3::ReferenceOr::Item(response) = response_ref {
-                        for (content_type, media_type) in &response.content {
-                            consolidated_response.content.insert(content_type.clone(), media_type.clone());
-                        }
-                    }
-                }
-
-                // Remove all success responses except 200
-                operation.responses.responses.retain(|(code, _)| !code.starts_with('2') || code == "200");
-
-                // Add the consolidated response as 200
-                operation.responses.responses.insert(
-                    "200".to_string(),
-                    openapiv3::ReferenceOr::Item(consolidated_response),
-                );
-            }
-        }
-    }
-}*/
 
 fn main() {
     let spec_path = Path::new("openapi/alertmanager_openapi.yaml");
